@@ -1,16 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ROLE_ADMIN } from '@shared/constants/auth.constants';
 
-import { finalize } from 'rxjs';
+import { NavItem } from '@shared/interfaces/ui/nav-item.interface';
 
 import { AuthService } from '@core/services/auth.service';
 import { TokenService } from '@core/services/token.service';
-import { ROLE_ADMIN } from '@shared/constants/auth.constants';
 
-interface NavItem {
-  readonly label: string;
-  readonly path: string;
-}
+import { finalize } from 'rxjs';
+
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
 @Component({
   imports: [RouterLink, RouterLinkActive],
