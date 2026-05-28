@@ -5,13 +5,19 @@ import { TokenService } from '@core/services/token.service';
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 
-export const adminGuard: CanActivateFn = () => {
+export const adminGuard: CanActivateFn = (_route, state) => {
   const router = inject(Router);
   const tokenService = inject(TokenService);
 
-  if (tokenService.isAuthenticated() && tokenService.hasRole(ROLE_ADMIN)) {
-    return true;
+  if (!tokenService.isAuthenticated()) {
+    return router.createUrlTree(['/auth/login'], {
+      queryParams: { redirectTo: state.url },
+    });
   }
 
-  return router.createUrlTree(['/']);
+  if (!tokenService.hasRole(ROLE_ADMIN)) {
+    return router.createUrlTree(['/']);
+  }
+
+  return true;
 };
