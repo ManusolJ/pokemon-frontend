@@ -1,18 +1,22 @@
-import { PokemonFilter } from '@shared/interfaces/pokemon/pokemon/pokemon-filter.interface';
-import { BaseApiService } from './base-api.service';
-
-import { Injectable } from '@angular/core';
-import { Pageable } from '@shared/interfaces/api/pageable.interface';
-import { Observable } from 'rxjs';
-import { SpeciesRead } from '@shared/interfaces/pokemon/pokemon/species-read.interface';
 import {
+  ID_PARAMATER,
   COUNT_PARAMATER,
   FILTER_PARAMATER,
-  ID_PARAMATER,
   SUMMARY_PARAMATER,
 } from '@shared/constants/api.constants';
+
 import { Page } from '@shared/interfaces/api/page.interface';
+import { Pageable } from '@shared/interfaces/api/pageable.interface';
+
+import { SpeciesRead } from '@shared/interfaces/pokemon/pokemon/species-read.interface';
+import { PokemonFilter } from '@shared/interfaces/pokemon/pokemon/pokemon-filter.interface';
 import { SpeciesSummary } from '@shared/interfaces/pokemon/pokemon/species-summary.interface';
+
+import { BaseApiService } from './base-api.service';
+
+import { Observable } from 'rxjs';
+
+import { Injectable } from '@angular/core';
 
 const ENDPOINT = 'species';
 
