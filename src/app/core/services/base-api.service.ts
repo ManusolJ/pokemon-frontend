@@ -66,6 +66,6 @@ export class BaseApiService {
   }
 
   private url(endpoint: string): string {
-    return `${API_URL}/${endpoint}`;
+    return `${API_URL}/${endpoint.replace(/\/+$/, '')}`;
   }
 }
