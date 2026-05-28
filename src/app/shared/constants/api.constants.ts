@@ -1,8 +1,15 @@
-export const ID_PARAMATER = 'id';
-export const COUNT_PARAMATER = 'count';
-export const FILTER_PARAMATER = 'filter';
-export const SUMMARY_PARAMATER = 'summaries';
+export const ID_ENDPOINT = 'id';
+export const COUNT_ENDPOINT = 'count';
+export const FILTER_ENDPOINT = 'filter';
+export const SUMMARY_ENDPOINT = 'summaries';
 
-export const POKEMON_PARAMATER = 'pokemon';
+export const POKEMON_ENDPOINT = 'pokemon';
 
-export const EFFECTIVENESS_PARAMETER = 'effectiveness';
+export const EFFECTIVENESS_ENDPOINT = 'effectiveness';
+
+export const LOGIN_ENDPOINT = 'login';
+export const LOGOUT_ENDPOINT = 'logout';
+export const REFRESH_ENDPOINT = 'refresh';
+export const REGISTER_PARAMETER = 'register';
+export const PASSWORD_RESET_ENDPOINT = 'password-reset';
+export const PASSWORD_RESET_REQUEST_ENDPOINT = 'password-reset-request';

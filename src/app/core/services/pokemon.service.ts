@@ -1,8 +1,8 @@
 import {
-  ID_PARAMATER,
-  COUNT_PARAMATER,
-  FILTER_PARAMATER,
-  SUMMARY_PARAMATER,
+  ID_ENDPOINT,
+  COUNT_ENDPOINT,
+  FILTER_ENDPOINT,
+  SUMMARY_ENDPOINT,
 } from '@shared/constants/api.constants';
 
 import { PokemonFilter } from '@shared/interfaces/pokemon/pokemon/pokemon-filter.interface';
@@ -24,18 +24,18 @@ const ENDPOINT = 'pokemon';
 @Injectable({ providedIn: 'root' })
 export class PokemonService extends BaseApiService {
   getOnePokemon(filter: PokemonFilter): Observable<PokemonRead> {
-    return this.post<PokemonRead>(`${ENDPOINT}/${ID_PARAMATER}`, filter);
+    return this.post<PokemonRead>(`${ENDPOINT}/${ID_ENDPOINT}`, filter);
   }
 
   getPokemonCountWithFilter(filter: PokemonFilter): Observable<number> {
-    return this.post<number>(`${ENDPOINT}/${COUNT_PARAMATER}`, filter);
+    return this.post<number>(`${ENDPOINT}/${COUNT_ENDPOINT}`, filter);
   }
 
   getPokemonPageWithFilter(
     filter: PokemonFilter,
     pageable?: Pageable,
   ): Observable<Page<PokemonRead>> {
-    return this.postPaged<Page<PokemonRead>>(`${ENDPOINT}/${FILTER_PARAMATER}`, filter, pageable);
+    return this.postPaged<Page<PokemonRead>>(`${ENDPOINT}/${FILTER_ENDPOINT}`, filter, pageable);
   }
 
   getPokemonSummaryPageWithFilter(
@@ -43,7 +43,7 @@ export class PokemonService extends BaseApiService {
     pageable?: Pageable,
   ): Observable<Page<PokemonSummary>> {
     return this.postPaged<Page<PokemonSummary>>(
-      `${ENDPOINT}/${SUMMARY_PARAMATER}`,
+      `${ENDPOINT}/${SUMMARY_ENDPOINT}`,
       filter,
       pageable,
     );

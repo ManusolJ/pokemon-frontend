@@ -1,8 +1,8 @@
 import {
-  ID_PARAMATER,
-  COUNT_PARAMATER,
-  FILTER_PARAMATER,
-  SUMMARY_PARAMATER,
+  ID_ENDPOINT,
+  COUNT_ENDPOINT,
+  FILTER_ENDPOINT,
+  SUMMARY_ENDPOINT,
 } from '@shared/constants/api.constants';
 
 import { Page } from '@shared/interfaces/api/page.interface';
@@ -23,18 +23,18 @@ const ENDPOINT = 'species';
 @Injectable({ providedIn: 'root' })
 export class SpeciesService extends BaseApiService {
   getOneSpecies(filter: PokemonFilter): Observable<SpeciesRead> {
-    return this.post<SpeciesRead>(`${ENDPOINT}/${ID_PARAMATER}`, filter);
+    return this.post<SpeciesRead>(`${ENDPOINT}/${ID_ENDPOINT}`, filter);
   }
 
   getSpeciesCountWithFilter(filter: PokemonFilter): Observable<number> {
-    return this.post<number>(`${ENDPOINT}/${COUNT_PARAMATER}`, filter);
+    return this.post<number>(`${ENDPOINT}/${COUNT_ENDPOINT}`, filter);
   }
 
   getSpeciesPageWithFilter(
     filter: PokemonFilter,
     pageable?: Pageable,
   ): Observable<Page<SpeciesRead>> {
-    return this.postPaged<Page<SpeciesRead>>(`${ENDPOINT}/${FILTER_PARAMATER}`, filter, pageable);
+    return this.postPaged<Page<SpeciesRead>>(`${ENDPOINT}/${FILTER_ENDPOINT}`, filter, pageable);
   }
 
   getSpeciesSummaryPageWithFilter(
@@ -42,7 +42,7 @@ export class SpeciesService extends BaseApiService {
     pageable?: Pageable,
   ): Observable<Page<SpeciesSummary>> {
     return this.postPaged<Page<SpeciesSummary>>(
-      `${ENDPOINT}/${SUMMARY_PARAMATER}`,
+      `${ENDPOINT}/${SUMMARY_ENDPOINT}`,
       filter,
       pageable,
     );

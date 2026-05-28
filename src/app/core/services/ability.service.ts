@@ -1,8 +1,8 @@
 import {
-  ID_PARAMATER,
-  COUNT_PARAMATER,
-  FILTER_PARAMATER,
-  SUMMARY_PARAMATER,
+  ID_ENDPOINT,
+  COUNT_ENDPOINT,
+  FILTER_ENDPOINT,
+  SUMMARY_ENDPOINT,
 } from '@shared/constants/api.constants';
 
 import { Page } from '@shared/interfaces/api/page.interface';
@@ -23,21 +23,21 @@ const ENDPOINT = 'ability';
 @Injectable({ providedIn: 'root' })
 export class AbilityService extends BaseApiService {
   getOneAbility(filter: AbilityFilter): Observable<AbilityRead> {
-    return this.post<AbilityRead>(`${ENDPOINT}/${ID_PARAMATER}`, filter);
+    return this.post<AbilityRead>(`${ENDPOINT}/${ID_ENDPOINT}`, filter);
   }
 
   getAbilityCountWithFilter(filter: AbilityFilter): Observable<number> {
-    return this.post<number>(`${ENDPOINT}/${COUNT_PARAMATER}`, filter);
+    return this.post<number>(`${ENDPOINT}/${COUNT_ENDPOINT}`, filter);
   }
 
   getAbilitySummaryPageWithFilter(filter: AbilityFilter): Observable<Page<AbilitySummary>> {
-    return this.postPaged<Page<AbilitySummary>>(`${ENDPOINT}/${SUMMARY_PARAMATER}`, filter);
+    return this.postPaged<Page<AbilitySummary>>(`${ENDPOINT}/${SUMMARY_ENDPOINT}`, filter);
   }
 
   getAbilityPageWithFilter(
     filter: AbilityFilter,
     pageable?: Pageable,
   ): Observable<Page<AbilityRead>> {
-    return this.postPaged<Page<AbilityRead>>(`${ENDPOINT}/${FILTER_PARAMATER}`, filter, pageable);
+    return this.postPaged<Page<AbilityRead>>(`${ENDPOINT}/${FILTER_ENDPOINT}`, filter, pageable);
   }
 }

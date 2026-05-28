@@ -1,9 +1,9 @@
 import {
-  ID_PARAMATER,
-  COUNT_PARAMATER,
-  FILTER_PARAMATER,
-  POKEMON_PARAMATER,
-  SUMMARY_PARAMATER,
+  ID_ENDPOINT,
+  COUNT_ENDPOINT,
+  FILTER_ENDPOINT,
+  SUMMARY_ENDPOINT,
+  POKEMON_ENDPOINT,
 } from '@shared/constants/api.constants';
 
 import { Page } from '@shared/interfaces/api/page.interface';
@@ -25,28 +25,25 @@ const ENDPOINT = 'moves';
 @Injectable({ providedIn: 'root' })
 export class MoveService extends BaseApiService {
   getOneMove(filter: MoveFilter): Observable<MoveRead> {
-    return this.post<MoveRead>(`${ENDPOINT}/${ID_PARAMATER}`, filter);
+    return this.post<MoveRead>(`${ENDPOINT}/${ID_ENDPOINT}`, filter);
   }
 
   getMoveCountWithFilter(filter: MoveFilter): Observable<number> {
-    return this.post<number>(`${ENDPOINT}/${COUNT_PARAMATER}`, filter);
+    return this.post<number>(`${ENDPOINT}/${COUNT_ENDPOINT}`, filter);
   }
 
   getMovePageWithFilter(filter: MoveFilter, pageable?: Pageable): Observable<Page<MoveRead>> {
-    return this.postPaged<Page<MoveRead>>(`${ENDPOINT}/${FILTER_PARAMATER}`, filter, pageable);
+    return this.postPaged<Page<MoveRead>>(`${ENDPOINT}/${FILTER_ENDPOINT}`, filter, pageable);
   }
 
   getMoveSummaryPageWithFilter(
     filter: MoveFilter,
     pageable?: Pageable,
   ): Observable<Page<MoveSummary>> {
-    return this.postPaged<Page<MoveSummary>>(`${ENDPOINT}/${SUMMARY_PARAMATER}`, filter, pageable);
+    return this.postPaged<Page<MoveSummary>>(`${ENDPOINT}/${SUMMARY_ENDPOINT}`, filter, pageable);
   }
 
   getMovesForPokemon(pokemonId: number, pageable?: Pageable): Observable<Page<MoveEmbed>> {
-    return this.getPaged<Page<MoveEmbed>>(
-      `${ENDPOINT}/${POKEMON_PARAMATER}/${pokemonId}`,
-      pageable,
-    );
+    return this.getPaged<Page<MoveEmbed>>(`${ENDPOINT}/${POKEMON_ENDPOINT}/${pokemonId}`, pageable);
   }
 }
