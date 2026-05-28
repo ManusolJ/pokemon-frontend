@@ -19,20 +19,20 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'types';
+const ENDPOINT: string = 'types/';
 
 @Injectable({ providedIn: 'root' })
 export class TypeService extends BaseApiService {
   getOneType(filter: TypeFilter): Observable<TypeRead> {
-    return this.post(`${ENDPOINT}/${ID_ENDPOINT}`, filter);
+    return this.post(`${ENDPOINT}${ID_ENDPOINT}`, filter);
   }
 
   getTypeCountWithFilter(filter: TypeFilter): Observable<number> {
-    return this.post<number>(`${ENDPOINT}/${COUNT_ENDPOINT}`, filter);
+    return this.post<number>(`${ENDPOINT}${COUNT_ENDPOINT}`, filter);
   }
 
   getAllTypesWithFilter(filter: TypeFilter, pageable?: Pageable): Observable<Page<TypeRead>> {
-    return this.postPaged<Page<TypeRead>>(`${ENDPOINT}/${FILTER_ENDPOINT}`, filter, pageable);
+    return this.postPaged<Page<TypeRead>>(`${ENDPOINT}${FILTER_ENDPOINT}`, filter, pageable);
   }
 
   getEffectivenessMatrix(
@@ -40,7 +40,7 @@ export class TypeService extends BaseApiService {
     pageable?: Pageable,
   ): Observable<Page<TypeEffectivenessRead>> {
     return this.postPaged<Page<TypeEffectivenessRead>>(
-      `${ENDPOINT}/${EFFECTIVENESS_ENDPOINT}`,
+      `${ENDPOINT}${EFFECTIVENESS_ENDPOINT}`,
       filter,
       pageable,
     );

@@ -18,33 +18,29 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT = 'species';
+const ENDPOINT = 'species/';
 
 @Injectable({ providedIn: 'root' })
 export class SpeciesService extends BaseApiService {
   getOneSpecies(filter: PokemonFilter): Observable<SpeciesRead> {
-    return this.post<SpeciesRead>(`${ENDPOINT}/${ID_ENDPOINT}`, filter);
+    return this.post<SpeciesRead>(`${ENDPOINT}${ID_ENDPOINT}`, filter);
   }
 
   getSpeciesCountWithFilter(filter: PokemonFilter): Observable<number> {
-    return this.post<number>(`${ENDPOINT}/${COUNT_ENDPOINT}`, filter);
+    return this.post<number>(`${ENDPOINT}${COUNT_ENDPOINT}`, filter);
   }
 
   getSpeciesPageWithFilter(
     filter: PokemonFilter,
     pageable?: Pageable,
   ): Observable<Page<SpeciesRead>> {
-    return this.postPaged<Page<SpeciesRead>>(`${ENDPOINT}/${FILTER_ENDPOINT}`, filter, pageable);
+    return this.postPaged<Page<SpeciesRead>>(`${ENDPOINT}${FILTER_ENDPOINT}`, filter, pageable);
   }
 
   getSpeciesSummaryPageWithFilter(
     filter: PokemonFilter,
     pageable?: Pageable,
   ): Observable<Page<SpeciesSummary>> {
-    return this.postPaged<Page<SpeciesSummary>>(
-      `${ENDPOINT}/${SUMMARY_ENDPOINT}`,
-      filter,
-      pageable,
-    );
+    return this.postPaged<Page<SpeciesSummary>>(`${ENDPOINT}${SUMMARY_ENDPOINT}`, filter, pageable);
   }
 }

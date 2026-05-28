@@ -19,33 +19,29 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT = 'pokemon';
+const ENDPOINT = 'pokemon/';
 
 @Injectable({ providedIn: 'root' })
 export class PokemonService extends BaseApiService {
   getOnePokemon(filter: PokemonFilter): Observable<PokemonRead> {
-    return this.post<PokemonRead>(`${ENDPOINT}/${ID_ENDPOINT}`, filter);
+    return this.post<PokemonRead>(`${ENDPOINT}${ID_ENDPOINT}`, filter);
   }
 
   getPokemonCountWithFilter(filter: PokemonFilter): Observable<number> {
-    return this.post<number>(`${ENDPOINT}/${COUNT_ENDPOINT}`, filter);
+    return this.post<number>(`${ENDPOINT}${COUNT_ENDPOINT}`, filter);
   }
 
   getPokemonPageWithFilter(
     filter: PokemonFilter,
     pageable?: Pageable,
   ): Observable<Page<PokemonRead>> {
-    return this.postPaged<Page<PokemonRead>>(`${ENDPOINT}/${FILTER_ENDPOINT}`, filter, pageable);
+    return this.postPaged<Page<PokemonRead>>(`${ENDPOINT}${FILTER_ENDPOINT}`, filter, pageable);
   }
 
   getPokemonSummaryPageWithFilter(
     filter: PokemonFilter,
     pageable?: Pageable,
   ): Observable<Page<PokemonSummary>> {
-    return this.postPaged<Page<PokemonSummary>>(
-      `${ENDPOINT}/${SUMMARY_ENDPOINT}`,
-      filter,
-      pageable,
-    );
+    return this.postPaged<Page<PokemonSummary>>(`${ENDPOINT}${SUMMARY_ENDPOINT}`, filter, pageable);
   }
 }

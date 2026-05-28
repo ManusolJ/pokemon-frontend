@@ -19,7 +19,7 @@ import { finalize, Observable, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-const ENDPOINT = 'auth';
+const ENDPOINT = 'auth/';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseApiService {
@@ -28,7 +28,7 @@ export class AuthService extends BaseApiService {
   readonly isAuthenticated = this.tokenService.isAuthenticated();
 
   login(request: LoginRequest): Observable<TokenResponse> {
-    return this.post<TokenResponse>(`${ENDPOINT}/${LOGIN_ENDPOINT}`, request).pipe(
+    return this.post<TokenResponse>(`${ENDPOINT}${LOGIN_ENDPOINT}`, request).pipe(
       tap((response) => this.tokenService.setTokens(response)),
     );
   }
@@ -36,29 +36,29 @@ export class AuthService extends BaseApiService {
   logout(): Observable<void> {
     const refreshToken = this.tokenService.getRefreshToken();
 
-    return this.post<void>(`${ENDPOINT}/${REFRESH_ENDPOINT}`, refreshToken).pipe(
+    return this.post<void>(`${ENDPOINT}${REFRESH_ENDPOINT}`, refreshToken).pipe(
       finalize(() => this.tokenService.clearTokens()),
     );
   }
 
   register(request: RegisterRequest) {
-    return this.post<TokenResponse>(`${ENDPOINT}/${REGISTER_ENDPOINT}`, request).pipe(
+    return this.post<TokenResponse>(`${ENDPOINT}${REGISTER_ENDPOINT}`, request).pipe(
       tap((response) => this.tokenService.setTokens(response)),
     );
   }
 
   refreshAccessToken(): Observable<TokenResponse> {
     const refreshToken = this.tokenService.getRefreshToken();
-    return this.post<TokenResponse>(`${ENDPOINT}/${REFRESH_ENDPOINT}`, { refreshToken }).pipe(
+    return this.post<TokenResponse>(`${ENDPOINT}${REFRESH_ENDPOINT}`, { refreshToken }).pipe(
       tap((response) => this.tokenService.setTokens(response)),
     );
   }
 
   resetPassword(confirmation: PasswordResetConfirmation): Observable<void> {
-    return this.post<void>(`${ENDPOINT}/${PASSWORD_RESET_ENDPOINT}`, confirmation);
+    return this.post<void>(`${ENDPOINT}${PASSWORD_RESET_ENDPOINT}`, confirmation);
   }
 
   requestPasswordReset(request: PasswordResetRequest): Observable<void> {
-    return this.post<void>(`${ENDPOINT}/${PASSWORD_RESET_REQUEST_ENDPOINT}`, request);
+    return this.post<void>(`${ENDPOINT}${PASSWORD_RESET_REQUEST_ENDPOINT}`, request);
   }
 }
