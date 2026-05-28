@@ -5,8 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "create-service": "ng generate service --add-type-to-class-name true --skip-tests true --type service --path=src/app/core/services"
   },
   "private": true,
   "packageManager": "npm@11.14.1",
