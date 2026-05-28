@@ -13,18 +13,17 @@ import {
   ADMIN_BATCH_REACTIVATION_ENDPOINT,
 } from '@shared/constants/api.constants';
 
-import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
-
-import { BaseApiService } from './base-api.service';
-
 import { Page } from '@shared/interfaces/api/page.interface';
 import { Pageable } from '@shared/interfaces/api/pageable.interface';
 
+import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
 import { UserUpdate } from '@shared/interfaces/pokemon/user/user-update.interface';
 import { UserFilter } from '@shared/interfaces/pokemon/user/user-filter.interface';
 import { UserSummary } from '@shared/interfaces/pokemon/user/user-summary.interface';
 import { PasswordChange } from '@shared/interfaces/pokemon/user/password-change.interface';
 import { AdminUserUpdate } from '@shared/interfaces/pokemon/user/admin-user-update.interface';
+
+import { BaseApiService } from './base-api.service';
 
 import { Observable } from 'rxjs';
 
