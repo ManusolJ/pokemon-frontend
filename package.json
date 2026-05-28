@@ -8,7 +8,8 @@
     "create-interface": "ng generate interface --type interface --path=src/app/shared/interfaces",
     "create-guard": "ng generate guard --type-separator . --skip-tests true --path=src/app/core/guards",
     "create-interceptor": "ng generate interceptor --type-separator . --skip-tests true --path=src/app/core/interceptors",
-    "create-service": "ng generate service --add-type-to-class-name true --skip-tests true --type service --path=src/app/core/services"
+    "create-service": "ng generate service --add-type-to-class-name true --skip-tests true --type service --path=src/app/core/services",
+    "create-component": "ng generate component --add-type-to-class-name true --skip-tests true --path=src/app/shared/components --change-detection OnPush --standalone true"
   },
   "private": true,
   "packageManager": "npm@11.14.1",
