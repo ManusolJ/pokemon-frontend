@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "create-interface": "ng generate interface --type interface --path=src/app/shared/interfaces",
+    "create-guard": "ng generate guard --type-separator . --skip-tests true --path=src/app/core/guards",
     "create-service": "ng generate service --add-type-to-class-name true --skip-tests true --type service --path=src/app/core/services"
   },
   "private": true,
