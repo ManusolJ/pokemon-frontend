@@ -5,8 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "create-service": "ng generate service --add-type-to-class-name true --skip-tests true --type service --path=src/app/core/services",
-    "create-interface": "ng generate interface --type interface --path=src/app/shared/interfaces"
+    "create-interface": "ng generate interface --type interface --path=src/app/shared/interfaces",
+    "create-service": "ng generate service --add-type-to-class-name true --skip-tests true --type service --path=src/app/core/services"
   },
   "private": true,
   "packageManager": "npm@11.14.1",
