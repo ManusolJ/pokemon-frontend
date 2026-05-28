@@ -29,7 +29,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT = 'users/';
+const ENDPOINT: string = 'users/';
 
 @Injectable({ providedIn: 'root' })
 export class UserService extends BaseApiService {

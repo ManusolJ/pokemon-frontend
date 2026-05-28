@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT = 'admin/';
+const ENDPOINT: string = 'admin/';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService extends BaseApiService {

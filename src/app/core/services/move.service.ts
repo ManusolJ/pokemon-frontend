@@ -20,7 +20,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT = 'moves/';
+const ENDPOINT: string = 'moves/';
 
 @Injectable({ providedIn: 'root' })
 export class MoveService extends BaseApiService {

@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT = 'items/';
+const ENDPOINT: string = 'items/';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends BaseApiService {
