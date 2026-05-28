@@ -37,7 +37,7 @@ export class AdminService extends BaseApiService {
     );
   }
 
-  getAllAuditLogPageWithFilter(
+  getAuditLogPageWithFilter(
     filter: AuditLogFilter,
     pageable?: Pageable,
   ): Observable<Page<AuditLogRead>> {

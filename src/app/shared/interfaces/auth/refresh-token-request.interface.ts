@@ -1,1 +1,3 @@
-export interface RefreshTokenRequest {}
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}

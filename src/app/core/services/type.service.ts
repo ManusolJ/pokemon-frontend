@@ -24,18 +24,18 @@ const ENDPOINT: string = 'types/';
 @Injectable({ providedIn: 'root' })
 export class TypeService extends BaseApiService {
   getOneType(filter: TypeFilter): Observable<TypeRead> {
-    return this.post(`${ENDPOINT}${ID_ENDPOINT}`, filter);
+    return this.post<TypeRead>(`${ENDPOINT}${ID_ENDPOINT}`, filter);
   }
 
   getTypeCountWithFilter(filter: TypeFilter): Observable<number> {
     return this.post<number>(`${ENDPOINT}${COUNT_ENDPOINT}`, filter);
   }
 
-  getAllTypesWithFilter(filter: TypeFilter, pageable?: Pageable): Observable<Page<TypeRead>> {
+  getTypePageWithFilter(filter: TypeFilter, pageable?: Pageable): Observable<Page<TypeRead>> {
     return this.postPaged<Page<TypeRead>>(`${ENDPOINT}${FILTER_ENDPOINT}`, filter, pageable);
   }
 
-  getEffectivenessMatrix(
+  getTypeEffectivenessPageWithFilter(
     filter: TypeEffectivenessFilter,
     pageable?: Pageable,
   ): Observable<Page<TypeEffectivenessRead>> {

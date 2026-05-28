@@ -30,8 +30,15 @@ export class AbilityService extends BaseApiService {
     return this.post<number>(`${ENDPOINT}${COUNT_ENDPOINT}`, filter);
   }
 
-  getAbilitySummaryPageWithFilter(filter: AbilityFilter): Observable<Page<AbilitySummary>> {
-    return this.postPaged<Page<AbilitySummary>>(`${ENDPOINT}${SUMMARY_ENDPOINT}`, filter);
+  getAbilitySummaryPageWithFilter(
+    filter: AbilityFilter,
+    pageable?: Pageable,
+  ): Observable<Page<AbilitySummary>> {
+    return this.postPaged<Page<AbilitySummary>>(
+      `${ENDPOINT}${SUMMARY_ENDPOINT}`,
+      filter,
+      pageable,
+    );
   }
 
   getAbilityPageWithFilter(

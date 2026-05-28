@@ -31,7 +31,7 @@ export class TeamService extends BaseApiService {
     return this.post<TeamRead>(`${ENDPOINT}${TEAM_PUBLIC_ID_ENDPOINT}`, filter);
   }
 
-  getPublicTeamPageWithFilters(
+  getPublicTeamPageWithFilter(
     filter: TeamFilter,
     pageable?: Pageable,
   ): Observable<Page<TeamSummary>> {
@@ -46,7 +46,7 @@ export class TeamService extends BaseApiService {
     return this.post<TeamRead>(`${ENDPOINT}${TEAM_SELF_ENDPOINT}`, filter);
   }
 
-  getAllSelfTeam(filter: TeamFilter, pageable?: Pageable): Observable<Page<TeamSummary>> {
+  getSelfTeamPageWithFilter(filter: TeamFilter, pageable?: Pageable): Observable<Page<TeamSummary>> {
     return this.postPaged<Page<TeamSummary>>(
       `${ENDPOINT}${TEAM_SELF_FILTER_ENDPOINT}`,
       filter,
