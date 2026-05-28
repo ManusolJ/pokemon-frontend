@@ -3,3 +3,8 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
+
+@theme {
+  --color-brand-wine: #7f1d1d;
+  --color-brand-crimson: #991b1b;
+}
