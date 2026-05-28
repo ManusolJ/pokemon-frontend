@@ -34,8 +34,8 @@ export class TeamService extends BaseApiService {
   getPublicTeamPageWithFilters(
     filter: TeamFilter,
     pageable?: Pageable,
-  ): Observable<Page<TeamRead>> {
-    return this.postPaged<Page<TeamRead>>(
+  ): Observable<Page<TeamSummary>> {
+    return this.postPaged<Page<TeamSummary>>(
       `${ENDPOINT}${TEAM_PUBLIC_FILTER_ENDPOINT}`,
       filter,
       pageable,
@@ -46,8 +46,12 @@ export class TeamService extends BaseApiService {
     return this.post<TeamRead>(`${ENDPOINT}${TEAM_SELF_ENDPOINT}`, filter);
   }
 
-  getAllSelfTeam(filter: TeamFilter): Observable<Page<TeamSummary>> {
-    return this.post<Page<TeamSummary>>(`${ENDPOINT}${TEAM_SELF_FILTER_ENDPOINT}`, filter);
+  getAllSelfTeam(filter: TeamFilter, pageable?: Pageable): Observable<Page<TeamSummary>> {
+    return this.postPaged<Page<TeamSummary>>(
+      `${ENDPOINT}${TEAM_SELF_FILTER_ENDPOINT}`,
+      filter,
+      pageable,
+    );
   }
 
   createTeam(teamCreationRequest: TeamCreate): Observable<TeamRead> {
@@ -75,6 +79,6 @@ export class TeamService extends BaseApiService {
   }
 
   adminDeleteTeam(id: number): Observable<void> {
-    return this.delete<void>(`${ENDPOINT}${ADMIN_ENDPOINT}/${id}`);
+    return this.delete<void>(`${ENDPOINT}${ADMIN_ENDPOINT}${id}`);
   }
 }

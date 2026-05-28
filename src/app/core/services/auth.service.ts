@@ -4,6 +4,7 @@ import {
   REGISTER_ENDPOINT,
   PASSWORD_RESET_ENDPOINT,
   PASSWORD_RESET_REQUEST_ENDPOINT,
+  LOGOUT_ENDPOINT,
 } from '@shared/constants/api.constants';
 
 import { LoginRequest } from '@shared/interfaces/auth/login-request.interface';
@@ -36,7 +37,7 @@ export class AuthService extends BaseApiService {
   logout(): Observable<void> {
     const refreshToken = this.tokenService.getRefreshToken();
 
-    return this.post<void>(`${ENDPOINT}${REFRESH_ENDPOINT}`, refreshToken).pipe(
+    return this.post<void>(`${ENDPOINT}${LOGOUT_ENDPOINT}`, { refreshToken }).pipe(
       finalize(() => this.tokenService.clearTokens()),
     );
   }

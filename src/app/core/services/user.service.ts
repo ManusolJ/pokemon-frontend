@@ -42,7 +42,7 @@ export class UserService extends BaseApiService {
   }
 
   userSelfPasswordChange(change: PasswordChange): Observable<void> {
-    return this.put<void>(`${ENDPOINT}${USER_SELF_PASSWORD_ENDPOINT}`, change);
+    return this.post<void>(`${ENDPOINT}${USER_SELF_PASSWORD_ENDPOINT}`, change);
   }
 
   userSelfDeactivation(): Observable<void> {
@@ -73,33 +73,33 @@ export class UserService extends BaseApiService {
   }
 
   adminUserUpdate(id: number, updateRequest: AdminUserUpdate): Observable<UserRead> {
-    return this.put<UserRead>(`${ENDPOINT}${ADMIN_ENDPOINT}/${id}`, updateRequest);
+    return this.put<UserRead>(`${ENDPOINT}${ADMIN_ENDPOINT}${id}`, updateRequest);
   }
 
   adminUserDeactivation(id: number): Observable<void> {
-    return this.delete<void>(`${ENDPOINT}${ADMIN_ENDPOINT}/${id}`);
+    return this.delete<void>(`${ENDPOINT}${ADMIN_ENDPOINT}${id}`);
   }
 
   adminUserReactivation(id: number): Observable<void> {
     return this.post<void>(
-      `${ENDPOINT}${ADMIN_ENDPOINT}/${id}/${ADMIN_REACTIVATION_ENDPOINT}`,
+      `${ENDPOINT}${ADMIN_ENDPOINT}${id}/${ADMIN_REACTIVATION_ENDPOINT}`,
       null,
     );
   }
 
   adminUserDelete(id: number): Observable<void> {
-    return this.delete<void>(`${ENDPOINT}${ADMIN_ENDPOINT}/${id}/${ADMIN_HARD_DELETE_ENDPOINT}`);
+    return this.delete<void>(`${ENDPOINT}${ADMIN_ENDPOINT}${id}/${ADMIN_HARD_DELETE_ENDPOINT}`);
   }
 
   adminUserBatchDelete(ids: number[]): Observable<void> {
-    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_HARD_DELETE_ENDPOINT}`, ids);
+    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_HARD_DELETE_ENDPOINT}`, { ids });
   }
 
   adminUserBatchDeactivation(ids: number[]): Observable<void> {
-    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_DISABLE_ENDPOINT}`, ids);
+    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_DISABLE_ENDPOINT}`, { ids });
   }
 
   adminUserBatchReactivation(ids: number[]): Observable<void> {
-    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_REACTIVATION_ENDPOINT}`, ids);
+    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_REACTIVATION_ENDPOINT}`, { ids });
   }
 }
