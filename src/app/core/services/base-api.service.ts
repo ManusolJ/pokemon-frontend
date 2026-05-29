@@ -59,7 +59,7 @@ export class BaseApiService {
     let params = new HttpParams().set('page', pageable.page).set('size', pageable.size);
 
     if (pageable.sort) {
-      params = params.set('sort', `${pageable.sort}, ${pageable.direction ?? 'ASC'}`);
+      params = params.set('sort', `${pageable.sort},${pageable.direction ?? 'ASC'}`);
     }
 
     return params;
