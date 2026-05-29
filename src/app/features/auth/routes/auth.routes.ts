@@ -1,5 +1,6 @@
+import { AuthLayout } from '@features/auth/layout/auth-layout';
+
 import { Routes } from '@angular/router';
-import { AuthLayout } from '../layout/auth-layout';
 
 export const AUTH_ROUTES: Routes = [
   {
