@@ -6,6 +6,8 @@
 
 @theme {
   --color-brand-wine: #7f1d1d;
+  --color-brand-text: #e8e8f0;
+  --color-brand-muted: #8888aa;
   --color-brand-crimson: #991b1b;
   --color-brand-abyssal: #131321;
 }
