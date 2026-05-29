@@ -4,7 +4,7 @@ import { errorInterceptor } from '@core/interceptors/error.interceptor';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 
-import { routes } from './app.routes';
+import { ROUTES } from './app.routes';
 
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
@@ -18,17 +18,35 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 const PokemonAura = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '#FFFBEB',
-      100: '#FEF3C7',
-      200: '#FDE68A',
-      300: '#FCD34D',
-      400: '#FBBF24',
-      500: '#F59E0B',
-      600: '#D97706',
-      700: '#B45309',
-      800: '#92400E',
-      900: '#78350F',
-      950: '#451A03',
+      50: '#fef2f2',
+      100: '#fee2e2',
+      200: '#fecaca',
+      300: '#fca5a5',
+      400: '#f87171',
+      500: '#ee5a5a',
+      600: '#e2474a',
+      700: '#b91c1c',
+      800: '#991b1b',
+      900: '#7f1d1d',
+      950: '#450a0a',
+    },
+    colorScheme: {
+      dark: {
+        surface: {
+          0: '#ffffff',
+          50: '#f4f5f7',
+          100: '#e8eaee',
+          200: '#c7ccd4',
+          300: '#9aa1ad',
+          400: '#646b78',
+          500: '#3a3f49',
+          600: '#272b33',
+          700: '#1b1f27',
+          800: '#15181e',
+          900: '#0e1014',
+          950: '#090a0d',
+        },
+      },
     },
   },
 });
@@ -36,13 +54,14 @@ const PokemonAura = definePreset(Aura, {
 export const appConfig: ApplicationConfig = {
   providers: [
     MessageService,
-    provideRouter(routes),
+    provideRouter(ROUTES),
     provideHttpClient(withInterceptors([jwtInterceptor, errorInterceptor])),
     provideBrowserGlobalErrorListeners(),
     providePrimeNG({
       theme: {
         preset: PokemonAura,
         options: {
+          darkModeSelector: '.dark',
           cssLayer: {
             name: 'primeng',
             order: 'theme, base, primeng, utilities',

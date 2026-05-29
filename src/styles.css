@@ -5,9 +5,19 @@
 @import 'primeicons/primeicons.css';
 
 @theme {
-  --color-brand-wine: #7f1d1d;
-  --color-brand-text: #e8e8f0;
-  --color-brand-muted: #8888aa;
+  --color-brand-bg: #0e1014;
+  --color-brand-surface: #15181e;
+  --color-brand-raised: #1b1f27;
+  --color-brand-line: rgb(255 255 255 / 0.07);
+
+  --color-brand-text: #f3f4f6;
+  --color-brand-muted: #9aa1ad;
+  --color-brand-dim: #646b78;
+
+  --color-brand-red: #ee5a5a;
+  --color-brand-red-600: #e2474a;
+
+  --color-brand-abyssal: #0e1014;
   --color-brand-crimson: #991b1b;
-  --color-brand-abyssal: #131321;
+  --color-brand-wine: #7f1d1d;
 }

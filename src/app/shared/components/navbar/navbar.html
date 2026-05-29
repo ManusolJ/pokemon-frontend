@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-50 bg-brand-crimson shadow-lg">
+<header class="sticky top-0 z-50 bg-brand-bg/90 backdrop-blur-md border-b border-brand-line">
   <nav
     class="mx-auto max-w-9/12 h-16 px-6 lg:px-8 flex items-center justify-between gap-8"
     aria-label="Primary"
@@ -8,12 +8,14 @@
         src="/favicon.ico"
         alt="Logo"
         aria-hidden="true"
-        class="w-10 h-10 transition-transform group-hover:scale-110"
+        class="w-9 h-9 transition-transform group-hover:scale-110"
       />
-      <span class="text-brand-text font-bold">Pokemon Team Builder</span>
+      <span class="font-bold text-brand-text tracking-tight">
+        Pokémon <span class="font-semibold text-brand-muted">Team Builder</span>
+      </span>
     </a>
 
-    <ul class="flex items-center gap-2.5">
+    <ul class="flex items-center gap-1">
       @for (item of items; track item.path) {
         <li>
           <a [routerLink]="item.path" routerLinkActive="nav-link--active" class="nav-link">
@@ -23,7 +25,7 @@
       }
     </ul>
 
-    <div class="flex items-center gap-2 shrink-0">
+    <div class="flex items-center gap-3 shrink-0">
       @if (isAuthenticated()) {
         @if (isAdmin()) {
           <a routerLink="/admin" routerLinkActive="nav-link--active" class="nav-link">Admin</a>
@@ -31,7 +33,7 @@
         <a routerLink="/profile" routerLinkActive="nav-link--active" class="nav-link">Profile</a>
         <button type="button" (click)="logout()" class="nav-cta">Logout</button>
       } @else {
-        <a routerLink="/auth/login" routerLinkActive="nav-link--active" class="nav-link">Login</a>
+        <a routerLink="/auth/login" class="nav-ghost">Login</a>
         <a routerLink="/auth/registration" class="nav-cta">Register</a>
       }
     </div>

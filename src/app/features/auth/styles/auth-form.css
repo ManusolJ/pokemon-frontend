@@ -24,7 +24,7 @@
 
 .auth-input:focus {
   outline: none;
-  border-color: var(--color-amber-500);
+  border-color: var(--color-brand-red);
   background-color: rgb(255 255 255 / 0.06);
 }
 
