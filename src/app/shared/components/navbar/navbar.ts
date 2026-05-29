@@ -37,7 +37,7 @@ export class Navbar {
   protected logout(): void {
     this.authService
       .logout()
-      .pipe(finalize(() => this.router.navigate(['/auth/login'])))
+      .pipe(finalize(() => this.router.navigate(['/'])))
       .subscribe({ error: () => {} });
   }
 }

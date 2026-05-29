@@ -26,7 +26,7 @@ const ENDPOINT: string = 'auth/';
 export class AuthService extends BaseApiService {
   private readonly tokenService = inject(TokenService);
 
-  readonly isAuthenticated = this.tokenService.isAuthenticated();
+  readonly isAuthenticated = this.tokenService.isAuthenticated;
 
   login(request: LoginRequest): Observable<TokenResponse> {
     return this.post<TokenResponse>(`${ENDPOINT}${LOGIN_ENDPOINT}`, request).pipe(

@@ -24,7 +24,7 @@
     </ul>
 
     <div class="flex items-center gap-2 shrink-0">
-      @if (isAuthenticated) {
+      @if (isAuthenticated()) {
         @if (isAdmin()) {
           <a routerLink="/admin" routerLinkActive="nav-link--active" class="nav-link">Admin</a>
         }
