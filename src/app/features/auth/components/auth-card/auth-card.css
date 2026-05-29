@@ -1,0 +1,25 @@
+:host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.pokeball {
+  transition: transform 500ms ease;
+}
+
+.pokeball:hover {
+  transform: rotate(180deg);
+}
+
+.pokeball-wrapper {
+  z-index: 10;
+  filter: drop-shadow(0 4px 12px var(--color-brand-wine));
+}
+
+.card {
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  color: var(--color-brand-text);
+}
