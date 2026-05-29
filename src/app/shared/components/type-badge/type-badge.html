@@ -1,0 +1,10 @@
+<span
+  class="inline-flex items-center gap-1.5 rounded-full font-semibold uppercase tracking-wide leading-none"
+  [class]="size() === 'sm' ? 'px-2 py-1 text-[10px]' : 'px-2.5 py-1 text-xs'"
+  [style.color]="color()"
+  [style.background]="'color-mix(in srgb, ' + color() + ' 14%, transparent)'"
+  [style.border]="'1px solid color-mix(in srgb, ' + color() + ' 32%, transparent)'"
+>
+  <span class="w-1.5 h-1.5 rounded-full" [style.background]="color()"></span>
+  {{ name() }}
+</span>

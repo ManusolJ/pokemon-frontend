@@ -1,0 +1,27 @@
+<button
+  type="button"
+  (click)="select.emit(pokemon().id)"
+  [style.--accent]="accent()"
+  class="poke-card group"
+>
+  <span class="poke-card__accent"></span>
+
+  <span class="poke-card__num">{{ pokemon().nationalDexNumber }}</span>
+
+  <span class="poke-card__art">
+    @if (pokemon().spriteDefault) {
+      <img [src]="spriteUrl()" [alt]="pokemon().name" loading="lazy" />
+    } @else {
+      <span class="poke-card__placeholder">?</span>
+    }
+  </span>
+
+  <span class="poke-card__dex">º{{ dex() }}</span>
+  <span class="poke-card__name">{{ pokemon().name }}</span>
+
+  <span class="mt-2.5 flex flex-wrap gap-1.5">
+    @for (t of types(); track t.id) {
+      <app-type-badge [name]="t.name" size="sm" />
+    }
+  </span>
+</button>

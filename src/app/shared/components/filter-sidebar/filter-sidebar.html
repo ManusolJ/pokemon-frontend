@@ -1,2 +1,108 @@
-<!-- TODO: Create reusable sidebar for filtering in the pokedex page components -->
-<p>filter-sidebar works!</p>
+<div class="flex flex-col gap-6">
+  <div class="flex items-center justify-between">
+    <h2 class="text-brand-text font-bold tracking-tight">Filters</h2>
+    @if (activeCount() > 0) {
+      <button
+        type="button"
+        (click)="reset()"
+        class="text-brand-muted hover:text-brand-text text-xs font-semibold transition-colors"
+      >
+        Reset
+      </button>
+    }
+  </div>
+
+  @for (field of fields(); track $index) {
+    <div class="flex flex-col gap-2.5">
+      @if (field.label && field.kind !== 'search' && field.kind !== 'toggle') {
+        <span class="text-brand-dim font-bold uppercase">{{ field.label }}</span>
+      }
+
+      @switch (field.kind) {
+        @case ('search') {
+          <div
+            class="flex items-center gap-2.5 rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 focus-within:border-brand-red transition-colors"
+          >
+            <i class="pi pi-search text-sm"></i>
+            <input
+              #searchInput
+              type="text"
+              [placeholder]="field.placeholder ?? 'Search'"
+              (input)="onSearch(field, searchInput.value)"
+              class="w-full bg-transparent text-brand-text placeholder:text-brand-muted text-sm outline-none"
+            />
+          </div>
+        }
+
+        @case ('chips') {
+          <div class="flex flex-wrap gap-1.5">
+            @for (opt of field.options ?? []; track opt.value) {
+              <button
+                type="button"
+                (click)="toggleChip(field, opt)"
+                [style.--accent]="accent(opt)"
+                [class.is-active]="isChipActive(field, opt)"
+                class="filter-chip"
+              >
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+        }
+
+        @case ('select') {
+          <select
+            #selectInput
+            (change)="onSelect(field, selectInput.value)"
+            class="w-full rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-brand-text text-sm outline-none focus:border-brand-red/60 transition-colors"
+          >
+            <option value="">{{ field.placeholder ?? 'Any' }}</option>
+            @for (opt of field.options ?? []; track opt.value) {
+              <option [value]="opt.value" [selected]="currentValue(field.key) === opt.value">
+                {{ opt.label }}
+              </option>
+            }
+          </select>
+        }
+
+        @case ('range') {
+          <div class="flex items-center gap-2">
+            <input
+              #minInput
+              type="number"
+              [min]="field.min ?? null"
+              [max]="field.max ?? null"
+              [step]="field.step ?? 1"
+              placeholder="Min"
+              (input)="onRange(field, 'min', minInput.value)"
+              class="w-full rounded-lg border border-brand-line bg-brand-surface px-2.5 py-2 text-brand-text text-sm outline-none focus:border-brand-red/60 transition-colors"
+            />
+            <span class="text-brand-dim text-xs">–</span>
+            <input
+              #maxInput
+              type="number"
+              [min]="field.min ?? null"
+              [max]="field.max ?? null"
+              [step]="field.step ?? 1"
+              placeholder="Max"
+              (input)="onRange(field, 'max', maxInput.value)"
+              class="w-full rounded-lg border border-brand-line bg-brand-surface px-2.5 py-2 text-brand-text text-sm outline-none focus:border-brand-red/60 transition-colors"
+            />
+          </div>
+        }
+
+        @case ('toggle') {
+          <button
+            type="button"
+            (click)="onToggle(field)"
+            [class.is-on]="currentValue(field.key)"
+            class="filter-toggle"
+          >
+            <span>{{ field.label }}</span>
+            <span class="filter-toggle__track"><span class="filter-toggle__thumb"></span></span>
+          </button>
+        }
+      }
+    </div>
+  }
+</div>

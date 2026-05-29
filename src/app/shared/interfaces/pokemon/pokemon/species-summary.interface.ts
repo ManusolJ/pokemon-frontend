@@ -8,6 +8,6 @@ export interface SpeciesSummary {
   genderRate: number;
   nationalDexNumber: number;
   spriteDefault: string | null;
-  primaryType: TypeRead | null;
+  primaryType: TypeRead;
   secondaryType: TypeRead | null;
 }

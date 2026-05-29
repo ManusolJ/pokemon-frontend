@@ -1,0 +1,65 @@
+<div class="flex w-full">
+  <aside class="w-64 shrink-0 border-r border-brand-line p-5">
+    <ng-content select="[sidebar]"></ng-content>
+  </aside>
+
+  <section class="flex-1 min-w-0 px-6 py-6 lg:px-8 relative">
+    <div class="mb-6 flex items-end justify-between gap-4">
+      <div>
+        <h1 class="text-brand-text text-2xl font-bold tracking-tight">{{ title() }}</h1>
+        <p class="mt-1 text-sm text-brand-muted">
+          @if (loading()) {
+            Loading…
+          } @else {
+            <span class="text-brand-text font-bold">{{ total() }}</span> {{ noun() }}
+          }
+        </p>
+      </div>
+      <ng-content select="[toolbar]"></ng-content>
+    </div>
+
+    @if (loading()) {
+      <div class="skeleton-grid">
+        @for (skeleton of skeletons(); track $index) {
+          <div
+            class="h-56 animate-pulse rounded-2xl border border-brand-line bg-brand-surface"
+          ></div>
+        }
+      </div>
+    } @else if (isEmpty()) {
+      <div
+        class="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-brand-line py-24 text-center"
+      >
+        <span class="text-brand-text font-semibold">No matches</span>
+        <span class="text-brand-muted text-sm">Try loosening your filters.</span>
+      </div>
+    } @else {
+      <ng-content select="[grid]"></ng-content>
+    }
+
+    @if (!loading() && totalPages() > 1) {
+      <div class="flex items-center justify-center gap-4 absolute bottom-0 -left-1/2 -right-1/2">
+        <button
+          type="button"
+          (click)="goToPreviousPage()"
+          [disabled]="!hasPreviousPage()"
+          class="cursor-pointer rounded-lg border border-brand-line bg-brand-surface px-4 py-2 text-sm font-semibold text-brand-text transition-colors enabled:hover:border-brand-red/45 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Previous
+        </button>
+        <span class="text-brand-muted text-sm tabular-nums">
+          Page <span class="text-brand-text font-semibold">{{ page() + 1 }}</span> of
+          {{ totalPages() }}
+        </span>
+        <button
+          type="button"
+          (click)="goToNextPage()"
+          [disabled]="!hasNextPage()"
+          class="cursor-pointer rounded-lg border border-brand-line bg-brand-surface px-4 py-2 text-sm font-semibold text-brand-text transition-colors enabled:hover:border-brand-red/45 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Next
+        </button>
+      </div>
+    }
+  </section>
+</div>
