@@ -1,11 +1,20 @@
 .panel {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 300ms ease-out;
+  box-shadow: 0 -4px 16px rgb(0 0 0 / 0);
+  transition:
+    grid-template-rows 300ms ease-out,
+    box-shadow 300ms ease-out;
 }
 
 .panel--expanded {
   grid-template-rows: 1fr;
+  box-shadow: 0 -4px 16px rgb(0 0 0 / 0.3);
 }
 
 .panel-inner {
