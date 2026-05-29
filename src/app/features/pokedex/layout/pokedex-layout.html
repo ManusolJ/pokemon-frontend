@@ -1,19 +1,20 @@
-<!-- TODO: Add styles to subnav -->
-<div class="w-full">
-  <ul class="w-full px-6 flex items-center gap-2 bg-slate-800">
-    @for (item of items; track item.path) {
-      <li>
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="border-b-brand-wine"
-          class="flex px-5 py-2.5 text-sm font-semibold text-brand-text transition duration-150 hover:opacity-90 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-inset"
-        >
-          {{ item.label }}
-        </a>
-      </li>
-    }
-  </ul>
-  <div class="flex flex-1 items-center justify-center px-4 py-8">
+<div class="flex w-full flex-col">
+  <nav
+    class="w-full border-b border-brand-line bg-brand-bg/80 backdrop-blur-md"
+    aria-label="Pokédex sections"
+  >
+    <ul class="mx-auto flex max-w-9/12 items-center gap-1 px-6 lg:px-8">
+      @for (item of items; track item.path) {
+        <li>
+          <a [routerLink]="item.path" routerLinkActive="subnav-link--active" class="subnav-link">
+            {{ item.label }}
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="w-full">
     <router-outlet />
   </div>
 </div>

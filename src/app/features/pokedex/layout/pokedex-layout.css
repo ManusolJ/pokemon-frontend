@@ -1,6 +1,26 @@
 :host {
+  display: block;
   width: 100%;
   flex-grow: 1;
+}
+
+.subnav-link {
   display: flex;
-  justify-content: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-brand-muted);
+  border-bottom: 2px solid transparent;
+  transition:
+    color 150ms,
+    border-color 150ms;
+}
+
+.subnav-link:hover {
+  color: var(--color-brand-text);
+}
+
+.subnav-link--active {
+  color: var(--color-brand-text);
+  border-bottom-color: var(--color-brand-red);
 }
