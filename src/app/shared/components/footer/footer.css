@@ -1,0 +1,13 @@
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease-out;
+}
+
+.panel--expanded {
+  grid-template-rows: 1fr;
+}
+
+.panel-inner {
+  overflow: hidden;
+}
