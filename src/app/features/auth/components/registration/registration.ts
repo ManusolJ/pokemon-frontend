@@ -21,15 +21,15 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { finalize } from 'rxjs';
 
 @Component({
-  imports: [AuthCard, ReactiveFormsModule, RouterLink],
+  imports: [AuthCard, RouterLink, ReactiveFormsModule],
   selector: 'app-registration',
   styleUrl: '../../styles/auth-form.css',
   templateUrl: './registration.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration {
-  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
 
