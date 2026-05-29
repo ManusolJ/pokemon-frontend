@@ -1,2 +1,33 @@
-<!-- TODO: Create pokemon GRID list with with species-summary data; Clickable card to go into pokemon-detail page. Filter for every field in pokemon filter -->
-<p>pokemon-list works!</p>
+<app-list-shell
+  noun="Pokémon"
+  title="Pokédex"
+  [page]="page()"
+  [total]="total()"
+  [loading]="loading()"
+  [totalPages]="totalPages()"
+  [skeletonCount]="pageSize"
+  (pageChange)="onPageChange($event)"
+>
+  <app-filter-sidebar sidebar [fields]="fields()" (filterChange)="onFilterChange($event)" />
+
+  <div toolbar class="flex gap-1 rounded-lg border border-brand-line bg-brand-surface p-1">
+    @for (sortOption of sorts; track sortOption.field) {
+      <button
+        type="button"
+        (click)="setSort(sortOption.field)"
+        [class.bg-brand-line]="sort() === sortOption.field"
+        [class.text-brand-text]="sort() === sortOption.field"
+        [class.text-brand-muted]="sort() !== sortOption.field"
+        class="cursor-pointer rounded-md px-3 py-1.5 text-xs font-semibold transition-colors"
+      >
+        {{ sortOption.label }}
+      </button>
+    }
+  </div>
+
+  <div grid class="poke-grid">
+    @for (pokemon of items(); track pokemon.id) {
+      <app-pokemon-card [pokemon]="pokemon" (select)="onSelect($event)" />
+    }
+  </div>
+</app-list-shell>
