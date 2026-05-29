@@ -1,0 +1,69 @@
+<app-auth-card title="Welcome back" subtitle="Sign in to your account">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 py-4">
+    <div class="flex flex-col gap-1">
+      <label for="identifier" class="text-brand-text text-sm font-medium">Username or email</label>
+      <input
+        id="identifier"
+        type="text"
+        formControlName="identifier"
+        autocomplete="username"
+        placeholder="Trainer"
+        class="auth-input"
+        [class.auth-input--error]="identifier.invalid && identifier.touched"
+      />
+      @if (identifier.touched && identifier.hasError('required')) {
+        <span class="field-error">This field is required.</span>
+      } @else if (
+        identifier.touched && (identifier.hasError('minlength') || identifier.hasError('maxlength'))
+      ) {
+        <span class="field-error">
+          Must be between {{ min_username_length }} and {{ max_username_length }} characters.
+        </span>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <div class="flex justify-between items-center">
+        <label for="password" class="text-brand-text text-sm font-medium">Password</label>
+        <a
+          routerLink="/auth/reset-password"
+          class="text-brand-muted hover:text-brand-text text-xs transition-colors"
+        >
+          Forgot password?
+        </a>
+      </div>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+        placeholder="••••••••"
+        class="auth-input"
+        [class.auth-input--error]="password.invalid && password.touched"
+      />
+      @if (password.touched && password.hasError('required')) {
+        <span class="field-error">This field is required.</span>
+      } @else if (password.touched && password.hasError('minlength')) {
+        <span class="field-error">Must be at least {{ min_password_length }} characters.</span>
+      }
+    </div>
+
+    <button type="submit" [disabled]="isLoading() || form.invalid" class="btn-primary mt-2">
+      @if (isLoading()) {
+        <i class="pi pi-spin pi-spinner"></i>
+      } @else {
+        Sign in
+      }
+    </button>
+  </form>
+
+  <p class="text-brand-muted text-sm text-center mt-2">
+    Don't have an account?
+    <a
+      routerLink="/auth/register"
+      class="text-brand-text hover:text-white font-medium transition-colors underline"
+    >
+      Register
+    </a>
+  </p>
+</app-auth-card>
