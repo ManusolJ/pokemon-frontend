@@ -1,0 +1,101 @@
+<app-auth-card title="Create account" subtitle="Join the Pokemon Team Builder community">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 py-4" novalidate>
+    <div class="flex flex-col gap-1">
+      <label for="username" class="text-brand-text text-sm font-medium">Username</label>
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        autocomplete="username"
+        placeholder="trainer123"
+        class="auth-input"
+        [class.auth-input--error]="username.invalid && username.touched"
+      />
+      @if (username.touched && username.hasError('required')) {
+        <span class="field-error">This field is required.</span>
+      } @else if (
+        username.touched && (username.hasError('minlength') || username.hasError('maxlength'))
+      ) {
+        <span class="field-error">
+          Must be between {{ min_username_length }} and {{ max_username_length }} characters.
+        </span>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label for="email" class="text-brand-text text-sm font-medium">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="trainer@example.com"
+        class="auth-input"
+        [class.auth-input--error]="email.invalid && email.touched"
+      />
+      @if (email.touched && email.hasError('required')) {
+        <span class="field-error">This field is required.</span>
+      } @else if (email.touched && email.hasError('email')) {
+        <span class="field-error">Enter a valid email address.</span>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label for="reg-password" class="text-brand-text text-sm font-medium">Password</label>
+      <input
+        id="reg-password"
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        placeholder="••••••••"
+        class="auth-input"
+        [class.auth-input--error]="password.invalid && password.touched"
+      />
+      @if (password.touched && password.hasError('required')) {
+        <span class="field-error">This field is required.</span>
+      } @else if (password.touched && password.hasError('minlength')) {
+        <span class="field-error">Must be at least {{ min_password_length }} characters.</span>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label for="confirm-password" class="text-brand-text text-sm font-medium">
+        Confirm password
+      </label>
+      <input
+        id="confirm-password"
+        type="password"
+        formControlName="confirmPassword"
+        autocomplete="new-password"
+        placeholder="••••••••"
+        class="auth-input"
+        [class.auth-input--error]="
+          confirmPassword.touched && (confirmPassword.hasError('required') || form.hasError('passwordMismatch'))
+        "
+      />
+      @if (confirmPassword.touched && confirmPassword.hasError('required')) {
+        <span class="field-error">This field is required.</span>
+      } @else if (confirmPassword.touched && form.hasError('passwordMismatch')) {
+        <span class="field-error">Passwords do not match.</span>
+      }
+    </div>
+
+    <button type="submit" [disabled]="isLoading() || form.invalid" class="btn-primary mt-2">
+      @if (isLoading()) {
+        <i class="pi pi-spin pi-spinner"></i>
+      } @else {
+        Create account
+      }
+    </button>
+  </form>
+
+  <p class="text-brand-muted text-sm text-center mt-2">
+    Already have an account?
+    <a
+      routerLink="/auth/login"
+      class="text-brand-text hover:text-white font-medium transition-colors underline"
+    >
+      Sign in
+    </a>
+  </p>
+</app-auth-card>

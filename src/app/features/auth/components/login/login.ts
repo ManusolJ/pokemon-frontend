@@ -21,7 +21,7 @@ import { finalize } from 'rxjs';
 @Component({
   imports: [AuthCard, ReactiveFormsModule, RouterLink],
   selector: 'app-login',
-  styleUrl: './login.css',
+  styleUrl: '../../styles/auth-form.css',
   templateUrl: './login.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
