@@ -5,7 +5,7 @@ import { Routes } from '@angular/router';
 export const AUTH_ROUTES: Routes = [
   {
     path: '',
-    component: AuthLayout,
+    loadComponent: () => import('@features/auth/layout/auth-layout').then((mod) => mod.AuthLayout),
     children: [
       {
         path: 'login',
