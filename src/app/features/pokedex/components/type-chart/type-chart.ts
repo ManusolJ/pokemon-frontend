@@ -49,6 +49,7 @@ const DOUBLE_RESISTED_MULTIPLIER = 0.25;
 
 const MATRIX_PAGE_SIZE = 500;
 
+//TODO: Check if possible to preserve view position when adding/removing DOM elements
 @Component({
   imports: [TypeBadge],
   selector: 'app-type-chart',
