@@ -15,6 +15,7 @@ import { PokemonCard } from '@shared/components/pokemon-card/pokemon-card';
 import { FilterSidebar } from '@shared/components/filter-sidebar/filter-sidebar';
 
 import {
+  OnInit,
   inject,
   signal,
   computed,
@@ -49,7 +50,7 @@ const GENERATIONS: FilterOption[] = [
   templateUrl: './pokemon-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PokemonList {
+export class PokemonList implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly typeService = inject(TypeService);
   private readonly speciesService = inject(SpeciesService);
@@ -169,7 +170,7 @@ export class PokemonList {
 
   private readonly reload = new Subject<void>();
 
-  constructor() {
+  ngOnInit(): void {
     this.loadTypes();
     this.subscribeToReloads();
     this.load();
