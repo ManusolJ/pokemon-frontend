@@ -1,0 +1,166 @@
+:host {
+  display: block;
+  height: 100%;
+
+  --fx-red: #ff8a7c;
+  --fx-gray: #aeb4be;
+  --fx-green: #6fd894;
+  --fx-red-hi: #ffb1a6;
+  --fx-green-hi: #9cefba;
+}
+
+.type-pill {
+  color: var(--tc);
+  background: color-mix(in srgb, var(--tc) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tc) 34%, transparent);
+}
+.type-pill .dot {
+  background: var(--tc);
+}
+.type-pill.is-active {
+  color: #0e1014;
+  background: var(--tc);
+  border-color: var(--tc);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--tc) 40%, transparent);
+}
+.type-pill.is-active .dot {
+  background: #0e1014;
+}
+
+.stat--super {
+  color: var(--fx-green);
+}
+
+.stat--resist {
+  color: var(--fx-red);
+}
+
+.stat--immune {
+  color: var(--fx-gray);
+}
+
+.tone--super {
+  color: var(--fx-green);
+}
+
+.tone--resist {
+  color: var(--fx-red);
+}
+
+.tone--immune {
+  color: var(--fx-gray);
+}
+
+.type-table {
+  border-collapse: separate;
+  border-spacing: 4px;
+}
+
+.type-table th,
+.type-table td {
+  padding: 0;
+}
+
+.col-head {
+  width: 46px;
+}
+.col-head-btn .dot {
+  background: var(--tc);
+}
+
+.col-head.is-defender .col-head-btn {
+  background: color-mix(in srgb, var(--tc) 22%, transparent);
+  border-color: color-mix(in srgb, var(--tc) 55%, transparent);
+}
+
+.col-head.is-defender .col-head-btn .dot {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tc) 25%, transparent);
+}
+
+.fx {
+  width: 46px;
+  height: 44px;
+  border-radius: 7px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 13.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid transparent;
+  transition: opacity 0.15s ease;
+}
+
+.fx--neutral {
+  color: var(--color-brand-dim);
+}
+
+.fx--super {
+  color: var(--fx-green);
+  background: color-mix(in srgb, #5bcb7c 14%, transparent);
+}
+
+.fx--superhi {
+  color: var(--fx-green-hi);
+  background: color-mix(in srgb, #5bcb7c 26%, transparent);
+  border-color: color-mix(in srgb, #5bcb7c 45%, transparent);
+}
+
+.fx--half {
+  color: var(--fx-red);
+  background: color-mix(in srgb, #f0685c 13%, transparent);
+}
+
+.fx--quarter {
+  color: var(--fx-red-hi);
+  background: color-mix(in srgb, #f0685c 24%, transparent);
+  border-color: color-mix(in srgb, #f0685c 45%, transparent);
+}
+
+.fx--immune {
+  color: var(--fx-gray);
+  background: color-mix(in srgb, #646b78 20%, transparent);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+td.is-defender {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.14);
+}
+
+td.dimmed {
+  opacity: 0.45;
+}
+
+.sum-cell {
+  width: 70px;
+  height: 44px;
+  border-radius: 7px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 14.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid var(--color-brand-line);
+  background: var(--color-brand-raised);
+}
+
+.sum-cell.fx--half,
+.sum-cell.fx--super,
+.sum-cell.fx--superhi,
+.sum-cell.fx--quarter,
+.sum-cell.fx--immune {
+  border-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+
+.legend-item .fx {
+  width: 28px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+}
+
+.legend-item .fx--neutral {
+  background: var(--color-brand-raised);
+  border-color: var(--color-brand-line);
+}

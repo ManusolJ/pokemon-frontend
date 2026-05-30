@@ -1,0 +1,238 @@
+<section class="overflow-auto h-full px-6 py-6 lg:px-8">
+  <header class="mb-6">
+    <h2 class="mt-3 text-brand-text text-3xl font-bold tracking-tight">Type Effectiveness Chart</h2>
+    <p class="mt-2 max-w-2xl text-sm leading-relaxed text-brand-muted">
+      Rows attack, columns defend. Pick
+      <span class="text-brand-text font-semibold">up to two defending types</span>
+      to model a dual-type Pokémon and see every attacker's combined damage against it.
+    </p>
+  </header>
+
+  @if (loading()) {
+    <div class="rounded-2xl border border-brand-line bg-brand-surface p-5">
+      <div class="mb-4 h-4 w-48 animate-pulse rounded bg-brand-raised"></div>
+      <div class="flex flex-col gap-1.5">
+        @for (_ of skeletonRows; track $index) {
+          <div class="h-11 w-full animate-pulse rounded bg-brand-raised"></div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="mb-5 rounded-2xl border border-brand-line bg-brand-surface p-5">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-brand-dim">
+          Combine defending types
+        </span>
+        <div class="flex items-center gap-2">
+          @for (slot of defenderSlots(); track $index) {
+            <div
+              class="flex max-w-90 items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-2 text-xs font-semibold uppercase tracking-wide"
+              [style.borderColor]="slot ? getTypeColor(slot) + '80' : 'var(--color-brand-line)'"
+              [style.background]="
+                slot
+                  ? 'color-mix(in srgb, ' + getTypeColor(slot) + ' 12%, transparent)'
+                  : 'transparent'
+              "
+              [style.color]="slot ? getTypeColor(slot) : 'var(--color-brand-dim)'"
+            >
+              @if (slot) {
+                <span
+                  class="h-1.5 w-1.5 rounded-full"
+                  [style.background]="getTypeColor(slot)"
+                ></span>
+                {{ slot }}
+              } @else {
+                Slot {{ $index + 1 }}
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        @for (type of types(); track type) {
+          <button
+            type="button"
+            (click)="toggleDefender(type)"
+            [class.is-active]="isDefender(type)"
+            class="type-pill inline-flex items-center gap-1.75 rounded-full py-1.75 pr-3.25 pl-2.75 text-sm font-semibold uppercase tracking-wide cursor-pointer transition-all duration-150"
+            [style.--tc]="getTypeColor(type)"
+            [attr.aria-pressed]="isDefender(type)"
+          >
+            <span class="dot size-1.75 rounded-full"></span>{{ type }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (profile()) {
+      @let defenseProfile = profile();
+      <div class="mb-7 rounded-2xl border border-brand-line bg-brand-surface px-6 py-5">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p class="font-mono text-sm uppercase tracking-wider text-brand-dim">
+              Defensive profile
+            </p>
+            <div class="mt-2.5 flex flex-wrap items-center gap-2">
+              <span class="text-brand-muted text-lg font-bold">A defender typed</span>
+              @for (defender of defenders(); track defender) {
+                <app-type-badge [name]="defender" size="sm" />
+              }
+              <span class="text-brand-muted text-lg font-bold">takes:</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            (click)="clear()"
+            class="shrink-0 cursor-pointer rounded-lg border border-brand-line bg-brand-raised px-3.25 py-1.75 text-lg font-semibold text-brand-muted hover:text-brand-text"
+          >
+            Clear
+          </button>
+        </div>
+
+        <div class="mb-4 flex flex-wrap gap-7">
+          <div class="flex items-baseline gap-2">
+            <span class="stat--super text-3xl font-bold leading-none tabular-nums">
+              {{ defenseProfile?.weaknesses }}
+            </span>
+            <span class="text-brand-dim text-lg font-semibold">Weaknesses</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="stat--resist text-3xl font-bold leading-none tabular-nums">
+              {{ defenseProfile?.resistances }}
+            </span>
+            <span class="text-brand-dim text-lg font-semibold">Resistances</span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="stat--immune text-3xl font-bold leading-none tabular-nums">
+              {{ defenseProfile?.immunities }}
+            </span>
+            <span class="text-brand-dim text-lg font-semibold">Immunities</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+          @for (group of defenseProfile?.groups; track group.label) {
+            <div
+              class="grid grid-cols-[145px_1fr] items-center gap-3.5 py-2.75 border-t border-white/4.5"
+            >
+              <div>
+                <div class="text-sm font-bold" [class]="'tone--' + group.tone">
+                  {{ group.label }}
+                </div>
+                <div class="mt-0.5 font-mono text-xs text-brand-dim">{{ group.detail }}</div>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                @for (type of group.types; track type) {
+                  <app-type-badge [name]="type" size="sm" />
+                }
+              </div>
+            </div>
+          }
+          @if (defenseProfile?.neutral?.length) {
+            <div
+              class="grid grid-cols-[146px_1fr] items-center gap-3.5 py-2.75 border-t border-white/4.5 opacity-50"
+            >
+              <div class="text-sm font-semibold text-brand-muted">
+                Neutral <span class="ml-1.5 font-mono text-xs text-brand-dim">1×</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                @for (type of defenseProfile?.neutral; track type) {
+                  <app-type-badge [name]="type" size="sm" />
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="overflow-x-auto pb-1.5">
+      <table class="type-table">
+        <thead>
+          <tr>
+            <th class="sticky left-0 z-20 bg-brand-bg w-30 pb-2 text-center align-center">
+              <span class="font-mono text-xs text-brand-dim">ATK &#x2193; / DEF &#x2192;</span>
+            </th>
+            @for (type of types(); track type) {
+              <th [class]="getHeaderClasses(type)">
+                <button
+                  type="button"
+                  (click)="toggleDefender(type)"
+                  class="col-head-btn flex w-14 h-13 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-transparent bg-transparent transition-[background] duration-120 hover:bg-brand-raised"
+                  [style.--tc]="getTypeColor(type)"
+                >
+                  <span class="dot size-2.75 rounded-full"></span>
+                  <span
+                    class="text-sm font-bold tracking-tight text-brand-muted"
+                    [style.color]="isDefender(type) ? getTypeColor(type) : null"
+                  >
+                    {{ abbreviateType(type) }}
+                  </span>
+                </button>
+              </th>
+            }
+            @if (hasSelection()) {
+              <th class="h-13 w-17.5 text-center">
+                <span class="block text-[sm font-bold tracking-tight text-brand-red">SUM</span>
+                <small class="font-mono text-sm text-brand-dim">×</small>
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of matrix(); track row.attacker) {
+            <tr>
+              <th
+                scope="row"
+                class="sticky left-0 z-2 bg-brand-bg h-11 w-30 pl-1 text-xs font-bold uppercase tracking-tight align-middle"
+              >
+                <div class="flex items-center gap-2 pl-4">
+                  <span
+                    class="size-2.25 shrink-0 rounded-full"
+                    [style.background]="getTypeColor(row.attacker)"
+                  ></span>
+                  <span [style.color]="getTypeColor(row.attacker)">{{ row.attacker }}</span>
+                </div>
+              </th>
+              @for (cell of row.cells; track cell.defender) {
+                <td [class]="getCellClasses(cell)">{{ cell.label }}</td>
+              }
+              @if (hasSelection()) {
+                <td
+                  [class]="
+                    'sum-cell fx--' + (getCombinedMultiplier(row.attacker)?.tone ?? 'neutral')
+                  "
+                >
+                  {{ getCombinedMultiplier(row.attacker)?.label }}
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 flex flex-wrap items-center gap-4">
+      <span class="font-mono text-sm uppercase tracking-wide text-brand-dim">Legend</span>
+      <div class="legend-item flex items-center gap-2 text-sm font-medium text-brand-muted">
+        <span class="fx fx--superhi">4</span><span>4× double weak</span>
+      </div>
+      <div class="legend-item flex items-center gap-2 text-sm font-medium text-brand-muted">
+        <span class="fx fx--super">2</span><span>2× super effective</span>
+      </div>
+      <div class="legend-item flex items-center gap-2 text-sm font-medium text-brand-muted">
+        <span class="fx fx--neutral">1</span><span>1× neutral</span>
+      </div>
+      <div class="legend-item flex items-center gap-2 text-sm font-medium text-brand-muted">
+        <span class="fx fx--half">½</span><span>½× resisted</span>
+      </div>
+      <div class="legend-item flex items-center gap-2 text-sm font-medium text-brand-muted">
+        <span class="fx fx--quarter">¼</span><span>¼× doubly resisted</span>
+      </div>
+      <div class="legend-item flex items-center gap-2 text-sm font-medium text-brand-muted">
+        <span class="fx fx--immune">0</span><span>0× immune</span>
+      </div>
+    </div>
+  }
+</section>

@@ -23,9 +23,7 @@ export const POKEDEX_ROUTES: Routes = [
       {
         path: 'type-chart',
         loadComponent: () =>
-          import('@features/pokedex/components/list/pokemon-list/pokemon-list').then(
-            (mod) => mod.PokemonList,
-          ),
+          import('@features/pokedex/components/type-chart/type-chart').then((mod) => mod.TypeChart),
       },
       {
         path: 'natures',
