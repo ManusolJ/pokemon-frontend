@@ -1,2 +1,130 @@
-<!-- TODO: Implement contact form and wire to API -->
-<p>contact works!</p>
+<div class="w-full max-w-2xl rounded-2xl border border-brand-line bg-brand-surface p-9 shadow-2xl">
+  @if (!isSent()) {
+    <div class="text-center">
+      <h2 class="text-brand-text text-2xl font-bold tracking-tight">Get in touch</h2>
+      <p class="text-brand-muted mt-2 text-sm">
+        Questions, feedback or a bug to report? Send a message.
+      </p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-5 py-6">
+      <div class="flex flex-col gap-1">
+        <label for="name" class="text-brand-text text-sm font-medium">Name</label>
+        <input
+          id="name"
+          type="text"
+          class="auth-input"
+          autocomplete="name"
+          formControlName="name"
+          placeholder="Your name"
+          [class.auth-input--error]="nameControl.invalid && nameControl.touched"
+        />
+        @if (nameControl.touched && nameControl.hasError('required')) {
+          <span class="text-red-400 text-xs leading-4">This field is required.</span>
+        } @else if (
+          nameControl.touched &&
+          (nameControl.hasError('minlength') || nameControl.hasError('maxlength'))
+        ) {
+          <span class="text-red-400 text-xs leading-4">
+            Must be between {{ nameMinLength }} and {{ nameMaxLength }} characters.
+          </span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="email" class="text-brand-text text-sm font-medium">Email</label>
+        <input
+          id="email"
+          type="email"
+          class="auth-input"
+          autocomplete="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          [class.auth-input--error]="emailControl.invalid && emailControl.touched"
+        />
+        @if (emailControl.touched && emailControl.hasError('required')) {
+          <span class="text-red-400 text-xs leading-4">This field is required.</span>
+        } @else if (emailControl.touched && emailControl.hasError('email')) {
+          <span class="text-red-400 text-xs leading-4">Enter a valid email address.</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="subject" class="text-brand-text text-sm font-medium">Subject</label>
+        <input
+          type="text"
+          id="subject"
+          class="auth-input"
+          formControlName="subject"
+          placeholder="What's this about?"
+          [class.auth-input--error]="subjectControl.invalid && subjectControl.touched"
+        />
+        @if (subjectControl.touched && subjectControl.hasError('required')) {
+          <span class="text-red-400 text-xs leading-4">This field is required.</span>
+        } @else if (subjectControl.touched && subjectControl.hasError('maxlength')) {
+          <span class="text-red-400 text-xs leading-4">Keep the subject under 120 characters.</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="message" class="text-brand-text text-sm font-medium">Message</label>
+        <textarea
+          rows="8"
+          id="message"
+          class="auth-input resize-none"
+          formControlName="message"
+          placeholder="Write your message…"
+          [class.auth-input--error]="messageControl.invalid && messageControl.touched"
+        ></textarea>
+        @if (messageControl.touched && messageControl.hasError('required')) {
+          <span class="text-red-400 text-xs leading-4">This field is required.</span>
+        } @else if (messageControl.touched && messageControl.hasError('minlength')) {
+          <span class="text-red-400 text-xs leading-4">
+            Must be at least {{ messageMinLength }} characters.
+          </span>
+        } @else if (messageControl.touched && messageControl.hasError('maxlength')) {
+          <span class="text-red-400 text-xs leading-4">
+            Must be under {{ messageMaxLength }} characters.
+          </span>
+        }
+      </div>
+
+      @if (hasError()) {
+        <p class="text-red-400 text-xs leading-4 text-center">
+          Something went wrong sending your message. Please try again.
+        </p>
+      }
+
+      <button type="submit" [disabled]="isLoading() || form.invalid" class="btn-primary mt-1">
+        @if (isLoading()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        } @else {
+          Send message
+        }
+      </button>
+
+      <p class="text-brand-dim text-center text-xs">
+        We'll get back to you at the email you provide.
+      </p>
+    </form>
+  } @else {
+    <div class="flex flex-col items-center gap-3 py-6 text-center">
+      <span
+        class="flex items-center justify-center size-13 rounded-full text-xl text-green-400 bg-green-500/12 border border-green-500/40"
+      >
+        <i class="pi pi-check"></i>
+      </span>
+      <h2 class="text-brand-text text-xl font-bold">Message sent</h2>
+      <p class="text-brand-muted text-sm">
+        Thanks for reaching out. We'll reply to your email soon.
+      </p>
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="text-brand-text mt-1 text-sm font-medium underline cursor-pointer"
+      >
+        Send another message
+      </button>
+    </div>
+  }
+</div>
