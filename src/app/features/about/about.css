@@ -1,0 +1,75 @@
+:host {
+  display: block;
+}
+
+.feature-grid {
+  gap: 1px;
+  background-color: var(--color-brand-line);
+  border: 1px solid var(--color-brand-line);
+  border-radius: 0.9rem;
+  overflow: hidden;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--color-brand-text);
+  background-color: var(--color-brand-raised);
+  border: 1px solid var(--color-brand-line);
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.chip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-brand-muted);
+}
+
+.chip--placeholder {
+  border-style: dashed;
+  border-color: rgb(238 90 90 / 0.45);
+  color: var(--color-brand-red);
+}
+
+.chip--placeholder i {
+  background-color: var(--color-brand-red);
+}
+
+.avatar {
+  border-radius: 1rem;
+  background: repeating-linear-gradient(135deg, #1b1f27 0 10px, #15181e 10px 20px);
+  border: 1px solid var(--color-brand-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  color: var(--color-brand-dim);
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-brand-text);
+  background-color: var(--color-brand-raised);
+  border: 1px solid var(--color-brand-line);
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.6rem;
+  transition:
+    border-color 150ms,
+    background-color 150ms;
+}
+
+.link-btn:hover {
+  border-color: rgb(255 255 255 / 0.18);
+  background-color: #20242d;
+}

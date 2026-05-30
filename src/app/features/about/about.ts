@@ -1,10 +1,101 @@
+import { AboutFeature } from '@shared/interfaces/ui/about-feature.interface';
+import { DeveloperLink } from '@shared/interfaces/ui/developer-link.interface';
+import { TechStackGroup } from '@shared/interfaces/ui/tech-stack-group.interface';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-about',
   imports: [],
-  templateUrl: './about.html',
+  selector: 'app-about',
   styleUrl: './about.css',
+  templateUrl: './about.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class About {}
+export class About {
+  protected readonly features: readonly AboutFeature[] = [
+    {
+      title: 'Team Builder',
+      description:
+        'Draft a squad of up to six Pokémon. Use analysis tools to inspect each aspect of the team.',
+    },
+    {
+      title: 'Pokedex',
+      description:
+        'Browse and filter the full roster. Search by name, type, or stats and inspect each entry in detail.',
+    },
+    {
+      title: 'Type Chart',
+      description:
+        'An interactive effectiveness matrix so you always know what hits hard and what to switch out.',
+    },
+    {
+      title: 'Reference Data',
+      description:
+        'Natures, abilities, items and moves. The supporting data you need while planning a build.',
+    },
+    {
+      title: 'Save & Share Teams',
+      description:
+        'Save up to 10 teams in your account and share public teams with a link for others to copy.',
+    },
+    {
+      title: 'Accounts',
+      description:
+        'Register, sign in, and manage your profile with secure, token-based authentication.',
+    },
+  ];
+
+  protected readonly techStack: readonly TechStackGroup[] = [
+    {
+      label: 'Frontend',
+      items: [
+        { name: 'TypeScript' },
+        { name: 'Angular' },
+        { name: 'RxJS' },
+        { name: 'Tailwind CSS' },
+        { name: 'PrimeNG' },
+      ],
+    },
+    {
+      label: 'Backend',
+      items: [
+        { name: 'Java' },
+        { name: 'Spring Boot' },
+        { name: 'Spring Security' },
+        { name: 'PostgreSQL' },
+        { name: 'JWT' },
+      ],
+    },
+  ];
+
+  // TODO: replace placeholder BIO with something before deploying.
+  protected readonly developer = {
+    name: 'Manuel Soler Juan',
+    role: 'Full-stack developer',
+    bio: 'TO BE ADDED',
+  };
+
+  // TODO: replace dev site with actual website OR remove before deploying.
+  protected readonly developerLinks: readonly DeveloperLink[] = [
+    {
+      glyph: 'GH',
+      label: 'github.com/Manusolj',
+      href: 'https://github.com/Manusolj',
+    },
+    {
+      glyph: '@',
+      label: 'mansoljua@edu.alu.gva.es',
+      href: 'mailto:mansoljua@edu.alu.gva.es',
+    },
+    {
+      glyph: 'in',
+      label: 'linkedin.com/in/manuel-soler-juan',
+      href: 'https://www.linkedin.com/in/manusolerj',
+    },
+    {
+      glyph: 'web',
+      label: 'site.dev',
+      href: 'https://site.dev',
+    },
+  ];
+}
