@@ -1,2 +1,34 @@
-<!-- TODO: Create nature GRID list from nature read data; Filter through name and decreseasd/increased stat -->
-<p>nature-list works!</p>
+<app-list-shell
+  noun="natures"
+  title="Natures"
+  [page]="page()"
+  [total]="total()"
+  [loading]="loading()"
+  [totalPages]="totalPages()"
+  [skeletonCount]="skeletonCount"
+  (pageChange)="onPageChange($event)"
+>
+  <app-filter-sidebar sidebar [fields]="fields" (filterChange)="onFilterChange($event)" />
+
+  <div grid class="nature-grid">
+    @for (nature of items(); track nature.id) {
+      <article
+        class="rounded-2xl border border-brand-line bg-brand-surface p-5 transition-colors hover:border-brand-red/40"
+      >
+        <h3 class="text-brand-text font-bold capitalize">{{ nature.name }}</h3>
+        @if (isNeutral(nature)) {
+          <span class="text-brand-muted mt-3 block text-sm">Neutral</span>
+        } @else {
+          <div class="mt-3 flex flex-col gap-1.5 text-sm">
+            <span class="flex items-center gap-1.5 font-semibold capitalize text-green-400">
+              <i class="pi pi-chevron-up"></i>{{ nature.increasedStat }}
+            </span>
+            <span class="flex items-center gap-1.5 font-semibold capitalize text-rose-400">
+              <i class="pi pi-chevron-down"></i>{{ nature.decreasedStat }}
+            </span>
+          </div>
+        }
+      </article>
+    }
+  </div>
+</app-list-shell>
