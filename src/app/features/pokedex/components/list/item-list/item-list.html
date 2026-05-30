@@ -1,2 +1,38 @@
-<!-- TODO: Create item GRID list with data from item read. Filter through name -->
-<p>item-list works!</p>
+<app-list-shell
+  title="Items"
+  noun="items"
+  [total]="total()"
+  [page]="page()"
+  [loading]="loading()"
+  [totalPages]="totalPages()"
+  [skeletonCount]="skeletonCount"
+  (pageChange)="onPageChange($event)"
+>
+  <app-filter-sidebar sidebar [fields]="fields" (filterChange)="onFilterChange($event)" />
+
+  <div grid class="item-grid">
+    @for (item of items(); track item.id) {
+      <article
+        class="flex gap-3 rounded-2xl border border-brand-line bg-brand-surface p-4 transition-colors hover:border-brand-red/40"
+      >
+        @if (item.spriteUrl) {
+          <img
+            [src]="getItemSpriteUrl(item)"
+            [alt]="item.name"
+            loading="lazy"
+            class="h-12 w-12 shrink-0 object-contain"
+          />
+        }
+        <div class="min-w-0">
+          <h3 class="text-brand-text font-bold capitalize">{{ item.name }}</h3>
+          @if (item.category) {
+            <span class="text-brand-dim text-xs uppercase">{{ item.category }}</span>
+          }
+          <p class="text-brand-muted mt-1 line-clamp-2 text-sm">
+            {{ item.shortEffect || item.effect || item.flavorText }}
+          </p>
+        </div>
+      </article>
+    }
+  </div>
+</app-list-shell>

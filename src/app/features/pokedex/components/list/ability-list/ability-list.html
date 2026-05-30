@@ -1,2 +1,25 @@
-<!-- TODO: Create ability GRID list with data from ability read. Filter through name -->
-<p>ability-list works!</p>
+<app-list-shell
+  title="Abilities"
+  noun="abilities"
+  [skeletonCount]="skeletonCount"
+  [total]="total()"
+  [loading]="loading()"
+  [page]="page()"
+  [totalPages]="totalPages()"
+  (pageChange)="onPageChange($event)"
+>
+  <app-filter-sidebar sidebar [fields]="fields" (filterChange)="onFilterChange($event)" />
+
+  <div grid class="info-grid">
+    @for (ability of items(); track ability.id) {
+      <article
+        class="rounded-2xl border border-brand-line bg-brand-surface p-5 transition-colors hover:border-brand-red/40"
+      >
+        <h3 class="text-brand-text font-bold capitalize">{{ ability.name }}</h3>
+        <p class="text-brand-muted mt-2 line-clamp-3 text-sm">
+          {{ ability.shortEffect || ability.effect || ability.flavorText }}
+        </p>
+      </article>
+    }
+  </div>
+</app-list-shell>
