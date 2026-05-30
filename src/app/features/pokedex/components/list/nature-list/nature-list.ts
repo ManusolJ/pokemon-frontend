@@ -81,8 +81,6 @@ export class NatureList implements OnInit {
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
     this.filter = applied as NatureFilter;
-    console.log(this.filter);
-
     this.page.set(0);
     this.load();
   }
