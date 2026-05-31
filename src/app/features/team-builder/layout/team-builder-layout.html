@@ -1,1 +1,7 @@
-<p>team-builder-layout works!</p>
+<div class="flex w-full flex-col">
+  <app-tab-nav [items]="tabs" ariaLabel="Team Builder sections" />
+
+  <div class="mx-auto w-full max-w-9/12">
+    <router-outlet />
+  </div>
+</div>
