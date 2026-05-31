@@ -2,7 +2,7 @@ import { environment } from '@environments/environment';
 
 import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
 import { ItemFilter } from '@shared/interfaces/pokemon/item/item-filter.interface';
-import { FilterField, FilterValue } from '@shared/interfaces/ui/filter-field.interface';
+import { FilterField, FilterValue } from '@shared/interfaces/ui/filter/filter-field.interface';
 
 import { ItemService } from '@core/services/item.service';
 

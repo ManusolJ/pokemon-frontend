@@ -2,7 +2,7 @@ import {
   FilterField,
   FilterValue,
   FilterOption,
-} from '@shared/interfaces/ui/filter-field.interface';
+} from '@shared/interfaces/ui/filter/filter-field.interface';
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
 import { NatureFilter } from '@shared/interfaces/pokemon/nature/nature-filter.interface';
 

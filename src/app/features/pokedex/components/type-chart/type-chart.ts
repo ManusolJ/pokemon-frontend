@@ -1,10 +1,10 @@
 import { PokemonType } from '@shared/enums/pokemon-types.enum';
 
-import { MatrixRow } from '@shared/interfaces/ui/matrix-row.interface';
-import { MatrixCell } from '@shared/interfaces/ui/matrix-cell.interface';
-import { ProfileGroup } from '@shared/interfaces/ui/profile-group.interface';
-import { DefenseProfile } from '@shared/interfaces/ui/defense-profile.interface';
-import { MultiplierMeta } from '@shared/interfaces/ui/multiplier-meta.interface';
+import { MatrixRow } from '@shared/interfaces/ui/type-chart/matrix-row.interface';
+import { MatrixCell } from '@shared/interfaces/ui/type-chart/matrix-cell.interface';
+import { ProfileGroup } from '@shared/interfaces/ui/type-chart/profile-group.interface';
+import { DefenseProfile } from '@shared/interfaces/ui/type-chart/defense-profile.interface';
+import { MultiplierMeta } from '@shared/interfaces/ui/type-chart/multiplier-meta.interface';
 import { TypeEffectivenessRead } from '@shared/interfaces/pokemon/type/type-effectiveness-read.interface';
 
 import { TypeService } from '@core/services/type.service';

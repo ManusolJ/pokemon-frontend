@@ -2,7 +2,7 @@ import {
   FilterField,
   FilterValue,
   FilterOption,
-} from '@shared/interfaces/ui/filter-field.interface';
+} from '@shared/interfaces/ui/filter/filter-field.interface';
 import { TypeFilter } from '@shared/interfaces/pokemon/type/type-filter.interface';
 import { PokemonFilter } from '@shared/interfaces/pokemon/pokemon/pokemon-filter.interface';
 import { SpeciesSummary } from '@shared/interfaces/pokemon/pokemon/species-summary.interface';

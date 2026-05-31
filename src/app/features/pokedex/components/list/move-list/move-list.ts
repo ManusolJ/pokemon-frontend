@@ -2,7 +2,7 @@ import {
   FilterField,
   FilterValue,
   FilterOption,
-} from '@shared/interfaces/ui/filter-field.interface';
+} from '@shared/interfaces/ui/filter/filter-field.interface';
 import { TypeFilter } from '@shared/interfaces/pokemon/type/type-filter.interface';
 import { MoveFilter } from '@shared/interfaces/pokemon/move/move-filter.interface';
 import { MoveSummary } from '@shared/interfaces/pokemon/move/move-summary.interface';
@@ -25,6 +25,7 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, Subject, switchMap, tap } from 'rxjs';
 
@@ -44,6 +45,7 @@ const CATEGORIES: FilterOption[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MoveList implements OnInit {
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly moveService = inject(MoveService);
   private readonly typeService = inject(TypeService);
@@ -100,8 +102,7 @@ export class MoveList implements OnInit {
   }
 
   protected onSelect(id: number): void {
-    // TODO: route to the move detail page once it exists.
-    return;
+    this.router.navigate([`pokedex/moves/${id}`]);
   }
 
   private load(): void {

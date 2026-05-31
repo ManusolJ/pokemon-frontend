@@ -1,4 +1,4 @@
-import { Step } from '@shared/interfaces/ui/send-state.interface';
+import { Step } from '@shared/interfaces/ui/generic/send-state.interface';
 import { PasswordResetRequest } from '@shared/interfaces/auth/password-reset-request.interface';
 
 import { AuthService } from '@core/services/auth.service';

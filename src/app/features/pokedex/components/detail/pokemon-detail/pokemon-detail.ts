@@ -1,8 +1,8 @@
 import { environment } from '@environments/environment';
 
-import { StatRow } from '@shared/interfaces/ui/stat-row.interface';
-import { GenderRate } from '@shared/interfaces/ui/gender-rate.interface';
-import { VisibleMove } from '@shared/interfaces/ui/visible-move.interface';
+import { StatRow } from '@shared/interfaces/ui/pokemon-detail/stat-row.interface';
+import { GenderRate } from '@shared/interfaces/ui/pokemon-detail/gender-rate.interface';
+import { VisibleMove } from '@shared/interfaces/ui/pokemon-detail/visible-move.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { MoveEmbed } from '@shared/interfaces/pokemon/move/move-embed.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';

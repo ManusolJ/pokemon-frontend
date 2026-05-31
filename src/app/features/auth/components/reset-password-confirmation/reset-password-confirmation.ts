@@ -6,7 +6,7 @@ import { AuthService } from '@core/services/auth.service';
 import { AuthCard } from '@features/auth/components/auth-card/auth-card';
 import { MIN_PASSWORD_LENGTH } from '@shared/constants/auth.constants';
 import { PasswordResetConfirmation } from '@shared/interfaces/auth/password-reset-confirmation.interface';
-import { Step } from '@shared/interfaces/ui/send-state.interface';
+import { Step } from '@shared/interfaces/ui/generic/send-state.interface';
 import { passwordMatchValidator } from '@shared/validators/password.validator';
 
 @Component({

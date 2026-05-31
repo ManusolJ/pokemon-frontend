@@ -2,7 +2,7 @@ import {
   FilterField,
   FilterValue,
   FilterOption,
-} from '@shared/interfaces/ui/filter-field.interface';
+} from '@shared/interfaces/ui/filter/filter-field.interface';
 
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 
@@ -12,6 +12,7 @@ const DEFAULT_CHIP_ACCENT = 'var(--color-brand-muted)';
 
 type FilterState = Record<string, FilterValue | undefined>;
 
+// TODO: Store active filter state in memory to preserve between page changes.
 @Component({
   imports: [],
   selector: 'app-filter-sidebar',

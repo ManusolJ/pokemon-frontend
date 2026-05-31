@@ -1,6 +1,6 @@
 import { ROLE_ADMIN } from '@shared/constants/auth.constants';
 
-import { NavItem } from '@shared/interfaces/ui/nav-item.interface';
+import { NavItem } from '@shared/interfaces/ui/generic/nav-item.interface';
 
 import { AuthService } from '@core/services/auth.service';
 import { TokenService } from '@core/services/token.service';

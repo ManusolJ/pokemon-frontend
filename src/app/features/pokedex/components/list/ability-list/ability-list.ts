@@ -1,4 +1,4 @@
-import { FilterField, FilterValue } from '@shared/interfaces/ui/filter-field.interface';
+import { FilterField, FilterValue } from '@shared/interfaces/ui/filter/filter-field.interface';
 import { AbilityRead } from '@shared/interfaces/pokemon/ability/ability-read.interface';
 import { AbilityFilter } from '@shared/interfaces/pokemon/ability/ability-filter.interface';
 

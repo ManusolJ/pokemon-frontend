@@ -1,4 +1,4 @@
-import { MoveEmbed } from '../pokemon/move/move-embed.interface';
+import { MoveEmbed } from '@shared/interfaces/pokemon/move/move-embed.interface';
 
 export interface VisibleMove {
   readonly entry: MoveEmbed;

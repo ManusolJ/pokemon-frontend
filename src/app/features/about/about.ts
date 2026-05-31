@@ -1,6 +1,6 @@
-import { AboutFeature } from '@shared/interfaces/ui/about-feature.interface';
-import { DeveloperLink } from '@shared/interfaces/ui/developer-link.interface';
-import { TechStackGroup } from '@shared/interfaces/ui/tech-stack-group.interface';
+import { AboutFeature } from '@shared/interfaces/ui/about/about-feature.interface';
+import { DeveloperLink } from '@shared/interfaces/ui/about/developer-link.interface';
+import { TechStackGroup } from '@shared/interfaces/ui/about/tech-stack-group.interface';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 

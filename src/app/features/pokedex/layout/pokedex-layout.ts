@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-import { NavItem } from '@shared/interfaces/ui/nav-item.interface';
+import { NavItem } from '@shared/interfaces/ui/generic/nav-item.interface';
 
 @Component({
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
