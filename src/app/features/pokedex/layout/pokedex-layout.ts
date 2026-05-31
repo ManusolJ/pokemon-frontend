@@ -13,10 +13,10 @@ import { NavItem } from '@shared/interfaces/ui/nav-item.interface';
 export class PokedexLayout {
   protected readonly items: NavItem[] = [
     { label: 'Pokemon', path: 'pokemon' },
+    { label: 'Moves', path: 'moves' },
     { label: 'Type Chart', path: 'type-chart' },
     { label: 'Natures', path: 'natures' },
     { label: 'Abilities', path: 'abilities' },
     { label: 'Items', path: 'items' },
-    { label: 'Moves', path: 'moves' },
   ];
 }

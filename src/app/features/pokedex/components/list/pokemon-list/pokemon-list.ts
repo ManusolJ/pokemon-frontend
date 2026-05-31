@@ -14,6 +14,8 @@ import { ListShell } from '@shared/components/list-shell/list-shell';
 import { PokemonCard } from '@shared/components/pokemon-card/pokemon-card';
 import { FilterSidebar } from '@shared/components/filter-sidebar/filter-sidebar';
 
+import { getTypeColor } from '@shared/utils/get-type-color.util';
+
 import {
   OnInit,
   inject,
@@ -23,9 +25,9 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, catchError, switchMap, tap } from 'rxjs';
-import { getTypeColor } from '@shared/utils/get-type-color.util';
 
 const PAGE_SIZE = 21;
 
@@ -51,6 +53,8 @@ const GENERATIONS: FilterOption[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonList implements OnInit {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly typeService = inject(TypeService);
   private readonly speciesService = inject(SpeciesService);
@@ -188,15 +192,16 @@ export class PokemonList implements OnInit {
   }
 
   protected setSort(field: SpeciesSortField): void {
-    if (this.sort() === field) return;
+    if (this.sort() === field) {
+      return;
+    }
     this.sort.set(field);
     this.page.set(0);
     this.load();
   }
 
   protected onSelect(id: number): void {
-    // TODO: route to the pokemon detail page once it exists,
-    return;
+    this.router.navigate([`pokedex/pokemon/${id}`]);
   }
 
   private load(): void {

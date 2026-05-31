@@ -21,6 +21,13 @@ export const POKEDEX_ROUTES: Routes = [
           ),
       },
       {
+        path: 'pokemon/:id',
+        loadComponent: () =>
+          import('@features/pokedex/components/detail/pokemon-detail/pokemon-detail').then(
+            (mod) => mod.PokemonDetail,
+          ),
+      },
+      {
         path: 'type-chart',
         loadComponent: () =>
           import('@features/pokedex/components/type-chart/type-chart').then((mod) => mod.TypeChart),
