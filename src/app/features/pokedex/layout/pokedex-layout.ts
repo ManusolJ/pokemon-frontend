@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavItem } from '@shared/interfaces/ui/generic/nav-item.interface';
 
 import { TabNav } from '@shared/components/tab-nav/tab-nav';
-import { NavItem } from '@shared/interfaces/ui/generic/nav-item.interface';
+
+import { RouterOutlet } from '@angular/router';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   imports: [RouterOutlet, TabNav],
