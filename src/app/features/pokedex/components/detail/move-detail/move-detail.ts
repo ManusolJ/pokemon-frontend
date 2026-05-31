@@ -1,7 +1,6 @@
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
-
-import { CategoryStyle } from '@shared/interfaces/ui/move-detail/category-style.interface';
 import { MoveStatTile } from '@shared/interfaces/ui/move-detail/move-stat-tile.interface';
+import { CategoryStyle } from '@shared/interfaces/ui/move-detail/category-style.interface';
 import { MoveCategoryKey } from '@shared/interfaces/ui/move-detail/move-category-key.interface';
 
 import { MoveService } from '@core/services/move.service';
@@ -13,28 +12,25 @@ import { getTypeColor } from '@shared/utils/get-type-color.util';
 import { map } from 'rxjs';
 
 import { ActivatedRoute, RouterLink } from '@angular/router';
+
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-const DASH = '—';
+const NO_VALUE = '—';
 const DEFAULT_CATEGORY: MoveCategoryKey = 'status';
 
 const CATEGORY_STYLES: Record<MoveCategoryKey, CategoryStyle> = {
-  physical: { color: '#e0503f', glyph: '●' },
-  special: { color: '#3f8efc', glyph: '◆' },
   status: { color: '#9aa1ad', glyph: '◇' },
+  special: { color: '#3f8efc', glyph: '◆' },
+  physical: { color: '#e0503f', glyph: '●' },
 };
 
-/**
- * Read-only detail page for a single move. Type-accented hero, damage-class
- * badge, stat tiles, and effect / in-game flavor text. Renders inside the
- * Pokédex layout (which supplies the navbar + sub-nav), so it owns no chrome.
- */
 @Component({
-  selector: 'app-move-detail',
   imports: [TypeBadge, RouterLink],
-  templateUrl: './move-detail.html',
+  selector: 'app-move-detail',
   styleUrl: './move-detail.css',
+  templateUrl: './move-detail.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MoveDetail {
@@ -53,9 +49,9 @@ export class MoveDetail {
     stream: ({ params }) => this.moveService.getOneMove(params),
   });
 
-  protected readonly move = computed<MoveRead | null>(() => this.moveResource.value() ?? null);
   protected readonly loading = this.moveResource.isLoading;
   protected readonly error = computed(() => !!this.moveResource.error());
+  protected readonly move = computed<MoveRead | null>(() => this.moveResource.value() ?? null);
 
   protected readonly accent = computed(() => getTypeColor(this.move()?.type.name));
 
@@ -71,13 +67,13 @@ export class MoveDetail {
     return [
       {
         label: 'Power',
-        value: move.power ? String(move.power) : DASH,
+        value: move.power ? String(move.power) : NO_VALUE,
         faded: !move.power,
         accent: false,
       },
       {
         label: 'Accuracy',
-        value: move.accuracy ? `${move.accuracy}%` : DASH,
+        value: move.accuracy ? `${move.accuracy}%` : NO_VALUE,
         faded: !move.accuracy,
         accent: false,
       },
@@ -90,7 +86,7 @@ export class MoveDetail {
       },
       {
         label: 'Effect rate',
-        value: move.effectChance ? `${move.effectChance}%` : DASH,
+        value: move.effectChance ? `${move.effectChance}%` : NO_VALUE,
         faded: !move.effectChance,
         accent: true,
       },

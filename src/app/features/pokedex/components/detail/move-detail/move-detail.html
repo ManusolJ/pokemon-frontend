@@ -1,0 +1,122 @@
+@if (loading()) {
+  <div class="flex flex-col items-center justify-center gap-4 p-8 text-brand-muted">
+    <span
+      class="size-7 rounded-full border-2 border-brand-line border-t-brand-red animate-spin"
+      aria-hidden="true"
+    ></span>
+    <span>Loading move…</span>
+  </div>
+} @else if (error() || !move()) {
+  <div class="flex flex-col items-center justify-center gap-4 p-8 text-brand-muted">
+    <span class="font-mono text-4xl text-brand-dim" aria-hidden="true">?</span>
+    <span>That move could not be found.</span>
+  </div>
+} @else {
+  @if (move(); as move) {
+    <article class="block px-6 pb-16 lg:px-8" [style.--accent]="accent()">
+      <nav class="flex items-center justify-between gap-3 py-5">
+        <a routerLink="/pokedex/moves" class="nav-pill">
+          <span aria-hidden="true">&#x2190;</span>
+          <span>Moves</span>
+        </a>
+      </nav>
+
+      <div class="move-hero relative overflow-hidden rounded-3xl border border-brand-line">
+        <span class="move-hero__ghost" aria-hidden="true">{{ move.category }}</span>
+
+        <div class="relative px-10 pt-5 pb-9">
+          <h1
+            class="move-hero__title m-0 text-[3.25rem] font-bold leading-none tracking-[-1.5px] text-brand-text capitalize max-md:text-[2.5rem]"
+          >
+            {{ move.name }}
+          </h1>
+
+          <div class="flex gap-2 mt-4.5">
+            <app-type-badge [name]="move.type.name" />
+            <span
+              class="cat-badge inline-flex items-center gap-1.75 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase"
+              [style.color]="categoryStyle().color"
+              [style.background]="
+                'color-mix(in srgb, ' + categoryStyle().color + ' 13%, transparent)'
+              "
+              [style.border]="
+                '1px solid color-mix(in srgb, ' + categoryStyle().color + ' 32%, transparent)'
+              "
+            >
+              <span class="text-[0.5625rem]">{{ categoryStyle().glyph }}</span>
+              {{ move.category }}
+            </span>
+          </div>
+
+          <p class="mt-5 max-w-140 text-base leading-6 text-brand-muted text-pretty">
+            {{ move.shortEffect }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-5.5 mt-5">
+        <div class="grid grid-cols-5 gap-3.5 max-md:grid-cols-2">
+          @for (tile of statTiles(); track tile.label) {
+            <div
+              class="flex flex-col gap-2 min-w-0 px-5 py-4.5 bg-brand-surface border border-brand-line rounded-xl"
+            >
+              <span
+                class="stat-tile text-[0.656rem] font-bold tracking-wider uppercase text-brand-dim"
+              >
+                {{ tile.label }}
+              </span>
+              <span
+                class="stat-tile text-[1.875rem] font-bold leading-none"
+                [class.text-brand-dim]="tile.faded"
+                [class.text-brand-text]="!tile.faded"
+                [style.color]="tile.accent && !tile.faded ? accent() : null"
+              >
+                {{ tile.value }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <div class="grid grid-cols-[1.4fr_1fr] gap-5.5 items-start max-md:grid-cols-1">
+          <section class="bg-brand-surface border border-brand-line rounded-2xl p-6">
+            <h2
+              class="stat-tile m-0 mb-3.5 text-sm font-bold tracking-wide uppercase text-brand-text"
+            >
+              Effect
+            </h2>
+            <p class="m-0 text-sm leading-6 text-brand-muted text-pretty">{{ move.effect }}</p>
+
+            @if (move.effectChance > 0) {
+              <div
+                class="inline-flex items-center gap-2.5 mt-4 px-3 py-2 rounded-xl"
+                [style.background]="'color-mix(in srgb, ' + accent() + ' 10%, transparent)'"
+                [style.border]="'1px solid color-mix(in srgb, ' + accent() + ' 28%, transparent)'"
+              >
+                <span class="font-mono text-sm font-bold" [style.color]="accent()">
+                  {{ move.effectChance }}%
+                </span>
+                <span class="text-sm text-brand-muted">secondary effect chance</span>
+              </div>
+            }
+          </section>
+
+          <section class="bg-brand-surface border border-brand-line rounded-2xl p-6">
+            <h2
+              class="stat-tile m-0 mb-3.5 text-sm font-bold tracking-wide uppercase text-brand-text"
+            >
+              In-game text
+            </h2>
+            <p
+              class="m-0 pl-4 text-sm italic leading-6 text-brand-muted text-pretty"
+              [style.border-left]="
+                '2px solid color-mix(in srgb, ' + accent() + ' 50%, transparent)'
+              "
+            >
+              "{{ move.flavorText }}"
+            </p>
+          </section>
+        </div>
+      </div>
+    </article>
+  }
+}

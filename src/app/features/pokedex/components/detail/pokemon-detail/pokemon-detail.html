@@ -202,39 +202,41 @@
         class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-6"
       >
         <h2 class="card__title mb-4">Breeding data</h2>
-        <div class="grid flex-1 grid-cols-2 auto-rows-fr gap-3.5">
-          <div class="meta-tile">
-            <span class="meta-tile__label">Catch rate</span>
-            <span class="meta-tile__value">{{ species?.catchRate }}</span>
-            <span class="meta-tile__sub">/ 255</span>
+        @if (species; as species) {
+          <div class="grid flex-1 grid-cols-2 auto-rows-fr gap-3.5">
+            <div class="meta-tile">
+              <span class="meta-tile__label">Catch rate</span>
+              <span class="meta-tile__value">{{ species.catchRate }}</span>
+              <span class="meta-tile__sub">/ 255</span>
+            </div>
+            <div class="meta-tile">
+              <span class="meta-tile__label">Base happiness</span>
+              <span class="meta-tile__value">{{ species.baseHappiness }}</span>
+              <span class="meta-tile__sub">/ 255</span>
+            </div>
+            <div class="meta-tile">
+              <span class="meta-tile__label">Growth rate</span>
+              <span class="meta-tile__value meta-tile__value--text">
+                {{ titleize(species.growthRate) }}
+              </span>
+            </div>
+            <div class="meta-tile">
+              <span class="meta-tile__label">Hatch counter</span>
+              <span class="meta-tile__value meta-tile__value--text">
+                {{ species.hatchCounter }} cycles
+              </span>
+              <span class="meta-tile__sub">~{{ hatchSteps() | number }} steps</span>
+            </div>
           </div>
-          <div class="meta-tile">
-            <span class="meta-tile__label">Base happiness</span>
-            <span class="meta-tile__value">{{ species?.baseHappiness }}</span>
-            <span class="meta-tile__sub">/ 255</span>
+          <div class="mt-5.5">
+            <div class="mini-label">Egg groups</div>
+            <div class="flex flex-wrap gap-2">
+              @for (group of species.eggGroups; track group) {
+                <span class="egg__chip">{{ titleize(group) }}</span>
+              }
+            </div>
           </div>
-          <div class="meta-tile">
-            <span class="meta-tile__label">Growth rate</span>
-            <span class="meta-tile__value meta-tile__value--text">{{
-              titleize(species!.growthRate)
-            }}</span>
-          </div>
-          <div class="meta-tile">
-            <span class="meta-tile__label">Hatch counter</span>
-            <span class="meta-tile__value meta-tile__value--text"
-              >{{ species!.hatchCounter }} cycles</span
-            >
-            <span class="meta-tile__sub">~{{ hatchSteps() | number }} steps</span>
-          </div>
-        </div>
-        <div class="mt-5.5">
-          <div class="mini-label">Egg groups</div>
-          <div class="flex flex-wrap gap-2">
-            @for (group of species?.eggGroups; track group) {
-              <span class="egg__chip">{{ titleize(group) }}</span>
-            }
-          </div>
-        </div>
+        }
       </section>
     </div>
 

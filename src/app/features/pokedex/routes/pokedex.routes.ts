@@ -60,6 +60,13 @@ export const POKEDEX_ROUTES: Routes = [
             (mod) => mod.MoveList,
           ),
       },
+      {
+        path: 'moves/:id',
+        loadComponent: () =>
+          import('@features/pokedex/components/detail/move-detail/move-detail').then(
+            (mod) => mod.MoveDetail,
+          ),
+      },
     ],
   },
 ];
