@@ -1,0 +1,14 @@
+<nav
+  class="w-full border-b border-brand-line bg-brand-bg/80 backdrop-blur-md"
+  [attr.aria-label]="ariaLabel()"
+>
+  <ul class="mx-auto flex max-w-9/12 items-center gap-1 px-6 lg:px-8">
+    @for (item of items(); track item.path) {
+      <li>
+        <a [routerLink]="item.path" routerLinkActive="tab-nav__link--active" class="tab-nav__link">
+          {{ item.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
