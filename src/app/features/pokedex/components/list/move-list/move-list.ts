@@ -14,8 +14,11 @@ import { ListShell } from '@shared/components/list-shell/list-shell';
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
 import { FilterSidebar } from '@shared/components/filter-sidebar/filter-sidebar';
 
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
+
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
+import { TitleCasePipe } from '@angular/common';
 import {
   OnInit,
   inject,
@@ -39,7 +42,7 @@ const CATEGORIES: FilterOption[] = [
 
 @Component({
   selector: 'app-move-list',
-  imports: [ListShell, FilterSidebar, TypeBadge],
+  imports: [ListShell, FilterSidebar, TypeBadge, NameNormalizerPipe, TitleCasePipe],
   templateUrl: './move-list.html',
   styleUrl: './move-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

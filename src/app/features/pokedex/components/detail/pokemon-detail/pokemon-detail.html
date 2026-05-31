@@ -281,7 +281,7 @@
                 Growth rate
               </span>
               <span class="meta-tile__value block mt-2 text-lg font-bold text-brand-text">
-                {{ titleize(species.growthRate) }}
+                {{ species.growthRate | nameNormalizer | titlecase }}
               </span>
             </div>
             <div class="bg-white/4 border border-brand-line rounded-xl py-4 px-4.5">
@@ -307,7 +307,7 @@
                 <span
                   class="egg__chip text-sm font-semibold text-brand-text bg-brand-raised border border-brand-line py-1.5 px-3.5 rounded-xl"
                 >
-                  {{ titleize(group) }}
+                  {{ group | nameNormalizer | titlecase }}
                 </span>
               }
             </div>
@@ -331,9 +331,9 @@
             <button
               type="button"
               class="filter-chip"
+              (click)="toggleMoveMethod(group.key)"
               [class.is-active]="isMethodActive(group.key)"
               [attr.aria-pressed]="isMethodActive(group.key)"
-              (click)="toggleMoveMethod(group.key)"
             >
               {{ group.label }}
               <span class="filter-chip__count">{{ group.entries.length }}</span>
@@ -359,13 +359,13 @@
                   <div class="flex items-center justify-between gap-4 flex-wrap">
                     <div class="flex items-center gap-2.5 min-w-0">
                       <span class="move__name text-lg font-bold text-brand-text capitalize">
-                        {{ titleize(item.entry.move.name) }}
+                        {{ item.entry.move.name | nameNormalizer | titlecase }}
                       </span>
                       <app-type-badge [name]="item.entry.move.type.name" />
                       <span
                         class="move__category text-xs font-bold tracking-wide uppercase text-brand-dim py-0.5 px-2 rounded-full bg-brand-raised border border-brand-line"
                       >
-                        {{ titleize(item.entry.move.category) }}
+                        {{ item.entry.move.category | nameNormalizer | titlecase }}
                       </span>
                     </div>
                     <div class="flex items-center gap-4">

@@ -7,10 +7,13 @@ import { MoveService } from '@core/services/move.service';
 
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
 
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
+
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
 import { map } from 'rxjs';
 
+import { TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
@@ -27,7 +30,7 @@ const CATEGORY_STYLES: Record<MoveCategoryKey, CategoryStyle> = {
 };
 
 @Component({
-  imports: [TypeBadge, RouterLink],
+  imports: [TypeBadge, RouterLink, NameNormalizerPipe, TitleCasePipe],
   selector: 'app-move-detail',
   styleUrl: './move-detail.css',
   templateUrl: './move-detail.html',

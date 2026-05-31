@@ -22,13 +22,15 @@
       </nav>
 
       <div class="move-hero relative overflow-hidden rounded-3xl border border-brand-line">
-        <span class="move-hero__ghost" aria-hidden="true">{{ move.category }}</span>
+        <span class="move-hero__ghost" aria-hidden="true">
+          {{ move.category | nameNormalizer }}
+        </span>
 
         <div class="relative px-10 pt-5 pb-9">
           <h1
-            class="move-hero__title m-0 text-5xl font-bold leading-none tracking-tighter text-brand-text capitalize max-md:text-[2.5rem]"
+            class="move-hero__title m-0 text-5xl font-bold leading-none tracking-tighter text-brand-text max-md:text-[2.5rem]"
           >
-            {{ move.name }}
+            {{ move.name | nameNormalizer | titlecase }}
           </h1>
 
           <div class="flex gap-2 mt-4.5">
@@ -44,7 +46,7 @@
               "
             >
               <span class="text-xs">{{ categoryStyle().glyph }}</span>
-              {{ move.category }}
+              {{ move.category | nameNormalizer }}
             </span>
           </div>
 

@@ -1,13 +1,13 @@
 import { environment } from '@environments/environment';
 
-import { StatRow } from '@shared/interfaces/ui/pokemon-detail/stat-row.interface';
-import { GenderRate } from '@shared/interfaces/ui/pokemon-detail/gender-rate.interface';
-import { VisibleMove } from '@shared/interfaces/ui/pokemon-detail/visible-move.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { MoveEmbed } from '@shared/interfaces/pokemon/move/move-embed.interface';
+import { StatRow } from '@shared/interfaces/ui/pokemon-detail/stat-row.interface';
+import { GenderRate } from '@shared/interfaces/ui/pokemon-detail/gender-rate.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';
 import { SpeciesRead } from '@shared/interfaces/pokemon/pokemon/species-read.interface';
 import { AbilityRead } from '@shared/interfaces/pokemon/ability/ability-read.interface';
+import { VisibleMove } from '@shared/interfaces/ui/pokemon-detail/visible-move.interface';
 
 import { MoveService } from '@core/services/move.service';
 import { PokemonService } from '@core/services/pokemon.service';
@@ -15,6 +15,8 @@ import { SpeciesService } from '@core/services/species.service';
 import { AbilityService } from '@core/services/ability.service';
 
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
+
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
@@ -29,7 +31,7 @@ import {
 
 import { forkJoin, map, of } from 'rxjs';
 
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, TitleCasePipe } from '@angular/common';
 
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -64,7 +66,7 @@ const STAT_COLOR_TIERS: ReadonlyArray<{ readonly threshold: number; readonly col
 const STAT_COLOR_LOWEST = '#E0503F';
 
 @Component({
-  imports: [TypeBadge, DecimalPipe, RouterLink],
+  imports: [TypeBadge, DecimalPipe, TitleCasePipe, NameNormalizerPipe, RouterLink],
   selector: 'app-pokemon-detail',
   styleUrl: './pokemon-detail.css',
   templateUrl: './pokemon-detail.html',
@@ -151,7 +153,7 @@ export class PokemonDetail {
   );
 
   protected readonly error = computed(
-    () => !!this.pokemonResource.error() || !!this.speciesResource.error(),
+    () => this.pokemonResource.error() !== null || this.speciesResource.error() !== null,
   );
 
   protected readonly shiny = signal(false);
@@ -307,13 +309,6 @@ export class PokemonDetail {
 
   protected statColor(value: number): string {
     return STAT_COLOR_TIERS.find((tier) => value >= tier.threshold)?.color ?? STAT_COLOR_LOWEST;
-  }
-
-  protected titleize(value: string): string {
-    return value
-      .split(/[-_\s]/)
-      .map((word) => (word ? word[0].toUpperCase() + word.slice(1) : word))
-      .join(' ');
   }
 
   protected getImgUrl(url: string): string {

@@ -17,7 +17,9 @@
         (click)="onSelect(move.id)"
         class="flex h-20 w-full items-center justify-between gap-3 rounded-2xl border border-brand-line bg-brand-surface p-4 text-left transition hover:-translate-y-0.5 hover:border-brand-red/40"
       >
-        <h3 class="text-brand-text min-w-0 font-bold capitalize">{{ move.name }}</h3>
+        <h3 class="text-brand-text min-w-0 font-bold">
+          {{ move.name | nameNormalizer | titlecase }}
+        </h3>
         <app-type-badge [name]="move.type.name" size="sm" />
       </button>
     }
