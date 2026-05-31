@@ -1,18 +1,5 @@
 <div class="flex h-full w-full flex-col">
-  <nav
-    class="w-full border-b border-brand-line bg-brand-bg/80 backdrop-blur-md"
-    aria-label="Pokédex sections"
-  >
-    <ul class="mx-auto flex max-w-9/12 items-center gap-1 px-6 lg:px-8">
-      @for (item of items; track item.path) {
-        <li>
-          <a [routerLink]="item.path" routerLinkActive="subnav-link--active" class="subnav-link">
-            {{ item.label }}
-          </a>
-        </li>
-      }
-    </ul>
-  </nav>
+  <app-tab-nav [items]="tabs" ariaLabel="Pokedex sections" />
 
   <div class="w-full flex-1 min-h-0">
     <router-outlet />
