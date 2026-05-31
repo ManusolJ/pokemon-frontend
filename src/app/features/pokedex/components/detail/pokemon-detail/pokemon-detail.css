@@ -41,9 +41,12 @@
 }
 
 .hero__watermark {
-  line-height: 1;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
   color: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.hero__watermark,
+.identity {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
 }
 
 .art {
@@ -64,7 +67,7 @@
   filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--accent) 40%, transparent));
 }
 
-.art__toggle button {
+.art__toggle {
   font-family: 'Space Grotesk', system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
@@ -79,49 +82,9 @@
     background-color 150ms;
 }
 
-.art__toggle button.is-active {
+.art__toggle.is-active {
   color: #fff;
   background: color-mix(in srgb, var(--accent) 90%, transparent);
-}
-
-.identity {
-  color: var(--color-brand-text);
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-}
-
-.fact__label {
-  display: block;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: var(--color-brand-dim);
-}
-
-.fact__value {
-  display: block;
-  margin-top: 0.375rem;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 1.375rem;
-  color: var(--color-brand-text);
-}
-
-.fact__unit {
-  font-size: 0.8rem;
-  color: var(--color-brand-muted);
-  margin-left: 0.25rem;
-}
-
-.card__title {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-}
-
-.card__count {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--color-brand-dim);
 }
 
 .tag {
@@ -152,132 +115,17 @@
   border: 1px solid rgb(127 212 232 / 0.34);
 }
 
-.mini-label {
+.ability__hidden {
   font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.66rem;
+  font-size: 0.59rem;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--color-brand-dim);
-  margin-bottom: 0.5rem;
-}
-
-.fact-tile {
-  display: flex;
-  flex-direction: column;
-  background: rgb(255 255 255 / 0.04);
-  border: 1px solid var(--color-brand-line);
-  border-radius: 0.75rem;
-  padding: 0.875rem 1rem;
-}
-
-.gender-bar {
-  display: flex;
-  height: 8px;
+  color: var(--accent);
+  padding: 0.125rem 0.4375rem;
   border-radius: 9999px;
-  overflow: hidden;
-  border: 1px solid var(--color-brand-line);
-}
-
-.gender-bar__male {
-  background: #3f8efc;
-}
-
-.gender-bar__female {
-  background: #ee6fa3;
-}
-
-.gender-legend {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0.375rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.69rem;
-}
-
-.gender-legend .male {
-  color: #6fa8fc;
-}
-
-.gender-legend .female {
-  color: #ee6fa3;
-}
-
-/* -- base stats -- */
-.stat {
-  display: grid;
-  grid-template-columns: 74px 38px 1fr;
-  align-items: center;
-  gap: 0.875rem;
-}
-
-.stat__label {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--color-brand-muted);
-  text-align: right;
-}
-
-.stat__value {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-brand-text);
-  text-align: right;
-}
-
-.stat__track {
-  height: 9px;
-  border-radius: 9999px;
-  background: rgb(255 255 255 / 0.06);
-  overflow: hidden;
-}
-
-.stat__fill {
-  display: block;
-  height: 100%;
-  border-radius: 9999px;
-}
-
-.stat--total .stat__label {
-  font-weight: 700;
-  color: var(--color-brand-text);
-}
-
-.stat--total .stat__value {
-  font-size: 0.94rem;
-}
-
-.movebar {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-brand-line);
-  background: rgb(255 255 255 / 0.015);
-}
-
-.movebar__label {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-brand-text);
-}
-
-.movebar__count {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--color-brand-dim);
-}
-
-.movebar__filters {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-left: auto;
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .filter-chip {
@@ -321,34 +169,6 @@
   color: var(--accent);
 }
 
-.ability {
-  padding: 1.125rem;
-  border-radius: 0.75rem;
-  background: rgb(255 255 255 / 0.03);
-  border: 1px solid var(--color-brand-line);
-}
-
-.ability__name {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-brand-text);
-  text-transform: capitalize;
-}
-
-.ability__hidden {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.59rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--accent);
-  padding: 0.125rem 0.4375rem;
-  border-radius: 9999px;
-  background: color-mix(in srgb, var(--accent) 13%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-}
-
 .moves-scroll {
   max-height: 32rem;
   overflow-y: auto;
@@ -374,156 +194,18 @@
   background: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
-.move {
-  padding: 0.875rem 1.125rem;
-  border-radius: 0.75rem;
-  background: rgb(255 255 255 / 0.03);
-  border: 1px solid var(--color-brand-line);
-}
-
-.move__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.move__name {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-brand-text);
-  text-transform: capitalize;
-}
-
-.move__category {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: var(--color-brand-dim);
-  padding: 0.125rem 0.5rem;
-  border-radius: 9999px;
-  background: var(--color-brand-raised);
-  border: 1px solid var(--color-brand-line);
-}
-
-.move__metrics {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.move__metric {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.375rem;
-}
-
-.move__metric-label {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--color-brand-dim);
-}
-
-.move__metric-value {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-brand-text);
-}
-
-.move__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.move__effect {
-  margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--color-brand-muted);
-  flex: 1;
-  min-width: 0;
-}
-
-.move__learn {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: var(--color-brand-dim);
-  white-space: nowrap;
-  text-transform: capitalize;
-}
-
-.empty__title {
-  margin: 0;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-brand-text);
-}
-
-.empty__sub {
-  margin: 0;
-  max-width: 42ch;
-  font-size: 0.84rem;
-  line-height: 1.5;
-  color: var(--color-brand-dim);
-}
-
-.meta-tile {
-  background: rgb(255 255 255 / 0.04);
-  border: 1px solid var(--color-brand-line);
-  border-radius: 0.75rem;
-  padding: 1rem 1.125rem;
-}
-
-.meta-tile__label {
-  display: block;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: var(--color-brand-dim);
-}
-
-.meta-tile__value {
-  display: block;
-  margin-top: 0.5rem;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-brand-text);
-}
-
-.meta-tile__value--text {
-  font-size: 1.05rem;
-}
-
-.meta-tile__sub {
-  display: block;
-  margin-top: 0.125rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.69rem;
-  color: var(--color-brand-dim);
-}
-
+.card__title,
+.fact__label,
+.fact__value,
+.mini-label,
+.movebar__label,
+.stat__label,
+.ability__name,
+.move__name,
+.move__category,
+.move__metric-label,
+.meta-tile__label,
+.meta-tile__value,
 .egg__chip {
   font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-brand-text);
-  background: var(--color-brand-raised);
-  border: 1px solid var(--color-brand-line);
-  padding: 0.4375rem 0.875rem;
-  border-radius: 0.625rem;
 }

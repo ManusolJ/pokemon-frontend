@@ -26,7 +26,7 @@
 
         <div class="relative px-10 pt-5 pb-9">
           <h1
-            class="move-hero__title m-0 text-[3.25rem] font-bold leading-none tracking-[-1.5px] text-brand-text capitalize max-md:text-[2.5rem]"
+            class="move-hero__title m-0 text-5xl font-bold leading-none tracking-tighter text-brand-text capitalize max-md:text-[2.5rem]"
           >
             {{ move.name }}
           </h1>
@@ -43,7 +43,7 @@
                 '1px solid color-mix(in srgb, ' + categoryStyle().color + ' 32%, transparent)'
               "
             >
-              <span class="text-[0.5625rem]">{{ categoryStyle().glyph }}</span>
+              <span class="text-xs">{{ categoryStyle().glyph }}</span>
               {{ move.category }}
             </span>
           </div>
@@ -60,13 +60,11 @@
             <div
               class="flex flex-col gap-2 min-w-0 px-5 py-4.5 bg-brand-surface border border-brand-line rounded-xl"
             >
-              <span
-                class="stat-tile text-[0.656rem] font-bold tracking-wider uppercase text-brand-dim"
-              >
+              <span class="stat-tile text-xs font-bold tracking-wider uppercase text-brand-dim">
                 {{ tile.label }}
               </span>
               <span
-                class="stat-tile text-[1.875rem] font-bold leading-none"
+                class="stat-tile text-3xl font-bold leading-none"
                 [class.text-brand-dim]="tile.faded"
                 [class.text-brand-text]="!tile.faded"
                 [style.color]="tile.accent && !tile.faded ? accent() : null"

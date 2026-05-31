@@ -29,9 +29,7 @@
       }
     </nav>
 
-    <section
-      class="hero overflow-hidden relative rounded-3xl border border-solid border-brand-line"
-    >
+    <section class="hero relative overflow-hidden rounded-3xl border border-brand-line">
       <span
         class="hero__watermark absolute -top-9 right-6 font-extrabold text-[16rem] tracking-tighter pointer-events-none select-none"
         aria-hidden="true"
@@ -40,20 +38,30 @@
       </span>
 
       <div class="relative grid grid-cols-[360px_1fr] gap-10 items-center px-8 py-10">
-        <div class="art relative text-center p-6 rounded-2xl border border-solid">
+        <div class="art relative text-center p-6 rounded-2xl border">
           @if (artwork(); as imgUrl) {
             <img [src]="getImgUrl(imgUrl)" [alt]="pokemon?.name" />
           }
           <div
-            class="art__toggle inline-flex mt-2 gap-1 p-1 rounded-full border border-solid border-brand-line bg-brand-bg"
+            class="inline-flex mt-2 gap-1 p-1 rounded-full border border-brand-line bg-brand-bg"
             role="group"
             aria-label="Artwork variant"
           >
-            <button type="button" [class.is-active]="!shiny()" (click)="setShiny(false)">
+            <button
+              type="button"
+              class="art__toggle"
+              [class.is-active]="!shiny()"
+              (click)="setShiny(false)"
+            >
               Default
             </button>
             @if (pokemon?.artworkShiny) {
-              <button type="button" [class.is-active]="shiny()" (click)="setShiny(true)">
+              <button
+                type="button"
+                class="art__toggle"
+                [class.is-active]="shiny()"
+                (click)="setShiny(true)"
+              >
                 Shiny
               </button>
             }
@@ -95,60 +103,87 @@
             }
           </div>
         }
-        <p class="m-0 text-sm italic leading-8 text-brand-muted border-l-2 border-solid pl-4">
+        <p class="m-0 text-sm italic leading-8 text-brand-muted border-l-2 pl-4">
           "{{ species?.flavorText }}"
         </p>
         <div class="h-px bg-white/4.5 my-5.5"></div>
         <div class="grid flex-1 grid-cols-2 auto-rows-fr gap-3">
-          <div class="fact-tile">
-            <span class="fact__label">Generation</span>
-            <span class="fact__value">{{ generationLabel() }}</span>
+          <div class="flex flex-col bg-white/4 border border-brand-line rounded-xl py-3.5 px-4">
+            <span
+              class="fact__label block text-xs font-bold tracking-[0.8px] uppercase text-brand-dim"
+            >
+              Generation
+            </span>
+            <span class="fact__value block mt-1.5 text-[1.375rem] font-bold text-brand-text">
+              {{ generationLabel() }}
+            </span>
           </div>
-          <div class="fact-tile">
-            <span class="fact__label">Gender ratio</span>
+          <div class="flex flex-col bg-white/4 border border-brand-line rounded-xl py-3.5 px-4">
+            <span
+              class="fact__label block text-xs font-bold tracking-[0.8px] uppercase text-brand-dim"
+            >
+              Gender ratio
+            </span>
             @if (gender().genderless) {
               <span class="mt-1.5 text-sm font-semibold text-brand-muted">Genderless</span>
             } @else {
-              <div class="gender-bar mt-2.5">
-                <span class="gender-bar__male" [style.width.%]="gender().male"></span>
-                <span class="gender-bar__female" [style.width.%]="gender().female"></span>
+              <div class="flex h-2 mt-2.5 rounded-full overflow-hidden border border-brand-line">
+                <span class="bg-[#3f8efc]" [style.width.%]="gender().male"></span>
+                <span class="bg-[#ee6fa3]" [style.width.%]="gender().female"></span>
               </div>
-              <div class="gender-legend">
-                <span class="male"><i class="pi pi-mars text-xs"></i>{{ gender().male }}%</span>
-                <span class="female"
-                  ><i class="pi pi-venus text-xs"></i>{{ gender().female }}%</span
-                >
+              <div class="flex justify-between mt-1.5 font-mono text-xs">
+                <span class="text-[#6fa8fc]">
+                  <i class="pi pi-mars text-xs"></i>{{ gender().male }}%
+                </span>
+                <span class="text-[#ee6fa3]">
+                  <i class="pi pi-venus text-xs"></i>{{ gender().female }}%
+                </span>
               </div>
             }
           </div>
-          <div class="fact-tile">
-            <span class="fact__label">Height</span>
-            <span class="fact__value"
-              >{{ pokemon?.heightInMeters }}<span class="fact__unit">m</span></span
+          <div class="flex flex-col bg-white/4 border border-brand-line rounded-xl py-3.5 px-4">
+            <span
+              class="fact__label block text-xs font-bold tracking-wider uppercase text-brand-dim"
             >
+              Height
+            </span>
+            <span class="fact__value block mt-1.5 text-2xl font-bold text-brand-text">
+              {{ pokemon?.heightInMeters }}<span class="text-xs text-brand-muted ml-1">m</span>
+            </span>
           </div>
-          <div class="fact-tile">
-            <span class="fact__label">Weight</span>
-            <span class="fact__value"
-              >{{ pokemon?.weightInKilograms }}<span class="fact__unit">kg</span></span
+          <div class="flex flex-col bg-white/4 border border-brand-line rounded-xl py-3.5 px-4">
+            <span
+              class="fact__label block text-xs font-bold tracking-wider uppercase text-brand-dim"
             >
+              Weight
+            </span>
+            <span class="fact__value block mt-1.5 text-2xl font-bold text-brand-text">
+              {{ pokemon?.weightInKilograms
+              }}<span class="text-wider text-brand-muted ml-1">kg</span>
+            </span>
           </div>
         </div>
       </section>
 
       <section class="h-full bg-brand-surface border border-brand-line rounded-2xl p-6">
         <div class="flex items-baseline justify-between">
-          <h2 class="card__title mb-0">Base stats</h2>
-          <span class="card__count">Total {{ statTotal() }}</span>
+          <h2 class="card__title mb-0 text-sm font-bold uppercase text-brand-text tracking-wide">
+            Base stats
+          </h2>
+          <span class="font-mono text-xs text-brand-dim">Total {{ statTotal() }}</span>
         </div>
-        <div class="flex flex-col gap-3.25">
+        <div class="flex flex-col gap-3.25 mt-4">
           @for (row of statRows(); track row.label) {
-            <div class="stat">
-              <span class="stat__label">{{ row.label }}</span>
-              <span class="stat__value">{{ row.value }}</span>
-              <span class="stat__track">
+            <div class="grid grid-cols-[74px_38px_1fr] items-center gap-3.5">
+              <span class="stat__label text-xs font-semibold text-brand-muted text-right">
+                {{ row.label }}
+              </span>
+              <span class="stat__value font-mono text-sm font-bold text-brand-text text-right">
+                {{ row.value }}
+              </span>
+              <span class="h-2.25 rounded-full bg-white/6 overflow-hidden">
                 <span
-                  class="stat__fill"
+                  class="block h-full rounded-full"
                   [style.width.%]="statBarPercent(row.value)"
                   [style.background]="
                     'linear-gradient(90deg, color-mix(in srgb, ' +
@@ -162,9 +197,14 @@
             </div>
           }
           <div class="h-px bg-brand-line my-1.25"></div>
-          <div class="stat stat--total">
-            <span class="stat__label">Total</span>
-            <span class="stat__value" [style.color]="accent()">{{ statTotal() }}</span>
+          <div class="grid grid-cols-[74px_38px_1fr] items-center gap-3.5">
+            <span class="stat__label text-xs font-bold text-brand-text text-right"> Total </span>
+            <span
+              class="stat__value font-mono text-sm font-bold text-right"
+              [style.color]="accent()"
+            >
+              {{ statTotal() }}
+            </span>
             <span></span>
           </div>
         </div>
@@ -176,22 +216,28 @@
         class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-6"
       >
         <div class="flex items-baseline justify-between">
-          <h2 class="card__title mb-4">Abilities</h2>
-          <span class="card__count">{{ pokemon?.abilities?.length }}</span>
+          <h2 class="card__title mb-4 text-sm font-bold uppercase text-brand-text tracking-wide">
+            Abilities
+          </h2>
+          <span class="font-mono text-xs text-brand-dim">
+            {{ pokemon?.abilities?.length }}
+          </span>
         </div>
         <div class="flex flex-1 flex-col gap-3.5">
           @for (embed of pokemon?.abilities; track embed.slot) {
-            <div class="ability flex flex-1 flex-col justify-center">
+            <div
+              class="flex flex-1 flex-col justify-center p-4.5 rounded-xl bg-white/3 border border-brand-line"
+            >
               <div class="flex items-center gap-2.25 mb-2">
-                <span class="ability__name">{{ embed.ability.name }}</span>
+                <span class="ability__name text-base font-bold text-brand-text capitalize">
+                  {{ embed.ability.name }}
+                </span>
                 @if (embed.isHidden) {
                   <span class="ability__hidden">Hidden</span>
                 }
               </div>
               @if (abilityDetails().get(embed.ability.id); as detail) {
-                <p class="text-sm leading-1.5 text-brand-muted">
-                  {{ detail.shortEffect }}
-                </p>
+                <p class="text-sm leading-6 text-brand-muted">{{ detail.shortEffect }}</p>
               }
             </div>
           }
@@ -201,38 +247,68 @@
       <section
         class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-6"
       >
-        <h2 class="card__title mb-4">Breeding data</h2>
+        <h2 class="card__title mb-4 text-sm font-bold uppercase text-brand-text tracking-wide">
+          Breeding data
+        </h2>
         @if (species; as species) {
           <div class="grid flex-1 grid-cols-2 auto-rows-fr gap-3.5">
-            <div class="meta-tile">
-              <span class="meta-tile__label">Catch rate</span>
-              <span class="meta-tile__value">{{ species.catchRate }}</span>
-              <span class="meta-tile__sub">/ 255</span>
+            <div class="bg-white/4 border border-brand-line rounded-xl py-4 px-4.5">
+              <span
+                class="meta-tile__label block text-xs font-bold tracking-wider uppercase text-brand-dim"
+              >
+                Catch rate
+              </span>
+              <span class="meta-tile__value block mt-2 text-xl font-bold text-brand-text">
+                {{ species.catchRate }}
+              </span>
+              <span class="block mt-0.5 font-mono text-xs text-brand-dim">/ 255</span>
             </div>
-            <div class="meta-tile">
-              <span class="meta-tile__label">Base happiness</span>
-              <span class="meta-tile__value">{{ species.baseHappiness }}</span>
-              <span class="meta-tile__sub">/ 255</span>
+            <div class="bg-white/4 border border-brand-line rounded-xl py-4 px-4.5">
+              <span
+                class="meta-tile__label block text-xs font-bold tracking-[0.8px] uppercase text-brand-dim"
+              >
+                Base happiness
+              </span>
+              <span class="meta-tile__value block mt-2 text-xl font-bold text-brand-text">
+                {{ species.baseHappiness }}
+              </span>
+              <span class="block mt-0.5 font-mono text-xs text-brand-dim">/ 255</span>
             </div>
-            <div class="meta-tile">
-              <span class="meta-tile__label">Growth rate</span>
-              <span class="meta-tile__value meta-tile__value--text">
+            <div class="bg-white/4 border border-brand-line rounded-xl py-4 px-4.5">
+              <span
+                class="meta-tile__label block text-xs font-bold tracking-[0.8px] uppercase text-brand-dim"
+              >
+                Growth rate
+              </span>
+              <span class="meta-tile__value block mt-2 text-lg font-bold text-brand-text">
                 {{ titleize(species.growthRate) }}
               </span>
             </div>
-            <div class="meta-tile">
-              <span class="meta-tile__label">Hatch counter</span>
-              <span class="meta-tile__value meta-tile__value--text">
+            <div class="bg-white/4 border border-brand-line rounded-xl py-4 px-4.5">
+              <span
+                class="meta-tile__label block text-xs font-bold tracking-wider uppercase text-brand-dim"
+              >
+                Hatch counter
+              </span>
+              <span class="meta-tile__value block mt-2 text-lg font-bold text-brand-text">
                 {{ species.hatchCounter }} cycles
               </span>
-              <span class="meta-tile__sub">~{{ hatchSteps() | number }} steps</span>
+              <span class="block mt-0.5 font-mono text-xs text-brand-dim">
+                ~{{ hatchSteps() | number }} steps
+              </span>
             </div>
           </div>
           <div class="mt-5.5">
-            <div class="mini-label">Egg groups</div>
+            <div class="mini-label text-xs font-bold tracking-wider uppercase text-brand-dim mb-2">
+              Egg groups
+            </div>
             <div class="flex flex-wrap gap-2">
               @for (group of species.eggGroups; track group) {
-                <span class="egg__chip">{{ titleize(group) }}</span>
+                <span
+                  class="egg__chip text-sm font-semibold text-brand-text bg-brand-raised border border-brand-line py-1.5 px-3.5 rounded-xl"
+                >
+                  {{ titleize(group) }}
+                </span>
               }
             </div>
           </div>
@@ -241,10 +317,16 @@
     </div>
 
     <section class="mt-5 bg-brand-surface border border-brand-line rounded-2xl overflow-hidden">
-      <div class="movebar">
-        <span class="movebar__label">Moves</span>
-        <span class="movebar__count">{{ visibleMoves().length }}</span>
-        <div class="movebar__filters" role="group" aria-label="Filter moves by learn method">
+      <div
+        class="flex items-center gap-3 flex-wrap px-5 py-4 border-b border-brand-line bg-white/1.5"
+      >
+        <span class="movebar__label text-sm font-bold text-brand-text">Moves</span>
+        <span class="font-mono text-xs text-brand-dim">{{ visibleMoves().length }}</span>
+        <div
+          class="flex items-center gap-2 flex-wrap ml-auto"
+          role="group"
+          aria-label="Filter moves by learn method"
+        >
           @for (group of moveGroups(); track group.key) {
             <button
               type="button"
@@ -264,8 +346,8 @@
         @let moves = visibleMoves();
         @if (moves.length === 0) {
           <div class="flex flex-col items-center justify-center text-center gap-2 py-10 px-4">
-            <p class="empty__title">No moves to show</p>
-            <p class="empty__sub">
+            <p class="m-0 text-base font-bold text-brand-text">No moves to show</p>
+            <p class="m-0 max-w-[42ch] text-[0.84rem] leading-6 text-brand-dim">
               Enable a learn-method filter above to see how this Pokemon learns its moves.
             </p>
           </div>
@@ -273,33 +355,61 @@
           <div class="moves-scroll">
             <div class="flex flex-col gap-2.5">
               @for (item of moves; track item.methodKey + '-' + item.entry.move.id) {
-                <div class="move">
-                  <div class="move__row">
+                <div class="p-4.5 rounded-xl bg-white/3 border border-brand-line">
+                  <div class="flex items-center justify-between gap-4 flex-wrap">
                     <div class="flex items-center gap-2.5 min-w-0">
-                      <span class="move__name">{{ titleize(item.entry.move.name) }}</span>
+                      <span class="move__name text-lg font-bold text-brand-text capitalize">
+                        {{ titleize(item.entry.move.name) }}
+                      </span>
                       <app-type-badge [name]="item.entry.move.type.name" />
-                      <span class="move__category">{{ titleize(item.entry.move.category) }}</span>
+                      <span
+                        class="move__category text-xs font-bold tracking-wide uppercase text-brand-dim py-0.5 px-2 rounded-full bg-brand-raised border border-brand-line"
+                      >
+                        {{ titleize(item.entry.move.category) }}
+                      </span>
                     </div>
-                    <div class="move__metrics">
-                      <span class="move__metric">
-                        <span class="move__metric-label">PWR</span>
-                        <span class="move__metric-value">{{ item.entry.move.power || '—' }}</span>
+                    <div class="flex items-center gap-4">
+                      <span class="inline-flex items-baseline gap-1.5">
+                        <span
+                          class="move__metric-label text-[0.6rem] font-bold tracking-wide uppercase text-brand-dim"
+                        >
+                          PWR
+                        </span>
+                        <span class="font-mono text-[0.85rem] font-bold text-brand-text">
+                          {{ item.entry.move.power || '&mdash;' }}
+                        </span>
                       </span>
-                      <span class="move__metric">
-                        <span class="move__metric-label">ACC</span>
-                        <span class="move__metric-value">{{
-                          item.entry.move.accuracy || '—'
-                        }}</span>
+                      <span class="inline-flex items-baseline gap-1.5">
+                        <span
+                          class="move__metric-label text-[0.6rem] font-bold tracking-wide uppercase text-brand-dim"
+                        >
+                          ACC
+                        </span>
+                        <span class="font-mono text-[0.85rem] font-bold text-brand-text">
+                          {{ item.entry.move.accuracy || '&mdash;' }}
+                        </span>
                       </span>
-                      <span class="move__metric">
-                        <span class="move__metric-label">PP</span>
-                        <span class="move__metric-value">{{ item.entry.move.pp }}</span>
+                      <span class="inline-flex items-baseline gap-1.5">
+                        <span
+                          class="move__metric-label text-[0.6rem] font-bold tracking-wide uppercase text-brand-dim"
+                        >
+                          PP
+                        </span>
+                        <span class="font-mono text-[0.85rem] font-bold text-brand-text">
+                          {{ item.entry.move.pp }}
+                        </span>
                       </span>
                     </div>
                   </div>
-                  <div class="move__footer">
-                    <p class="move__effect">{{ item.entry.move.shortEffect }}</p>
-                    <span class="move__learn">{{ item.learnLabel }}</span>
+                  <div class="flex items-center justify-between gap-4 mt-2">
+                    <p class="m-0 flex-1 min-w-0 text-[0.8125rem] leading-6 text-brand-muted">
+                      {{ item.entry.move.shortEffect }}
+                    </p>
+                    <span
+                      class="font-mono text-[0.7rem] text-brand-dim whitespace-nowrap capitalize"
+                    >
+                      {{ item.learnLabel }}
+                    </span>
                   </div>
                 </div>
               }
