@@ -1,18 +1,6 @@
 :host {
-  display: block;
   width: 100%;
-}
-
-.tab-nav__link {
-  display: flex;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-brand-muted);
-  border-bottom: 2px solid transparent;
-  transition:
-    color 150ms,
-    border-color 150ms;
+  display: block;
 }
 
 .tab-nav__link:hover {

@@ -5,7 +5,15 @@
   <ul class="mx-auto flex max-w-9/12 items-center gap-1 px-6 lg:px-8">
     @for (item of items(); track item.path) {
       <li>
-        <a [routerLink]="item.path" routerLinkActive="tab-nav__link--active" class="tab-nav__link">
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="tab-nav__link--active"
+          class="inline-flex items-center gap.2 px-3 py-4 text-sm font-semibold text-brand-muted border-b-2 border-solid border-transparent hover:text-brand-text"
+        >
+          <i
+            class="pi inline-flex items-center gap-2 py-3 pr-2 pl-1 text-sm text-brand-red"
+            [class]="item.icon"
+          ></i>
           {{ item.label }}
         </a>
       </li>
