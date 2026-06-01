@@ -1,5 +1,5 @@
 export interface TypeFilter {
-  id: number | null;
-  name: string | null;
-  nameExact: string | null;
+  id?: number;
+  name?: string;
+  nameExact?: string;
 }

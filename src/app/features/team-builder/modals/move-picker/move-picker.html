@@ -1,1 +1,139 @@
-<p>move-picker works!</p>
+<app-modal [open]="open()" title="Choose a move" size="md" (closed)="closed.emit()">
+  <div modal-toolbar class="flex flex-col gap-3">
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <div
+        class="flex flex-1 min-w-48 items-center gap-2 px-2.5 py-3 bg-brand-raised border border-solid border-brand-line rounded-xl text-brand-dim transition-colors focus-within:border-brand-red/50"
+      >
+        <i class="pi pi-search"></i>
+        <input
+          #nameSearch
+          type="text"
+          autofocus
+          placeholder="Filter by move name…"
+          class="flex-1 bg-transparent border-0 outline-0 text-brand-text text-sm"
+          [value]="query()"
+          (input)="onSearch(nameSearch.value)"
+        />
+      </div>
+
+      <div
+        class="inline-flex gap-1 p-1 bg-brand-raised border border-solid border-brand-line rounded-lg"
+        role="group"
+        aria-label="Damage class"
+      >
+        @for (option of categoryOptions; track option.id) {
+          <button
+            type="button"
+            (click)="setCategory(option.id)"
+            [class.is-active]="category() === option.id"
+            class="seg-btn px-3 py-1.5 rounded-md text-xs font-semibold text-brand-muted bg-transparent border-0 cursor-pointer transition-colors hover:text-brand-text"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <div class="flex flex-wrap flex-1 gap-1.5 min-w-0">
+        @for (type of poolTypes(); track type.id) {
+          <button
+            type="button"
+            (click)="toggleType(type.id)"
+            [style.--accent]="typeColor(type.name)"
+            [class.is-active]="typeId() === type.id"
+            class="filter-chip capitalize px-2.5 py-1 rounded-md text-xs font-semibold text-brand-muted bg-white/3 border border-solid border-brand-line cursor-pointer transition-colors hover:text-brand-text hover:border-(--accent)/40"
+          >
+            {{ type.name }}
+          </button>
+        }
+      </div>
+
+      <div class="inline-flex items-center gap-1">
+        <span class="text-[0.625rem] font-bold tracking-wider uppercase text-brand-dim mr-1">
+          Sort
+        </span>
+        @for (option of sortOptions; track option.id) {
+          <button
+            type="button"
+            (click)="setSort(option.id)"
+            [class.is-active]="sort() === option.id"
+            class="seg-btn px-2.5 py-1 rounded-md text-xs font-semibold text-brand-muted bg-transparent border-0 cursor-pointer transition-colors hover:text-brand-text"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="px-2.5 pt-2 pb-3">
+    @if (loading()) {
+      <p class="text-center text-brand-dim py-10 text-sm">Loading moves…</p>
+    } @else if (visible().length === 0) {
+      <p class="text-center text-brand-dim py-10 text-sm">No moves match those filters.</p>
+    } @else {
+      <div
+        class="flex items-center gap-2.5 px-3 py-2 mb-0.5 border-b border-white/5 text-[0.625rem] font-bold tracking-wider uppercase text-brand-dim"
+      >
+        <span class="flex-1 min-w-0">Move</span>
+        <span class="w-22 shrink-0">Type</span>
+        <span class="w-10 shrink-0 text-center">Class</span>
+        <span class="w-10 shrink-0 text-right">Pwr</span>
+        <span class="w-10 shrink-0 text-right">Acc</span>
+      </div>
+
+      @if (currentMove()) {
+        <button
+          type="button"
+          (click)="clear()"
+          class="flex items-center gap-2 w-full px-3 py-2.5 my-3 bg-transparent border border-dashed border-brand-line rounded-lg text-brand-dim text-sm cursor-pointer transition-colors hover:text-brand-text hover:border-brand-red"
+        >
+          <i class="pi pi-times"></i>
+          Clear this move slot
+        </button>
+      }
+
+      @for (move of visible(); track move.id) {
+        <button
+          type="button"
+          (click)="onPick(move)"
+          [class.is-current]="isCurrent(move)"
+          [class.is-disabled]="!isCurrent(move) && disabledSet().has(move.id)"
+          [style.--accent]="typeColor(move.type.name)"
+          [disabled]="!isCurrent(move) && disabledSet().has(move.id)"
+          class="move-row flex items-center gap-2.5 w-full px-3 py-2.5 rounded-lg bg-transparent border border-transparent text-left text-brand-text cursor-pointer transition-colors"
+        >
+          <span class="flex flex-1 min-w-0 items-center gap-2">
+            <span class="size-1.5 shrink-0 rounded-full bg-(--accent)" aria-hidden="true"></span>
+            <span class="font-semibold text-sm capitalize truncate">
+              {{ move.name }}
+              @if (!isCurrent(move) && disabledSet().has(move.id)) {
+                <span class="ml-1.5 text-xs font-normal text-brand-dim normal-case">in set</span>
+              }
+            </span>
+          </span>
+          <span class="w-22 shrink-0">
+            @if (move.type) {
+              <app-type-badge [name]="move.type.name" size="sm" />
+            }
+          </span>
+          <span class="w-10 shrink-0 text-center">
+            <span
+              class="move__cat inline-block font-mono text-[0.5625rem] font-bold tracking-wider px-1.5 py-0.5 rounded-[5px]"
+              [class]="categoryClass(move.category)"
+            >
+              {{ categoryAbbr(move.category) }}
+            </span>
+          </span>
+          <span class="w-10 shrink-0 text-right font-mono text-xs text-brand-muted">
+            {{ move.power || '—' }}
+          </span>
+          <span class="w-10 shrink-0 text-right font-mono text-xs text-brand-dim">
+            {{ move.accuracy || '—' }}
+          </span>
+        </button>
+      }
+    }
+  </div>
+</app-modal>

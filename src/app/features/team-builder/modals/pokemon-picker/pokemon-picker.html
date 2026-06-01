@@ -1,1 +1,87 @@
-<p>pokemon-picker works!</p>
+<app-modal [open]="open()" title="Add Pokemon" (closed)="closed.emit()">
+  <div modal-toolbar class="flex flex-col gap-3">
+    <div
+      class="flex items-center gap-2 px-2.5 py-3 bg-brand-raised border border-solid border-brand-line rounded-xl text-brand-dim"
+    >
+      <i class="pi pi-search"></i>
+      <input
+        #nameSearch
+        type="text"
+        autofocus
+        placeholder="Search by name…"
+        class="flex-1 bg-transparent border-0 outline-0 text-brand-text text-sm"
+        [value]="query()"
+        (input)="onSearch(nameSearch.value)"
+      />
+    </div>
+
+    <div class="flex gap-1.5">
+      @for (type of types(); track type.id) {
+        <button
+          type="button"
+          (click)="toggleType(type.id)"
+          [style.--accent]="getTypeColor(type.name)"
+          [class.is-active]="typeId() === type.id"
+          class="capitalize px-3 py-2 rounded-md border border-solid border-brand-line font-semibold text-brand-muted text-xs cursor-pointer bg-black/5 transition-colors hover:text-brand-text hover:border-(--accent)/40"
+        >
+          {{ type.name }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="p-5">
+    @if (loading()) {
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
+        @for (skeleton of skeletons(); track $index) {
+          <p-skeleton height="12rem"></p-skeleton>
+        }
+      </div>
+    } @else if (pokemon().length === 0) {
+      <p class="text-center text-brand-dim px-10 text-sm">No Pokémon match those filters.</p>
+    } @else {
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
+        @for (pokemon of pokemon(); track pokemon.id) {
+          <button
+            type="button"
+            (click)="onPick(pokemon)"
+            [style.--accent]="getTypeColor(pokemon.primaryType.name)"
+            class="card relative flex flex-col items-center justify-start gap-2 h-48 px-3 pt-3 pb-3.5 rounded-xl cursor-pointer text-center overflow-hidden"
+          >
+            <span class="w-20 h-20 shrink-0 flex items-center justify-center">
+              @if (pokemon.spriteDefault) {
+                <img
+                  [src]="getImgUrl(pokemon.spriteDefault)"
+                  [alt]="pokemon.name"
+                  loading="lazy"
+                  class="w-full h-full object-contain"
+                />
+              }
+            </span>
+            <span
+              class="font-semibold text-sm capitalize text-brand-text line-clamp-2 leading-5 min-h-10"
+            >
+              {{ pokemon.name | nameNormalizer }}
+            </span>
+            <span class="flex flex-wrap gap-1 justify-center min-h-5">
+              @for (type of typesOf(pokemon); track type.id) {
+                <app-type-badge [name]="type.name" size="sm" />
+              }
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <div modal-footer>
+    <p-paginator
+      class="paginator-dark"
+      [rows]="pageSize"
+      [pageLinkSize]="5"
+      [alwaysShow]="true"
+      [totalRecords]="totalRecords()"
+      [first]="currentPage() * pageSize"
+      (onPageChange)="onPageChange($event)"
+    />
+  </div>
+</app-modal>
