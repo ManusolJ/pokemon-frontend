@@ -1,0 +1,152 @@
+<div class="flex flex-col gap-3 px-4 py-4 h-full overflow-hidden">
+  <div
+    class="flex items-center gap-3 px-3.5 py-4 bg-brand-surface border border-solid border-brand-line rounded-2xl"
+  >
+    <label
+      class="flex flex-1 items-center gap-2.5 px-2.5 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg transition-colors duration-100"
+    >
+      <i class="pi pi-pencil inline-flex text-brand-dim"></i>
+      <input
+        #teamNameInput
+        type="text"
+        [value]="state.teamName()"
+        placeholder="Untitled team"
+        (input)="state.setTeamName(teamNameInput.value)"
+        class="flex-1 bg-transparent border-none outline-none text-brand-text text-sm font-semibold tracking-tight"
+        maxlength="40"
+        aria-label="Team name"
+      />
+    </label>
+
+    <div class="flex shrink-0 gap-3">
+      <button
+        type="button"
+        (click)="state.togglePrivate()"
+        [class.text-brand-text]="state.isPrivate()"
+        class="meta__btn inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
+        [attr.aria-pressed]="state.isPrivate()"
+      >
+        @if (state.isPrivate()) {
+          <span class="flex items-center gap-2 text-sm"><i class="pi pi-lock"></i>Private</span>
+        } @else {
+          <span class="flex items-center gap-2 text-sm"><i class="pi pi-lock-open"></i>Public</span>
+        }
+      </button>
+
+      <button
+        type="button"
+        (click)="resetAll()"
+        [disabled]="!state.isDirty()"
+        [class.text-brand-text]="state.isDirty()"
+        class="meta__btn inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
+      >
+        <span class="flex items-center gap-2 text-sm"><i class="pi pi-history"></i>Reset</span>
+      </button>
+
+      @if (isAuthenticated()) {
+        <button
+          type="button"
+          (click)="save()"
+          [disabled]="!canSave()"
+          class="meta__btn meta__btn--primary inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
+        >
+          <span class="flex items-center gap-2 text-sm">
+            <i class="pi pi-save"></i>{{ saving() ? 'Saving…' : 'Save Team' }}
+          </span>
+        </button>
+      } @else {
+        <a
+          routerLink="/auth/login"
+          class="meta__btn meta__btn--primary inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
+        >
+          <span class="flex items-center gap-2 text-sm">
+            <i class="pi pi-sign-in"></i>Log in to save
+          </span>
+        </a>
+      }
+    </div>
+  </div>
+
+  @if (optionsError()) {
+    <div
+      class="flex items-center gap-2 px-3.5 py-2.5 bg-brand-wine/20 border border-brand-crimson/40 rounded-lg text-sm text-brand-text"
+      role="status"
+    >
+      <i class="pi pi-exclamation-triangle text-brand-red"></i>
+      Some pickers couldn't load their options. You can still build, but item, ability, nature, or
+      tera-type lists may be incomplete.
+    </div>
+  }
+
+  @if (saveError(); as message) {
+    <div
+      class="flex items-center gap-2 px-3.5 py-2.5 bg-brand-wine/20 border border-brand-crimson/40 rounded-lg text-sm text-brand-text"
+      role="alert"
+    >
+      <i class="pi pi-times-circle text-brand-red"></i>
+      {{ message }}
+    </div>
+  }
+
+  <div class="grid grid-cols-2 gap-3 flex-1 min-h-0">
+    <div class="flex flex-col gap-3 min-h-0">
+      <section
+        class="flex-1 min-h-0 overflow-hidden flex flex-col gap-3 bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+      >
+        <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
+          Selected Pokemon
+        </span>
+        <div class="flex-1 min-h-0 overflow-hidden">
+          <app-selected-pokemon
+            [items]="items()"
+            [types]="types()"
+            [natures]="natures()"
+            [member]="state.activeMember()"
+            [abilities]="abilities()"
+            (memberChange)="state.updateActiveMember($event)"
+            (openMovePicker)="onOpenMovePicker($event)"
+          />
+        </div>
+      </section>
+    </div>
+
+    <div class="flex flex-col gap-3 min-h-0">
+      <section
+        class="flex flex-col gap-3 shrink-0 bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+      >
+        <app-team-grid
+          [members]="state.members()"
+          [activeIndex]="state.activeIndex()"
+          (slotAdd)="onSlotAdd($event)"
+          (slotSelect)="state.setActiveIndex($event)"
+          (slotRemove)="state.removeMember($event)"
+        />
+      </section>
+      <section
+        class="flex flex-1 min-h-0 overflow-hidden flex-col gap-3 bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+      >
+        <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
+          Stat spread
+        </span>
+        <div class="flex-1 min-h-0 overflow-hidden">
+          <app-stat-spread [member]="state.activeMember()" (memberChange)="state.updateActiveMember($event)" />
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<app-pokemon-picker
+  (picked)="onPokemonPicked($event)"
+  (closed)="onPokemonPickerClosed()"
+  [open]="pokemonPickerSlot() !== null"
+/>
+
+<app-move-picker
+  [currentMove]="currentMove()"
+  (picked)="onMovePicked($event)"
+  (closed)="onMovePickerClosed()"
+  [open]="movePickerSlot() !== null"
+  [disabledMoveIds]="disabledMoveIds()"
+  [pokemonId]="state.activeMember()?.pokemonId ?? null"
+/>

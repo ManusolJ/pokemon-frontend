@@ -1,0 +1,40 @@
+:host {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.meta__btn {
+  transition:
+    color 120ms,
+    border-color 120ms,
+    background-color 120ms;
+}
+
+.meta__btn:hover {
+  color: var(--color-brand-text);
+  border-color: color-mix(in srgb, var(--color-brand-red) 45%, transparent);
+}
+
+.meta__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.meta__btn:disabled:hover {
+  color: var(--color-brand-muted);
+  border-color: var(--color-brand-line);
+}
+
+.meta__btn--primary {
+  color: #fff;
+  background: var(--color-brand-red);
+  border-color: var(--color-brand-red);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-brand-red) 32%, transparent);
+}
+
+.meta__btn--primary:hover {
+  color: #fff;
+  background: var(--color-brand-red-600);
+  border-color: var(--color-brand-red-600);
+}

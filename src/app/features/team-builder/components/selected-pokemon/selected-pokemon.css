@@ -1,0 +1,112 @@
+:host {
+  height: 100%;
+  display: flex;
+}
+
+.identity__big-num,
+.identity__name,
+.basics__label,
+.move-row__name {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.basics__label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-brand-dim);
+}
+
+.identity {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 16%, transparent),
+    color-mix(in srgb, var(--accent-b) 5%, transparent) 70%
+  );
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+.identity__big-num {
+  color: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+.identity__art img {
+  image-rendering: pixelated;
+  filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--accent) 45%, transparent));
+}
+
+.identity__art--shiny img {
+  filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--accent) 45%, transparent))
+    drop-shadow(0 0 8px #f7d02c) saturate(1.18) hue-rotate(-10deg);
+}
+
+.identity__sparkle {
+  color: #f7d02c;
+  text-shadow: 0 0 10px rgb(247 208 44 / 0.85);
+}
+
+.basics__shiny-track {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.basics__shiny.is-on .basics__shiny-row {
+  background: color-mix(in srgb, #f7d02c 16%, var(--color-brand-raised));
+  border-color: color-mix(in srgb, #f7d02c 50%, transparent);
+}
+
+.basics__shiny.is-on .basics__shiny-sparkle {
+  color: #f7d02c;
+  text-shadow: 0 0 8px rgb(247 208 44 / 0.7);
+}
+
+.basics__shiny.is-on .basics__shiny-track {
+  background: #f7d02c;
+}
+
+.basics__shiny.is-on .basics__shiny-thumb {
+  transform: translateX(14px);
+}
+
+.move-row {
+  border-left-color: var(--accent);
+  transition:
+    border-color 140ms,
+    background-color 140ms;
+}
+
+.move-row.is-filled {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 12%, var(--color-brand-raised)),
+    var(--color-brand-raised) 65%
+  );
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  border-left-color: var(--accent);
+}
+
+.move-row:hover {
+  border-color: color-mix(in srgb, var(--color-brand-red) 50%, transparent);
+}
+
+.move-row.is-filled:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.move-row__cat--phys {
+  color: #e0503f;
+  background: color-mix(in srgb, #e0503f 14%, transparent);
+  border: 1px solid color-mix(in srgb, #e0503f 34%, transparent);
+}
+
+.move-row__cat--spec {
+  color: #3f8efc;
+  background: color-mix(in srgb, #3f8efc 14%, transparent);
+  border: 1px solid color-mix(in srgb, #3f8efc 34%, transparent);
+}
+
+.move-row__cat--stat {
+  color: var(--color-brand-muted);
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid var(--color-brand-line);
+}
