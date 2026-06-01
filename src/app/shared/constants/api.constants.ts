@@ -41,3 +41,6 @@ export const TEAM_PUBLIC_FILTER_ENDPOINT = 'public/' + FILTER_ENDPOINT;
 export const TEAM_SELF_ENDPOINT = `${USER_SELF_ENDPOINT}/${ID_ENDPOINT}`;
 export const TEAM_SELF_FILTER_ENDPOINT = `${USER_SELF_ENDPOINT}/${FILTER_ENDPOINT}`;
 export const TEAM_LIKE_ENDPOINT = 'like';
+
+export const USER_ROLE = 'USER';
+export const ADMIN_ROLE = 'ADMIN';

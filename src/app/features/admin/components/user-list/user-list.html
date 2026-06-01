@@ -1,0 +1,305 @@
+<section class="flex flex-1 flex-col py-6">
+  <div class="mb-4 flex flex-wrap items-center gap-3 max-sm:gap-2">
+    <div class="search">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchInput($event)"
+        class="search__input"
+        placeholder="Search by username…"
+        aria-label="Search users by username"
+      />
+    </div>
+
+    <div class="pill-group" role="group" aria-label="Filter by role">
+      <button
+        type="button"
+        class="pill"
+        [class.pill--active]="selectedRole() === roleFilterAll"
+        (click)="setRole(roleFilterAll)"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="pill"
+        [class.pill--active]="selectedRole() === roleUser"
+        (click)="setRole(roleUser)"
+      >
+        User
+      </button>
+      <button
+        type="button"
+        class="pill"
+        [class.pill--active]="selectedRole() === roleAdmin"
+        (click)="setRole(roleAdmin)"
+      >
+        Admin
+      </button>
+    </div>
+
+    <div class="pill-group" role="group" aria-label="Filter by status">
+      <button
+        type="button"
+        class="pill"
+        [class.pill--active]="selectedStatus() === statusFilterAll"
+        (click)="setStatus(statusFilterAll)"
+      >
+        All
+      </button>
+      <button
+        type="button"
+        class="pill"
+        [class.pill--active]="selectedStatus() === statusFilterActive"
+        (click)="setStatus(statusFilterActive)"
+      >
+        Active
+      </button>
+      <button
+        type="button"
+        class="pill"
+        [class.pill--active]="selectedStatus() === statusFilterDisabled"
+        (click)="setStatus(statusFilterDisabled)"
+      >
+        Disabled
+      </button>
+    </div>
+
+    <div class="date-range">
+      <span class="date-range__label">From</span>
+      <input
+        type="date"
+        class="date-input"
+        [ngModel]="fromDate()"
+        (ngModelChange)="onFromDateChange($event)"
+        aria-label="From date"
+      />
+      <span class="date-range__label">To</span>
+      <input
+        type="date"
+        class="date-input"
+        [ngModel]="toDate()"
+        (ngModelChange)="onToDateChange($event)"
+        aria-label="To date"
+      />
+    </div>
+
+    @if (hasActiveFilters()) {
+      <button
+        type="button"
+        class="clear-filters"
+        (click)="clearFilters()"
+        aria-label="Clear all filters"
+      >
+        <i class="pi pi-filter-slash"></i> Clear filters
+      </button>
+    }
+
+    <div class="ml-auto inline-flex items-baseline gap-1.5 max-sm:ml-0">
+      <span class="text-brand-text font-semibold">{{ total() }}</span>
+      <span class="text-brand-muted text-sm">users</span>
+    </div>
+  </div>
+
+  <div class="select-bar">
+    <label class="select-all">
+      <input
+        #allCheckbox
+        type="checkbox"
+        [checked]="allOnPageSelected()"
+        (change)="toggleAllOnPage(allCheckbox.checked)"
+        [disabled]="users().length === 0"
+      />
+      <span>Select all on this page</span>
+    </label>
+
+    @if (selectedCount() > 0) {
+      <div class="batch-bar">
+        <span class="text-brand-text text-sm">
+          <span class="font-semibold">{{ selectedCount() }}</span> selected
+        </span>
+        <button type="button" class="batch-btn" (click)="batchReactivate()">
+          <i class="pi pi-check-circle"></i> Reactivate
+        </button>
+        <button type="button" class="batch-btn" (click)="batchDisable()">
+          <i class="pi pi-ban"></i> Disable
+        </button>
+        <button type="button" class="batch-btn batch-btn--danger" (click)="batchDelete()">
+          <i class="pi pi-trash"></i> Delete
+        </button>
+        <button type="button" class="batch-clear" (click)="clearSelection()">Clear</button>
+      </div>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="rows">
+      @for (skeleton of skeletons(); track $index) {
+        <div class="row row--skeleton">
+          <div class="skeleton-block"></div>
+        </div>
+      }
+    </div>
+  } @else if (users().length === 0) {
+    <div
+      class="flex flex-col items-center rounded-2xl border border-dashed border-brand-line px-4 py-16 text-brand-muted"
+    >
+      <i class="pi pi-users text-3xl"></i>
+      <p class="text-brand-text mt-3 font-semibold">No users match</p>
+      <p class="text-brand-muted text-sm">Try loosening the filters above.</p>
+    </div>
+  } @else {
+    <div class="rows">
+      @for (user of users(); track user.id) {
+        <div class="row" [class.row--selected]="isSelected(user.id)">
+          <label class="row__check">
+            <input
+              type="checkbox"
+              [checked]="isSelected(user.id)"
+              (change)="toggleOne(user.id, $any($event.target).checked)"
+              [attr.aria-label]="'Select ' + user.username"
+            />
+          </label>
+
+          <div class="row__avatar">{{ initials(user.username) }}</div>
+
+          <div class="row__identity">
+            <span class="row__username">{{ user.username }}</span>
+            <span class="row__id">#{{ user.id }}</span>
+          </div>
+
+          <div class="row__email">{{ user.email }}</div>
+
+          <span class="role-badge" [class.role-badge--admin]="isAdminRole(user.role)">
+            @if (isAdminRole(user.role)) {
+              Admin
+            } @else {
+              User
+            }
+          </span>
+
+          <span class="status" [class.status--off]="!user.enabled">
+            <span class="status__dot"></span>
+            @if (user.enabled) {
+              Active
+            } @else {
+              Disabled
+            }
+          </span>
+
+          <span class="row__date">{{ formatDate(user.createdAt) }}</span>
+
+          <div class="inline-flex gap-1.5">
+            <button
+              type="button"
+              class="icon-btn"
+              (click)="onEdit(user)"
+              aria-label="Edit user"
+              title="Edit user"
+            >
+              <i class="pi pi-pencil"></i>
+            </button>
+            @if (user.enabled) {
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="onToggleEnabled(user)"
+                aria-label="Disable user"
+                title="Disable user"
+              >
+                <i class="pi pi-ban"></i>
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="onToggleEnabled(user)"
+                aria-label="Reactivate user"
+                title="Reactivate user"
+              >
+                <i class="pi pi-check-circle"></i>
+              </button>
+            }
+            <button
+              type="button"
+              class="icon-btn icon-btn--danger"
+              (click)="onDelete(user)"
+              aria-label="Delete user"
+              title="Delete user"
+            >
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (total() > 0) {
+    <div class="mt-auto pt-6 pb-4">
+      <p-paginator
+        class="paginator-dark"
+        [rows]="pageSize"
+        [pageLinkSize]="5"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first}–{last} of {totalRecords}"
+        [totalRecords]="total()"
+        [first]="firstRecordIndex()"
+        (onPageChange)="onPageChange($event)"
+      />
+    </div>
+  }
+</section>
+
+@if (confirmRequest()) {
+  <app-modal
+    [open]="true"
+    [title]="confirmCopy().title"
+    [dismissable]="!isConfirmPending()"
+    (closed)="closeConfirm()"
+  >
+    <div class="px-5 py-5">
+      <p class="text-brand-muted text-sm" [class.confirm-body--danger]="confirmCopy().danger">
+        {{ confirmCopy().body }}
+      </p>
+    </div>
+    <div modal-footer class="flex items-center justify-end gap-2">
+      <button
+        type="button"
+        class="btn-ghost"
+        (click)="closeConfirm()"
+        [disabled]="isConfirmPending()"
+      >
+        Cancel
+      </button>
+      @if (confirmCopy().danger) {
+        <button
+          type="button"
+          class="btn-danger"
+          (click)="runConfirm()"
+          [disabled]="isConfirmPending()"
+        >
+          @if (isConfirmPending()) {
+            <i class="pi pi-spin pi-spinner"></i>
+          } @else {
+            {{ confirmCopy().button }}
+          }
+        </button>
+      } @else {
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="runConfirm()"
+          [disabled]="isConfirmPending()"
+        >
+          @if (isConfirmPending()) {
+            <i class="pi pi-spin pi-spinner"></i>
+          } @else {
+            {{ confirmCopy().button }}
+          }
+        </button>
+      }
+    </div>
+  </app-modal>
+}
