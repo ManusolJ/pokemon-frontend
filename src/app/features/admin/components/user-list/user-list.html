@@ -155,9 +155,10 @@
         <div class="row" [class.row--selected]="isSelected(user.id)">
           <label class="row__check">
             <input
+              #selectUserBox
               type="checkbox"
               [checked]="isSelected(user.id)"
-              (change)="toggleOne(user.id, $any($event.target).checked)"
+              (change)="toggleOne(user.id, selectUserBox.checked)"
               [attr.aria-label]="'Select ' + user.username"
             />
           </label>

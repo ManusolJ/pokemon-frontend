@@ -1,0 +1,209 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.identity-card__avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 9999px;
+  background-color: var(--color-brand-red);
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+}
+
+.identity-card__meta {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-brand-line);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.meta-row dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--color-brand-dim);
+}
+
+.meta-row dt i {
+  font-size: 0.65rem;
+  color: var(--color-brand-red);
+}
+
+.meta-row dd {
+  font-size: 0.88rem;
+  color: var(--color-brand-text);
+  word-break: break-word;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.5rem;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-brand-text);
+  background-color: var(--color-brand-raised);
+  border: 1px solid var(--color-brand-line);
+  border-radius: 9999px;
+}
+
+.role-badge--admin {
+  color: #ffffff;
+  background-color: var(--color-brand-red);
+  border-color: var(--color-brand-red);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-brand-text);
+}
+
+.status__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background-color: #34d399;
+  box-shadow: 0 0 8px rgb(52 211 153 / 0.55);
+}
+
+.status--off {
+  color: var(--color-brand-muted);
+}
+
+.status--off .status__dot {
+  background-color: var(--color-brand-dim);
+  box-shadow: none;
+}
+
+.field-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-brand-text);
+}
+
+.admin-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.95rem;
+  color: var(--color-brand-text);
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 0.5rem;
+  transition:
+    border-color 150ms,
+    background-color 150ms;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: var(--color-brand-red);
+  background-color: rgb(255 255 255 / 0.06);
+}
+
+.admin-input--error,
+.admin-input--error:focus {
+  border-color: var(--color-red-500);
+}
+
+.field-error {
+  color: var(--color-red-400);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.role-picker {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-brand-raised);
+  border: 1px solid var(--color-brand-line);
+  border-radius: 0.55rem;
+  padding: 0.25rem;
+  gap: 0.2rem;
+  width: fit-content;
+}
+
+.role-pick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1.5rem;
+  min-width: 4.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-brand-muted);
+  background: transparent;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition:
+    color 150ms,
+    background-color 150ms;
+}
+
+.role-pick--active {
+  color: #ffffff;
+  background-color: var(--color-brand-red);
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--color-brand-text);
+  cursor: pointer;
+}
+
+.toggle input {
+  accent-color: var(--color-brand-red);
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-brand-red);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    opacity 200ms,
+    background-color 200ms;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-brand-red-600);
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

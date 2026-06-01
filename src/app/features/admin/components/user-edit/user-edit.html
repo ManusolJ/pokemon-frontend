@@ -1,0 +1,165 @@
+<section class="py-8">
+  <a
+    routerLink="/admin/users"
+    class="text-brand-muted hover:text-brand-text inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
+  >
+    <i class="pi pi-arrow-left"></i> Back to users
+  </a>
+  <h2 class="text-brand-text mt-4 text-3xl font-bold tracking-tight">Edit user</h2>
+
+  @if (isLoading()) {
+    <div class="py-16 text-center">
+      <i class="pi pi-spin pi-spinner text-brand-muted text-2xl"></i>
+    </div>
+  } @else if (loadError() || !user()) {
+    <div class="py-16 text-center">
+      <p class="text-brand-text font-semibold">We couldn't load that user.</p>
+      <p class="text-brand-muted mt-1 text-sm">It may have been deleted.</p>
+    </div>
+  } @else if (user(); as currentUser) {
+    <div class="mt-6 grid grid-cols-1 items-start gap-5 lg:grid-cols-[18rem_1fr]">
+      <aside
+        class="border-brand-line bg-brand-surface flex flex-col items-center rounded-2xl border p-6"
+      >
+        <div class="identity-card__avatar">{{ initials(currentUser.username) }}</div>
+        <div class="text-brand-text mb-2 text-base font-bold">{{ currentUser.username }}</div>
+        <span class="role-badge" [class.role-badge--admin]="isAdmin()">
+          @if (isAdmin()) {
+            Admin
+          } @else {
+            User
+          }
+        </span>
+
+        <dl class="identity-card__meta">
+          <div class="meta-row">
+            <dt><i class="pi pi-envelope"></i> Email</dt>
+            <dd>{{ currentUser.email }}</dd>
+          </div>
+          <div class="meta-row">
+            <dt><i class="pi pi-calendar"></i> Member since</dt>
+            <dd>{{ memberSince() }}</dd>
+          </div>
+          <div class="meta-row">
+            <dt><i class="pi pi-circle-fill"></i> Status</dt>
+            <dd>
+              <span class="status" [class.status--off]="!currentUser.enabled">
+                <span class="status__dot"></span>
+                @if (currentUser.enabled) {
+                  Active
+                } @else {
+                  Disabled
+                }
+              </span>
+            </dd>
+          </div>
+          <div class="meta-row">
+            <dt><i class="pi pi-hashtag"></i> User ID</dt>
+            <dd class="font-mono">{{ currentUser.id }}</dd>
+          </div>
+        </dl>
+      </aside>
+
+      <div class="border-brand-line bg-brand-surface rounded-2xl border p-7">
+        <header>
+          <h2 class="text-brand-text text-lg font-bold">Account details</h2>
+          <p class="text-brand-muted mt-1 text-sm">Changes take effect immediately.</p>
+        </header>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-6 flex flex-col gap-5">
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div class="flex flex-col gap-1">
+              <label for="edit-username" class="field-label">Username</label>
+              <input
+                id="edit-username"
+                type="text"
+                formControlName="username"
+                class="admin-input"
+                [class.admin-input--error]="username.invalid && username.touched"
+              />
+              @if (username.touched && username.hasError('required')) {
+                <span class="field-error">This field is required.</span>
+              } @else if (
+                username.touched &&
+                (username.hasError('minlength') || username.hasError('maxlength'))
+              ) {
+                <span class="field-error">
+                  Must be between {{ min_username_length }} and
+                  {{ max_username_length }} characters.
+                </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="edit-email" class="field-label">Email</label>
+              <input
+                id="edit-email"
+                type="email"
+                formControlName="email"
+                class="admin-input"
+                [class.admin-input--error]="email.invalid && email.touched"
+              />
+              @if (email.touched && email.hasError('required')) {
+                <span class="field-error">This field is required.</span>
+              } @else if (email.touched && email.hasError('email')) {
+                <span class="field-error">Enter a valid email address.</span>
+              }
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <span class="field-label">Role</span>
+            <div class="role-picker" role="group" aria-label="Role">
+              <button
+                type="button"
+                class="role-pick"
+                [class.role-pick--active]="role.value === roleUser"
+                (click)="setRole(roleUser)"
+              >
+                User
+              </button>
+              <button
+                type="button"
+                class="role-pick"
+                [class.role-pick--active]="role.value === roleAdmin"
+                (click)="setRole(roleAdmin)"
+              >
+                Admin
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <span class="field-label">Account status</span>
+            <label class="toggle">
+              <input type="checkbox" formControlName="enabled" />
+              <span>Account active (user can log in)</span>
+            </label>
+          </div>
+
+          @if (saveStatus() === 'saved') {
+            <p class="inline-flex items-center gap-1.5 text-sm text-green-400">
+              <i class="pi pi-check"></i> Changes saved.
+            </p>
+          } @else if (saveStatus() === 'error') {
+            <p class="field-error">Could not save changes. Please try again.</p>
+          }
+
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="form.invalid || saveStatus() === 'saving' || form.pristine"
+            >
+              @if (saveStatus() === 'saving') {
+                <i class="pi pi-spin pi-spinner"></i>
+              } @else {
+                Save changes
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>

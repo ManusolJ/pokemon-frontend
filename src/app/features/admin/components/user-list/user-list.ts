@@ -224,7 +224,7 @@ export class UserList {
   }
 
   protected onEdit(user: UserRead): void {
-    this.router.navigate(['/admin/users', user.id, 'edit']);
+    this.router.navigate(['/admin/users', user.id]);
   }
 
   protected onToggleEnabled(user: UserRead): void {
