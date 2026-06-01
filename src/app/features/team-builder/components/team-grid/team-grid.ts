@@ -1,10 +1,45 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { environment } from '@environments/environment';
+
+import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
+
+import { TypeBadge } from '@shared/components/type-badge/type-badge';
+
+import { getTypeColor } from '@shared/utils/get-type-color.util';
+
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 @Component({
+  imports: [TypeBadge],
   selector: 'app-team-grid',
-  imports: [],
-  templateUrl: './team-grid.html',
   styleUrl: './team-grid.css',
+  templateUrl: './team-grid.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamGrid {}
+export class TeamGrid {
+  readonly members = input.required<ReadonlyArray<TeamMember | null>>();
+  readonly activeIndex = input<number | null>(null);
+
+  readonly slotAdd = output<number>();
+  readonly slotSelect = output<number>();
+  readonly slotRemove = output<number>();
+
+  protected readonly filledCount = computed(() => this.members().filter((m) => m !== null).length);
+
+  protected accentFor(member: TeamMember): string {
+    return getTypeColor(member.primaryType.name);
+  }
+
+  protected typesOf(member: TeamMember): TypeRead[] {
+    return [member.primaryType, member.secondaryType].filter((t): t is TypeRead => !!t);
+  }
+
+  protected onRemove(event: Event, i: number): void {
+    event.stopPropagation();
+    this.slotRemove.emit(i);
+  }
+
+  protected getImgUrl(url: string): string {
+    return `${environment.spritesBaseUrl}${url}`;
+  }
+}

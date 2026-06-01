@@ -1,0 +1,72 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.team-grid__title,
+.slot__name,
+.slot__add-label {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.team-grid__count,
+.slot__num {
+  font-family: 'Space Mono', monospace;
+}
+
+.slot {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.slot--filled {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--accent) 12%, transparent),
+    var(--color-brand-surface) 60%
+  );
+}
+
+.slot--filled:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.slot--filled.is-active {
+  border-color: color-mix(in srgb, var(--accent) 75%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent),
+    0 10px 26px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.slot__art img {
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--accent) 40%, transparent));
+  transition:
+    filter 160ms ease,
+    transform 160ms ease;
+}
+
+.slot__art--shiny img {
+  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--accent) 40%, transparent))
+    drop-shadow(0 0 6px #f7d02c) saturate(1.15) hue-rotate(-8deg);
+}
+
+.slot__sparkle {
+  color: #f7d02c;
+  text-shadow: 0 0 6px rgb(247 208 44 / 0.8);
+}
+
+.slot--empty:hover {
+  background: var(--color-brand-raised);
+  border-color: color-mix(in srgb, var(--color-brand-red) 45%, transparent);
+  color: var(--color-brand-red);
+}
+
+.slot--empty:hover .slot__plus {
+  background: color-mix(in srgb, var(--color-brand-red) 18%, transparent);
+}

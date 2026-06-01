@@ -1,1 +1,93 @@
-<p>team-grid works!</p>
+<div class="flex items-center justify-between">
+  <span class="team-grid__title text-sm font-bold tracking-wider uppercase text-brand-dim">
+    Team
+  </span>
+  <span class="team-grid__count text-xs text-brand-dim">{{ filledCount() }}/6</span>
+</div>
+
+<div class="grid grid-cols-3 gap-3">
+  @for (m of members(); track $index; let i = $index) {
+    @if (m) {
+      <div class="group relative">
+        <button
+          type="button"
+          (click)="slotSelect.emit(i)"
+          [style.--accent]="accentFor(m)"
+          [class.is-active]="activeIndex() === i"
+          class="slot slot--filled relative w-full min-h-38 flex flex-col items-start py-3 px-3.5 rounded-xl overflow-hidden cursor-pointer text-left border-[1.5px] border-solid border-brand-line"
+          [attr.aria-label]="'Edit ' + (m.nickname || m.name)"
+        >
+          <span class="slot__num text-[0.6875rem] text-brand-dim">
+            №{{ m.species.nationalDexNumber }}
+          </span>
+
+          <span
+            class="slot__art self-center relative flex items-center justify-center w-18 h-18 -mt-0.5 mb-1"
+            [class.slot__art--shiny]="m.shiny"
+          >
+            <img
+              [src]="getImgUrl(m.shiny ? m.spriteShiny : m.spriteDefault)"
+              [alt]="m.name"
+              class="w-full h-full object-contain"
+              loading="lazy"
+            />
+            @if (m.shiny) {
+              <span
+                class="slot__sparkle absolute -top-0.5 -right-0.5 text-sm leading-none pointer-events-none"
+                aria-hidden="true"
+              >
+                &#x2726;
+              </span>
+            }
+          </span>
+
+          <span
+            class="slot__name font-bold text-[0.9375rem] tracking-[-0.2px] text-brand-text capitalize whitespace-nowrap overflow-hidden text-ellipsis max-w-full"
+          >
+            {{ m.nickname || m.name }}
+          </span>
+          <span class="text-[0.6875rem] text-brand-dim mt-0.5">
+            @if (m.item) {
+              {{ m.item.name }}
+            } @else {
+              <em>No item</em>
+            }
+          </span>
+
+          <span class="flex gap-1 flex-wrap mt-2">
+            @for (t of typesOf(m); track t.id) {
+              <app-type-badge [name]="t.name" size="sm" />
+            }
+          </span>
+        </button>
+
+        <button
+          type="button"
+          (click)="onRemove($event, i)"
+          class="absolute top-1.75 right-1.75 z-2 size-5 rounded-md inline-flex items-center justify-center text-brand-muted bg-white/5 cursor-pointer opacity-0 group-hover:opacity-100 transition-[opacity,color,background-color] duration-140 hover:text-brand-text hover:bg-brand-red"
+          aria-label="Remove from team"
+        >
+          <i class="pi pi-times text-[0.6875rem]"></i>
+        </button>
+      </div>
+    } @else {
+      <button
+        type="button"
+        (click)="slotAdd.emit(i)"
+        class="slot slot--empty relative w-full min-h-38 flex flex-col items-center justify-center gap-2 py-3 px-3.5 rounded-[0.875rem] overflow-hidden cursor-pointer border-[1.5px] border-dashed border-brand-line bg-white/1.5 text-brand-dim"
+      >
+        <span
+          class="slot__plus size-9 rounded-full inline-flex items-center justify-center text-2xl leading-none bg-white/4 text-inherit transition-[background-color] duration-140"
+          aria-hidden="true"
+        >
+          <i class="pi pi-plus"></i>
+        </span>
+        <span
+          class="slot__add-label text-[0.6875rem] font-bold tracking-wider uppercase text-inherit"
+        >
+          Add Pokémon
+        </span>
+      </button>
+    }
+  }
+</div>
