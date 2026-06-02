@@ -6,7 +6,7 @@ import {
 
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 import { BucketCounts } from '@shared/interfaces/team-builder/analysis/bucket-counts.interface';
 import { MultiplierBucket } from '@shared/interfaces/team-builder/analysis/multiplier-bucket.interface';
 import { EffectivenessChart } from '@shared/interfaces/team-builder/analysis/effectiveness-chart.interface';

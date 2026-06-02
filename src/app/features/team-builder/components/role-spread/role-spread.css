@@ -1,0 +1,100 @@
+:host {
+  height: 100%;
+  display: block;
+
+  --tone-physical: #ff8a7c;
+  --tone-special: #8fd1ff;
+  --tone-mixed: #f8c170;
+  --tone-defense: #6fd894;
+  --tone-utility: #d3b0ff;
+  --tone-speed: #b69cff;
+}
+
+.role-card[data-tone='physical'] {
+  --c: var(--tone-physical);
+}
+.role-card[data-tone='special'] {
+  --c: var(--tone-special);
+}
+.role-card[data-tone='mixed'] {
+  --c: var(--tone-mixed);
+}
+.role-card[data-tone='defense'] {
+  --c: var(--tone-defense);
+}
+.role-card[data-tone='utility'] {
+  --c: var(--tone-utility);
+}
+.role-card[data-tone='speed'] {
+  --c: var(--tone-speed);
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.55rem 0.7rem 0.65rem;
+  border-radius: 0.625rem;
+  border: 1px solid color-mix(in srgb, var(--c) 22%, var(--color-brand-line));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--c) 7%, var(--color-brand-raised)),
+    var(--color-brand-raised)
+  );
+}
+
+.role-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.role-card__count {
+  margin-left: auto;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.role-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);
+}
+
+.member-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.75rem 0.2rem 0.25rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+  background: color-mix(in srgb, var(--c) 6%, var(--color-brand-surface));
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.member-chip:hover {
+  border-color: color-mix(in srgb, var(--c) 55%, transparent);
+  background: color-mix(in srgb, var(--c) 12%, var(--color-brand-surface));
+}
+
+.member-chip__art {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+}

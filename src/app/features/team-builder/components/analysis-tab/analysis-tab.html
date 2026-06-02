@@ -1,0 +1,82 @@
+@if (loadError()) {
+  <div class="flex h-full items-center justify-center px-4 py-4">
+    <div
+      class="flex items-center gap-2 px-3.5 py-2.5 bg-brand-wine/20 border border-brand-crimson/40 rounded-lg text-sm text-brand-text"
+      role="alert"
+    >
+      <i class="pi pi-times-circle text-brand-red"></i>
+      Could not load type effectiveness data.
+    </div>
+  </div>
+} @else if (!hasTeam()) {
+  <div
+    class="flex h-full flex-col items-center justify-center gap-2.5 text-center px-4 py-4 text-brand-muted"
+  >
+    <span
+      class="inline-flex items-center justify-center size-12 rounded-xl bg-white/4 border border-solid border-brand-line text-brand-dim"
+      aria-hidden="true"
+    >
+      <i class="pi pi-chart-pie text-2xl"></i>
+    </span>
+    <h2 class="text-base font-bold text-brand-text">No team to analyze</h2>
+    <p class="text-sm max-w-80 leading-6">
+      Head back to the Builder and pick at least one Pokémon to see offense, defense, roles and team
+      stats.
+    </p>
+  </div>
+} @else {
+  <div class="grid grid-cols-2 grid-rows-2 gap-3 px-4 py-4 h-full overflow-hidden">
+    <section
+      class="flex flex-col gap-3 min-h-0 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+    >
+      <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
+        Offensive coverage
+      </span>
+      <div class="flex-1 min-h-0 overflow-hidden">
+        <app-offensive-coverage
+          [chart]="chart()"
+          [members]="members()"
+          [allTypes]="types()"
+        />
+      </div>
+    </section>
+
+    <section
+      class="flex flex-col gap-3 min-h-0 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+    >
+      <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
+        Defensive coverage
+      </span>
+      <div class="flex-1 min-h-0 overflow-hidden">
+        <app-defensive-coverage
+          [chart]="chart()"
+          [members]="members()"
+          [allTypes]="types()"
+          [loading]="loading()"
+        />
+      </div>
+    </section>
+
+    <section
+      class="flex flex-col gap-3 min-h-0 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+    >
+      <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
+        Role spread
+      </span>
+      <div class="flex-1 min-h-0 overflow-hidden">
+        <app-role-spread [members]="members()" />
+      </div>
+    </section>
+
+    <section
+      class="flex flex-col gap-3 min-h-0 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+    >
+      <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
+        Team stats
+      </span>
+      <div class="flex-1 min-h-0 overflow-hidden">
+        <app-team-stats [members]="members()" />
+      </div>
+    </section>
+  </div>
+}

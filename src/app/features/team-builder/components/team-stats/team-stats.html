@@ -1,1 +1,49 @@
-<p>team-stats works!</p>
+@if (teamSize() === 0) {
+  <div
+    class="flex h-full flex-col items-center justify-center gap-2.5 text-center text-brand-muted"
+  >
+    <span
+      class="inline-flex items-center justify-center size-11 rounded-xl bg-white/4 border border-solid border-brand-line text-brand-dim"
+      aria-hidden="true"
+    >
+      <i class="pi pi-chart-bar text-lg"></i>
+    </span>
+    <p class="text-sm font-semibold text-brand-text">No team yet</p>
+    <p class="text-xs max-w-64 leading-5">
+      Add Pokémon in the Builder tab to see combined base-stat totals.
+    </p>
+  </div>
+} @else {
+  <div class="flex flex-col gap-2.5 h-full">
+    <div class="grid grid-cols-2 gap-1.5 flex-1 min-h-0">
+      @for (row of rows(); track row.key) {
+        <div class="stat-card" [attr.data-tone]="row.tone">
+          <div class="flex items-baseline justify-between gap-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-brand-dim">
+              {{ row.label }}
+            </span>
+            <span class="font-mono text-[10px] tabular-nums text-brand-dim">
+              avg {{ row.average }}
+            </span>
+          </div>
+          <div class="font-mono text-xl font-bold tabular-nums text-brand-text leading-none">
+            {{ row.total }}
+          </div>
+          <span class="stat-bar">
+            <span class="stat-bar__fill" [style.width.%]="row.fillPercent"></span>
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="flex items-baseline justify-between border-t border-white/5 pt-2.5">
+      <span class="text-[11px] font-bold uppercase tracking-wide text-brand-dim">
+        Team base total
+      </span>
+      <span class="font-mono text-sm font-bold tabular-nums text-brand-text">
+        {{ grandTotal() }}
+        <span class="font-sans font-normal text-brand-dim">· {{ teamSize() }} mon</span>
+      </span>
+    </div>
+  </div>
+}

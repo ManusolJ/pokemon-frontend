@@ -22,12 +22,12 @@ import {
   ATTACK_WALLBREAKER_THRESHOLD,
 } from '@shared/constants/role.constants';
 
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 import { RoleKey } from '@shared/interfaces/team-builder/role/role-key.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
 import { RoleInfo } from '@shared/interfaces/team-builder/role/role-info.interface';
+import { RoleRule } from '@shared/interfaces/team-builder/role/role-rule.interface';
 import { StatShape } from '@shared/interfaces/team-builder/role/stat-shape.interface';
-import { ClassificationContext } from '@shared/interfaces/team-builder/role/classification-context.inteface';
-import { RoleRule } from '@shared/interfaces/team-builder/role/role-rule.inteface';
+import { ClassificationContext } from '@shared/interfaces/team-builder/role/classification-context.interface';
 
 export function classifyRole(member: TeamMember): RoleInfo {
   const context = buildContext(member);

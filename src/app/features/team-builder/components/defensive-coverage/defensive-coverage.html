@@ -1,1 +1,70 @@
-<p>defensive-coverage works!</p>
+@if (loading()) {
+  <div class="flex flex-col gap-1.5 h-full">
+    @for (_ of [1, 2, 3, 4, 5, 6, 7]; track $index) {
+      <div class="h-7 w-full animate-pulse rounded-lg bg-brand-raised"></div>
+    }
+  </div>
+} @else {
+  <div class="flex flex-col gap-3 h-full overflow-hidden">
+    <div class="flex items-baseline justify-between gap-3">
+      <div class="flex items-baseline gap-2 leading-none">
+        <span
+          class="font-mono text-3xl font-bold tabular-nums"
+          [class.text-brand-text]="weakTypeCount() === 0"
+          [class.text-[var(--fx-red)]]="weakTypeCount() > 0"
+        >
+          {{ weakTypeCount() }}
+        </span>
+        <span class="text-xs uppercase tracking-wider text-brand-dim font-bold">
+          types threaten team
+        </span>
+      </div>
+      @if (resistTypeCount() > 0) {
+        <div class="flex items-baseline gap-1 leading-none">
+          <span class="font-mono text-base font-bold tabular-nums text-(--fx-green)">
+            {{ resistTypeCount() }}
+          </span>
+          <span class="text-xs uppercase tracking-wider text-brand-dim font-bold"> resisted </span>
+        </div>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1 flex-1 min-h-0 overflow-auto pr-1">
+      @for (row of rows(); track row.type) {
+        <div
+          class="attacker-row grid grid-cols-[5.5rem_1fr_3rem] items-center gap-2.5 px-2 py-1.5 rounded-lg border border-solid"
+          [class.is-weak]="row.weak > 0"
+          [style.--tc]="getTypeColor(row.type)"
+        >
+          <span class="type-pill" [style.--tc]="getTypeColor(row.type)">
+            <span class="type-pill__dot"></span>
+            <span>{{ row.type }}</span>
+          </span>
+
+          <span class="grid grid-cols-6 gap-1">
+            @for (seg of row.segments; track $index) {
+              <span class="seg" [attr.data-tone]="seg"></span>
+            }
+          </span>
+
+          <span
+            class="flex items-baseline justify-end gap-1.5 font-mono text-[11px] tabular-nums leading-none"
+          >
+            @if (row.weak > 0) {
+              <b class="tone--weak text-[13px]">{{ row.weak }}</b>
+            }
+            @if (row.resist > 0) {
+              <b class="tone--resist">{{ row.resist }}</b>
+            }
+            @if (row.immune > 0) {
+              <b class="tone--immune">{{ row.immune }}</b>
+            }
+            @if (row.weak === 0 && row.resist === 0 && row.immune === 0) {
+              <span class="text-brand-dim">—</span>
+            }
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,1 +1,58 @@
-<p>offensive-coverage works!</p>
+@if (!hasAnyMove()) {
+  <div
+    class="flex h-full flex-col items-center justify-center gap-2.5 text-center text-brand-muted"
+  >
+    <span
+      class="inline-flex items-center justify-center size-11 rounded-xl bg-white/4 border border-solid border-brand-line text-brand-dim"
+      aria-hidden="true"
+    >
+      <i class="pi pi-bolt text-lg"></i>
+    </span>
+    <p class="text-sm font-semibold text-brand-text">No damaging moves yet</p>
+    <p class="text-xs max-w-64 leading-5">
+      Add damaging moves to your Pokémon to see what your team can hit.
+    </p>
+  </div>
+} @else {
+  <div class="flex flex-col gap-3 h-full overflow-auto pr-1">
+    <div class="flex items-end justify-between gap-3 pb-1.5">
+      <div class="flex items-baseline gap-2 leading-none">
+        <span class="font-mono text-3xl font-bold tabular-nums text-(--fx-green)">
+          {{ superCount() }}
+        </span>
+        <span class="font-mono text-base text-brand-dim tabular-nums"> / {{ totalCount() }} </span>
+        <span class="text-[11px] uppercase tracking-wider text-brand-dim font-bold ml-1">
+          super-effective
+        </span>
+      </div>
+      @if (resistedCount() > 0) {
+        <div class="flex items-baseline gap-1 leading-none">
+          <span class="font-mono text-base font-bold tabular-nums text-(--fx-red)">
+            {{ resistedCount() }}
+          </span>
+          <span class="text-[10px] uppercase tracking-wider text-brand-dim font-bold">
+            resisted
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="flex flex-wrap gap-1 pb-2 border-b border-white/5">
+      @for (type of moveTypes(); track type) {
+        <span class="type-pill" [style.--tc]="getTypeColor(type)">
+          <span class="type-pill__dot"></span>
+          <span>{{ type }}</span>
+        </span>
+      }
+    </div>
+
+    <div class="grid grid-cols-3 gap-1.5">
+      @for (entry of defenders(); track entry.type) {
+        <div class="defender-tile" [attr.data-tone]="entry.tone">
+          <span class="defender-tile__mult font-mono tabular-nums">{{ entry.label }}</span>
+          <span class="defender-tile__name capitalize">{{ entry.type }}</span>
+        </div>
+      }
+    </div>
+  </div>
+}

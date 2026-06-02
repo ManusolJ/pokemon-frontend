@@ -1,0 +1,93 @@
+:host {
+  display: block;
+  height: 100%;
+
+  --fx-red: #ff8a7c;
+  --fx-gray: #aeb4be;
+  --fx-green: #6fd894;
+}
+
+.type-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--tc);
+  background: color-mix(in srgb, var(--tc) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tc) 30%, transparent);
+}
+
+.type-pill__dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--tc);
+}
+
+.defender-tile {
+  --tone: var(--color-brand-line);
+  --tone-text: var(--color-brand-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  align-items: flex-start;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.625rem;
+  border: 1px solid color-mix(in srgb, var(--tone) 50%, var(--color-brand-line));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--tone) 10%, var(--color-brand-raised)),
+    var(--color-brand-raised)
+  );
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease;
+}
+
+.defender-tile:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--tone) 70%, var(--color-brand-line));
+}
+
+.defender-tile__mult {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--tone-text);
+  letter-spacing: -0.02em;
+}
+
+.defender-tile__name {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-brand-dim);
+}
+
+.defender-tile[data-tone='super'] {
+  --tone: var(--fx-green);
+  --tone-text: var(--fx-green);
+}
+.defender-tile[data-tone='neutral'] {
+  --tone: var(--color-brand-line);
+  --tone-text: var(--color-brand-muted);
+}
+.defender-tile[data-tone='resist'] {
+  --tone: var(--fx-red);
+  --tone-text: var(--fx-red);
+}
+.defender-tile[data-tone='immune'] {
+  --tone: var(--fx-gray);
+  --tone-text: var(--fx-gray);
+}
+
+.defender-tile[data-tone='immune'] .defender-tile__name {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}

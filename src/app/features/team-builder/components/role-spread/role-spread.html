@@ -1,1 +1,49 @@
-<p>role-spread works!</p>
+@if (groups().length === 0) {
+  <div
+    class="flex h-full flex-col items-center justify-center gap-2.5 text-center text-brand-muted"
+  >
+    <span
+      class="inline-flex items-center justify-center size-11 rounded-xl bg-white/4 border border-solid border-brand-line text-brand-dim"
+      aria-hidden="true"
+    >
+      <i class="pi pi-users text-lg"></i>
+    </span>
+    <p class="text-sm font-semibold text-brand-text">No team yet</p>
+    <p class="text-xs max-w-64 leading-5">
+      Add Pokémon and pick their moves to classify each one's role.
+    </p>
+  </div>
+} @else {
+  <div class="flex flex-col gap-2 h-full overflow-auto pr-1">
+    @for (group of groups(); track group.role.key) {
+      <section class="role-card" [attr.data-tone]="group.role.tone">
+        <header class="role-card__head">
+          <span class="role-dot"></span>
+          <span class="text-[13px] font-bold text-brand-text whitespace-nowrap">
+            {{ group.role.label }}
+          </span>
+          <span class="role-card__count font-mono tabular-nums">
+            {{ group.members.length }}
+          </span>
+        </header>
+        <div class="flex flex-wrap gap-1.5">
+          @for (member of group.members; track member.pokemonId) {
+            <span class="member-chip">
+              <span class="member-chip__art">
+                <img
+                  [src]="spriteFor(member)"
+                  [alt]="member.name"
+                  class="w-full h-full object-contain"
+                  loading="lazy"
+                />
+              </span>
+              <span class="text-[11.5px] font-bold capitalize text-brand-text leading-none">
+                {{ displayName(member) }}
+              </span>
+            </span>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}
