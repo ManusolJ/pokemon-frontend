@@ -16,7 +16,7 @@ import { PasswordResetConfirmation } from '@shared/interfaces/auth/password-rese
 import { TokenService } from './token.service';
 import { BaseApiService } from './base-api.service';
 
-import { finalize, Observable, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -36,10 +36,8 @@ export class AuthService extends BaseApiService {
 
   logout(): Observable<void> {
     const refreshToken = this.tokenService.getRefreshToken();
-
-    return this.post<void>(`${ENDPOINT}${LOGOUT_ENDPOINT}`, { refreshToken }).pipe(
-      finalize(() => this.tokenService.clearTokens()),
-    );
+    this.tokenService.clearTokens();
+    return this.post<void>(`${ENDPOINT}${LOGOUT_ENDPOINT}`, { refreshToken });
   }
 
   register(request: RegisterRequest) {

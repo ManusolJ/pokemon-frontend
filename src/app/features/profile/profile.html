@@ -1,0 +1,304 @@
+<div class="mx-auto w-full max-w-3xl px-6 lg:px-8">
+  @if (isLoading()) {
+    <section class="py-16 text-center">
+      <i class="pi pi-spin pi-spinner text-brand-muted text-2xl"></i>
+      <p class="text-brand-muted mt-3 text-sm">Loading your profile…</p>
+    </section>
+  } @else if (loadError() || !user()) {
+    <section class="py-16 text-center">
+      <p class="text-brand-text text-base font-semibold">We couldn't load your profile.</p>
+      <p class="text-brand-muted mt-1 text-sm">Refresh the page or sign in again.</p>
+    </section>
+  } @else if (user(); as currentUser) {
+    <section class="border-brand-line border-b py-12">
+      <p class="eyebrow">Account</p>
+      <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
+        <h1 class="text-brand-text text-3xl font-bold tracking-tight lg:text-4xl">
+          {{ currentUser.username }}
+        </h1>
+        <span class="role-badge" [class.role-badge--admin]="isAdmin()">
+          @if (isAdmin()) {
+            Administrator
+          } @else {
+            Trainer
+          }
+        </span>
+      </div>
+      <dl class="mt-6 grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2">
+        <div>
+          <dt class="meta-label">Email</dt>
+          <dd class="meta-value">{{ currentUser.email }}</dd>
+        </div>
+        <div>
+          <dt class="meta-label">Member since</dt>
+          <dd class="meta-value">{{ memberSince() }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="border-brand-line border-b py-10">
+      <div class="mb-6 flex items-baseline gap-3">
+        <span class="block-idx">01</span>
+        <h2 class="text-brand-text text-lg font-bold tracking-tight">Username</h2>
+      </div>
+      <form [formGroup]="usernameForm" (ngSubmit)="onSubmitUsername()" class="form-row">
+        <div class="form-row__field">
+          <label for="username" class="text-brand-text text-sm font-medium">Username</label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            autocomplete="username"
+            class="auth-input"
+            [class.auth-input--error]="username.invalid && username.touched"
+          />
+          @if (username.touched && username.hasError('required')) {
+            <span class="field-error">This field is required.</span>
+          } @else if (
+            username.touched && (username.hasError('minlength') || username.hasError('maxlength'))
+          ) {
+            <span class="field-error">
+              Must be between {{ minUsernameLength }} and {{ maxUsernameLength }} characters.
+            </span>
+          } @else if (usernameStatus() === 'error') {
+            <span class="field-error">Could not update your username.</span>
+          } @else if (usernameStatus() === 'saved') {
+            <span class="field-success"> <i class="pi pi-check"></i> Username updated. </span>
+          } @else {
+            <span class="field-hint">Displayed across the app and on your public teams.</span>
+          }
+        </div>
+        <button
+          type="submit"
+          class="btn-primary form-row__action"
+          [disabled]="usernameForm.invalid || usernameStatus() === 'saving' || !usernameDirty()"
+        >
+          @if (usernameStatus() === 'saving') {
+            <i class="pi pi-spin pi-spinner"></i>
+          } @else {
+            Save
+          }
+        </button>
+      </form>
+    </section>
+
+    <section class="border-brand-line border-b py-10">
+      <div class="mb-6 flex items-baseline gap-3">
+        <span class="block-idx">02</span>
+        <h2 class="text-brand-text text-lg font-bold tracking-tight">Email address</h2>
+      </div>
+      <form [formGroup]="emailForm" (ngSubmit)="onSubmitEmail()" class="form-row">
+        <div class="form-row__field">
+          <label for="email" class="text-brand-text text-sm font-medium">Email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            class="auth-input"
+            [class.auth-input--error]="email.invalid && email.touched"
+          />
+          @if (email.touched && email.hasError('required')) {
+            <span class="field-error">This field is required.</span>
+          } @else if (email.touched && email.hasError('email')) {
+            <span class="field-error">Enter a valid email address.</span>
+          } @else if (email.touched && email.hasError('maxlength')) {
+            <span class="field-error">Must be under {{ maxEmailLength }} characters.</span>
+          } @else if (emailStatus() === 'error') {
+            <span class="field-error">Could not update your email.</span>
+          } @else if (emailStatus() === 'saved') {
+            <span class="field-success"> <i class="pi pi-check"></i> Email updated. </span>
+          } @else {
+            <span class="field-hint">Used for sign-in and account recovery.</span>
+          }
+        </div>
+        <button
+          type="submit"
+          class="btn-primary form-row__action"
+          [disabled]="emailForm.invalid || emailStatus() === 'saving' || !emailDirty()"
+        >
+          @if (emailStatus() === 'saving') {
+            <i class="pi pi-spin pi-spinner"></i>
+          } @else {
+            Save
+          }
+        </button>
+      </form>
+    </section>
+
+    <section class="border-brand-line border-b py-10">
+      <div class="mb-6 flex items-baseline gap-3">
+        <span class="block-idx">03</span>
+        <h2 class="text-brand-text text-lg font-bold tracking-tight">Password</h2>
+      </div>
+      <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPassword()" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-1">
+          <label for="currentPassword" class="text-brand-text text-sm font-medium">
+            Current password
+          </label>
+          <input
+            id="currentPassword"
+            type="password"
+            formControlName="currentPassword"
+            autocomplete="current-password"
+            class="auth-input"
+            [class.auth-input--error]="currentPassword.invalid && currentPassword.touched"
+          />
+          @if (currentPassword.touched && currentPassword.hasError('required')) {
+            <span class="field-error">This field is required.</span>
+          }
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="newPassword" class="text-brand-text text-sm font-medium">
+            New password
+          </label>
+          <input
+            id="newPassword"
+            type="password"
+            formControlName="newPassword"
+            autocomplete="new-password"
+            class="auth-input"
+            [class.auth-input--error]="newPassword.invalid && newPassword.touched"
+          />
+          @if (newPassword.touched && newPassword.hasError('required')) {
+            <span class="field-error">This field is required.</span>
+          } @else if (newPassword.touched && newPassword.hasError('minlength')) {
+            <span class="field-error"> Must be at least {{ minPasswordLength }} characters. </span>
+          } @else if (newPassword.touched && newPassword.hasError('maxlength')) {
+            <span class="field-error"> Must be under {{ maxPasswordLength }} characters. </span>
+          } @else {
+            <span class="field-hint">
+              Use {{ minPasswordLength }}+ characters with a mix of letters and numbers.
+            </span>
+          }
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="confirmPassword" class="text-brand-text text-sm font-medium">
+            Confirm new password
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            formControlName="confirmPassword"
+            autocomplete="new-password"
+            class="auth-input"
+            [class.auth-input--error]="
+              (confirmPassword.touched && confirmPassword.hasError('required')) ||
+              (confirmPassword.touched && passwordForm.hasError('passwordMismatch'))
+            "
+          />
+          @if (confirmPassword.touched && confirmPassword.hasError('required')) {
+            <span class="field-error">This field is required.</span>
+          } @else if (confirmPassword.touched && passwordForm.hasError('passwordMismatch')) {
+            <span class="field-error">Passwords don't match.</span>
+          }
+        </div>
+
+        @if (passwordStatus() === 'error') {
+          <p class="field-error">Could not update your password.</p>
+        } @else if (passwordStatus() === 'saved') {
+          <p class="field-success"><i class="pi pi-check"></i> Password updated.</p>
+        }
+
+        <div>
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="passwordForm.invalid || passwordStatus() === 'saving'"
+          >
+            @if (passwordStatus() === 'saving') {
+              <i class="pi pi-spin pi-spinner"></i>
+            } @else {
+              Update password
+            }
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="py-10">
+      <div class="mb-6 flex items-baseline gap-3">
+        <span class="block-idx">04</span>
+        <h2 class="text-brand-text text-lg font-bold tracking-tight">Danger zone</h2>
+      </div>
+      <div class="danger-card">
+        <div class="danger-card__copy">
+          <h3 class="text-brand-text text-base font-semibold">Delete account</h3>
+          <p class="text-brand-muted mt-1 text-sm text-pretty">
+            Permanently remove your account, saved teams and likes. This action cannot be undone.
+          </p>
+          @if (isAdmin()) {
+            <p class="danger-card__note">
+              <i class="pi pi-info-circle"></i>
+              Administrator accounts can't be deleted from here. Ask another admin to remove your
+              role first.
+            </p>
+          }
+        </div>
+        @if (isAdmin()) {
+          <button
+            type="button"
+            class="btn-danger"
+            disabled
+            aria-disabled="true"
+            title="Administrators can't delete their own account."
+          >
+            Delete account
+          </button>
+        } @else {
+          <button type="button" class="btn-danger" (click)="openDelete()">Delete account</button>
+        }
+      </div>
+    </section>
+
+    <app-modal
+      [open]="deleteOpen()"
+      title="Delete your account?"
+      [dismissable]="!deletePending()"
+      (closed)="closeDelete()"
+    >
+      <div class="px-5 py-5">
+        <div class="danger-alert">
+          <i class="pi pi-exclamation-triangle"></i>
+          <div>
+            <p class="text-brand-text text-sm font-semibold">This is permanent.</p>
+            <p class="text-brand-muted mt-1 text-sm">
+              Your profile, teams, likes and any data tied to
+              <strong>{{ currentUser.username }}</strong>
+              will be removed and can't be restored.
+            </p>
+          </div>
+        </div>
+
+        <p class="text-brand-text mt-5 text-sm">Are you sure you want to delete your account?</p>
+      </div>
+
+      <div modal-footer class="flex items-center justify-end gap-2">
+        <button
+          type="button"
+          class="btn-ghost"
+          (click)="closeDelete()"
+          [disabled]="deletePending()"
+        >
+          No, keep my account
+        </button>
+        <button
+          type="button"
+          class="btn-danger inline-flex items-center justify-center gap-2"
+          (click)="confirmDelete()"
+          [disabled]="deletePending()"
+          [attr.aria-busy]="deletePending()"
+        >
+          @if (deletePending()) {
+            <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+            <span>Deleting…</span>
+          } @else {
+            <span>Yes, delete account</span>
+          }
+        </button>
+      </div>
+    </app-modal>
+  }
+</div>

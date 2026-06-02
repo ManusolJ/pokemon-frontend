@@ -5,8 +5,6 @@ import { NavItem } from '@shared/interfaces/ui/generic/nav-item.interface';
 import { AuthService } from '@core/services/auth.service';
 import { TokenService } from '@core/services/token.service';
 
-import { finalize } from 'rxjs';
-
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
@@ -35,9 +33,7 @@ export class Navbar {
   ];
 
   protected logout(): void {
-    this.authService
-      .logout()
-      .pipe(finalize(() => this.router.navigate(['/'])))
-      .subscribe({ error: () => {} });
+    this.authService.logout().subscribe({ error: () => {} });
+    this.router.navigate(['/']);
   }
 }

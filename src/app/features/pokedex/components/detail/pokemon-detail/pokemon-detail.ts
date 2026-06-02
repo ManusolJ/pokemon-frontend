@@ -2,7 +2,7 @@ import { environment } from '@environments/environment';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { MoveEmbed } from '@shared/interfaces/pokemon/move/move-embed.interface';
-import { StatRow } from '@shared/interfaces/ui/pokemon-detail/stat-row.interface';
+import { BaseStatRow } from '@shared/interfaces/ui/pokemon-detail/base-stat-row.interface';
 import { GenderRate } from '@shared/interfaces/ui/pokemon-detail/gender-rate.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';
 import { SpeciesRead } from '@shared/interfaces/pokemon/pokemon/species-read.interface';
@@ -210,7 +210,7 @@ export class PokemonDetail {
       : null;
   });
 
-  protected readonly statRows = computed<StatRow[]>(() => {
+  protected readonly statRows = computed<BaseStatRow[]>(() => {
     const pokemon = this.pokemon();
     if (pokemon) {
       return [

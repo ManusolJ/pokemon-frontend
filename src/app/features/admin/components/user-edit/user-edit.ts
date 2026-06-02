@@ -3,6 +3,9 @@ import { MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH } from '@shared/constants/auth
 
 import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
 import { AdminUserUpdate } from '@shared/interfaces/pokemon/user/admin-user-update.interface';
+import { FormSubmissionStatus } from '@shared/interfaces/ui/form/form-submission-status.interface';
+
+import { formatJoinDate } from '@shared/utils/format-date.util';
 
 import { UserService } from '@core/services/user.service';
 
@@ -25,15 +28,6 @@ import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-int
 
 const INITIALS_LENGTH = 2;
 const PLACEHOLDER_INITIALS = '??';
-const EMPTY_DATE_PLACEHOLDER = '—';
-
-const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-};
-
-type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
@@ -53,7 +47,7 @@ export class UserEdit {
   private readonly userService = inject(UserService);
   private readonly formBuilder = inject(FormBuilder);
 
-  protected readonly saveStatus = signal<SaveStatus>('idle');
+  protected readonly saveStatus = signal<FormSubmissionStatus>('idle');
 
   protected readonly form = this.formBuilder.nonNullable.group({
     username: [
@@ -115,7 +109,7 @@ export class UserEdit {
   );
 
   protected readonly isAdmin = computed(() => this.user()?.role === ADMIN_ROLE);
-  protected readonly memberSince = computed(() => formatJoinDate(this.user()?.createdAt));
+  protected readonly memberSince = computed(() => formatJoinDate(this.user()?.createdAt, 'short'));
 
   protected initials(username: string | undefined): string {
     const source = username ?? PLACEHOLDER_INITIALS;
@@ -165,15 +159,4 @@ export class UserEdit {
       enabled: user.enabled,
     });
   }
-}
-
-function formatJoinDate(iso: string | undefined): string {
-  if (!iso) {
-    return EMPTY_DATE_PLACEHOLDER;
-  }
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return EMPTY_DATE_PLACEHOLDER;
-  }
-  return date.toLocaleDateString(undefined, DATE_FORMAT_OPTIONS);
 }

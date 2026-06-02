@@ -3,12 +3,12 @@
     <div class="flex flex-col gap-1">
       <label for="identifier" class="text-brand-text text-sm font-medium">Username or email</label>
       <input
-        id="identifier"
         type="text"
-        formControlName="identifier"
-        autocomplete="username"
-        placeholder="Trainer"
+        id="identifier"
         class="auth-input"
+        placeholder="Trainer"
+        autocomplete="username"
+        formControlName="identifier"
         [class.auth-input--error]="identifier.invalid && identifier.touched"
       />
       @if (identifier.touched && identifier.hasError('required')) {
@@ -26,6 +26,7 @@
       <div class="flex justify-between items-center">
         <label for="password" class="text-brand-text text-sm font-medium">Password</label>
         <a
+          tabindex="-1"
           routerLink="/auth/reset-password-request"
           class="text-brand-muted hover:text-brand-text text-xs transition-colors"
         >
@@ -35,10 +36,10 @@
       <input
         id="password"
         type="password"
+        class="auth-input"
+        placeholder="••••••••"
         formControlName="password"
         autocomplete="current-password"
-        placeholder="••••••••"
-        class="auth-input"
         [class.auth-input--error]="password.invalid && password.touched"
       />
       @if (password.touched && password.hasError('required')) {
@@ -48,11 +49,17 @@
       }
     </div>
 
-    <button type="submit" [disabled]="isLoading() || form.invalid" class="btn-primary mt-2">
+    <button
+      type="submit"
+      [disabled]="isLoading() || form.invalid"
+      [attr.aria-busy]="isLoading()"
+      class="btn-primary mt-2 inline-flex items-center justify-center gap-2"
+    >
       @if (isLoading()) {
-        <i class="pi pi-spin pi-spinner"></i>
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        <span>Signing in…</span>
       } @else {
-        Sign in
+        <span>Sign in</span>
       }
     </button>
   </form>
