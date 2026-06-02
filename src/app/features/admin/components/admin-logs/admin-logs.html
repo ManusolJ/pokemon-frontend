@@ -1,0 +1,192 @@
+<section class="flex flex-1 flex-col py-6">
+  <div class="kind-toggle" role="tablist" aria-label="Log kind">
+    <button
+      type="button"
+      class="kind-toggle__btn"
+      [class.kind-toggle__btn--active]="kind() === logKindSeed"
+      (click)="setKind(logKindSeed)"
+      role="tab"
+      [attr.aria-selected]="kind() === logKindSeed"
+    >
+      <i class="pi pi-database"></i> Seed logs
+    </button>
+    <button
+      type="button"
+      class="kind-toggle__btn"
+      [class.kind-toggle__btn--active]="kind() === logKindAudit"
+      (click)="setKind(logKindAudit)"
+      role="tab"
+      [attr.aria-selected]="kind() === logKindAudit"
+    >
+      <i class="pi pi-shield"></i> Audit logs
+    </button>
+  </div>
+
+  <div class="mb-4 flex flex-wrap items-center gap-3 max-sm:gap-2">
+    <div class="search">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchInput($event)"
+        [placeholder]="searchPlaceholder()"
+        class="search__input"
+        aria-label="Search logs"
+      />
+    </div>
+
+    @if (kind() === logKindSeed) {
+      <div class="pill-group" role="group" aria-label="Filter by status">
+        @for (option of seedStatusOptions; track option.value) {
+          <button
+            type="button"
+            class="pill"
+            [class.pill--active]="seedStatus() === option.value"
+            (click)="setSeedStatus($any(option.value))"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    }
+
+    <div class="date-range">
+      <span class="date-range__label">From</span>
+      <input
+        type="date"
+        class="date-input"
+        [ngModel]="fromDate()"
+        (ngModelChange)="onFromDateChange($event)"
+        aria-label="From date"
+      />
+      <span class="date-range__label">To</span>
+      <input
+        type="date"
+        class="date-input"
+        [ngModel]="toDate()"
+        (ngModelChange)="onToDateChange($event)"
+        aria-label="To date"
+      />
+    </div>
+
+    @if (hasActiveFilters()) {
+      <button
+        type="button"
+        class="clear-filters"
+        (click)="clearFilters()"
+        aria-label="Clear all filters"
+      >
+        <i class="pi pi-filter-slash"></i> Clear filters
+      </button>
+    }
+
+    <div class="ml-auto inline-flex items-baseline gap-1.5 max-sm:ml-0">
+      <span class="text-brand-text font-semibold">{{ total() }}</span>
+      <span class="text-brand-muted text-sm">{{ entriesLabel() }}</span>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="rows">
+      @for (skeleton of skeletons(); track $index) {
+        <div class="row row--skeleton">
+          <div class="skeleton-block"></div>
+        </div>
+      }
+    </div>
+  } @else {
+    @switch (kind()) {
+      @case (logKindSeed) {
+        @if (seedLogs().length === 0) {
+          <div
+            class="flex flex-col items-center rounded-2xl border border-dashed border-brand-line px-4 py-16 text-brand-muted"
+          >
+            <i class="pi pi-database text-3xl"></i>
+            <p class="text-brand-text mt-3 font-semibold">No seed jobs match</p>
+            <p class="text-brand-muted text-sm">Try loosening the filters above.</p>
+          </div>
+        } @else {
+          <div class="rows">
+            @for (log of seedLogs(); track log.id) {
+              <div class="row row--seed">
+                <span class="row__id">#{{ log.id }}</span>
+                <span [class]="statusClass(log.status)">{{ log.status }}</span>
+                <div class="row__identity">
+                  <span class="row__actor">{{ log.triggeredBy }}</span>
+                  <span class="row__sub">{{ formatDateTime(log.startedAt) }}</span>
+                </div>
+                <span class="row__metric">
+                  <i class="pi pi-clock"></i>
+                  {{ formatDuration(log.startedAt, log.completedAt) }}
+                </span>
+                <span class="row__metric">
+                  <i class="pi pi-plus"></i>
+                  {{ log.entriesAdded.toLocaleString() }} added
+                </span>
+                <span class="row__metric" [class.row__metric--err]="log.errors > 0">
+                  <i class="pi pi-exclamation-triangle"></i>
+                  {{ log.errors.toLocaleString() }} errors
+                </span>
+                <span class="row__time">{{ formatTime(lastEventTime(log)) }}</span>
+              </div>
+            }
+          </div>
+        }
+      }
+      @case (logKindAudit) {
+        @if (auditLogs().length === 0) {
+          <div
+            class="flex flex-col items-center rounded-2xl border border-dashed border-brand-line px-4 py-16 text-brand-muted"
+          >
+            <i class="pi pi-shield text-3xl"></i>
+            <p class="text-brand-text mt-3 font-semibold">No audit events match</p>
+            <p class="text-brand-muted text-sm">Try loosening the filters above.</p>
+          </div>
+        } @else {
+          <div class="rows">
+            @for (log of auditLogs(); track log.id) {
+              <div class="row row--audit">
+                <span class="row__id">#{{ log.id }}</span>
+                <span class="action-tag">{{ log.action | nameNormalizer }}</span>
+                <div class="row__identity">
+                  <span class="row__actor">{{ log.username }}</span>
+                  <span class="row__sub">
+                    @if (log.entity) {
+                      {{ log.entity }}
+                    }
+                    @if (log.entityId) {
+                      #{{ log.entityId }}
+                    }
+                  </span>
+                </div>
+                <span class="row__details">
+                  @if (log.details) {
+                    {{ log.details }}
+                  } @else {
+                    —
+                  }
+                </span>
+                <span class="row__time">{{ formatDateTime(log.createdAt) }}</span>
+              </div>
+            }
+          </div>
+        }
+      }
+    }
+  }
+
+  @if (total() > 0) {
+    <div class="mt-auto pt-6 pb-4">
+      <p-paginator
+        class="paginator-dark"
+        [rows]="pageSize"
+        [pageLinkSize]="5"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first}–{last} of {totalRecords}"
+        [totalRecords]="total()"
+        [first]="firstRecordIndex()"
+        (onPageChange)="onPageChange($event)"
+      />
+    </div>
+  }
+</section>
