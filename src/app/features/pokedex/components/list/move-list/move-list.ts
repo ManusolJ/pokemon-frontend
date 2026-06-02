@@ -3,7 +3,6 @@ import {
   FilterValue,
   FilterOption,
 } from '@shared/interfaces/ui/filter/filter-field.interface';
-import { TypeFilter } from '@shared/interfaces/pokemon/type/type-filter.interface';
 import { MoveFilter } from '@shared/interfaces/pokemon/move/move-filter.interface';
 import { MoveSummary } from '@shared/interfaces/pokemon/move/move-summary.interface';
 
@@ -142,14 +141,8 @@ export class MoveList implements OnInit {
   }
 
   private loadTypes(): void {
-    const filter: TypeFilter = {
-      id: null,
-      name: '',
-      nameExact: '',
-    };
-
     this.typeService
-      .getTypePageWithFilter(filter)
+      .getTypePageWithFilter({})
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) =>

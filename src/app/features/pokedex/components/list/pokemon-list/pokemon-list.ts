@@ -3,7 +3,6 @@ import {
   FilterValue,
   FilterOption,
 } from '@shared/interfaces/ui/filter/filter-field.interface';
-import { TypeFilter } from '@shared/interfaces/pokemon/type/type-filter.interface';
 import { PokemonFilter } from '@shared/interfaces/pokemon/pokemon/pokemon-filter.interface';
 import { SpeciesSummary } from '@shared/interfaces/pokemon/pokemon/species-summary.interface';
 
@@ -25,7 +24,7 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, catchError, switchMap, tap } from 'rxjs';
 
@@ -54,7 +53,6 @@ const GENERATIONS: FilterOption[] = [
 })
 export class PokemonList implements OnInit {
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly typeService = inject(TypeService);
   private readonly speciesService = inject(SpeciesService);
@@ -238,14 +236,8 @@ export class PokemonList implements OnInit {
   }
 
   private loadTypes(): void {
-    const filter: TypeFilter = {
-      id: null,
-      name: '',
-      nameExact: '',
-    };
-
     this.typeService
-      .getTypePageWithFilter(filter)
+      .getTypePageWithFilter({})
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) =>

@@ -1,5 +1,3 @@
-import { PokedexLayout } from '@features/pokedex/layout/pokedex-layout';
-
 import { Routes } from '@angular/router';
 
 export const POKEDEX_ROUTES: Routes = [
