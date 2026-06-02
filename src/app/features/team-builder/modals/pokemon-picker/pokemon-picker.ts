@@ -4,8 +4,8 @@ import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';
 import { PokemonSummary } from '@shared/interfaces/pokemon/pokemon/pokemon-summary.interface';
 
-import { PokemonService } from '@core/services/pokemon.service';
 import { TypeService } from '@core/services/type.service';
+import { PokemonService } from '@core/services/pokemon.service';
 
 import { Modal } from '@shared/components/modal/modal';
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
@@ -18,13 +18,14 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
   input,
+  effect,
   output,
   signal,
+  inject,
+  computed,
+  Component,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { map, of, switchMap, tap } from 'rxjs';
@@ -112,9 +113,33 @@ export class PokemonPicker {
     defaultValue: [],
   });
 
-  protected readonly loading = computed<boolean>(() => this.pokemonResource.isLoading());
   protected readonly types = computed(() => this.typesResource.value());
   protected readonly pokemon = computed(() => this.pokemonResource.value());
+  protected readonly loading = computed<boolean>(() => this.pokemonResource.isLoading());
+
+  protected readonly hasFilters = computed(
+    () => this.query().trim().length > 0 || this.typeId() !== null,
+  );
+
+  constructor() {
+    effect(() => {
+      if (!this.open()) {
+        this.resetFilters();
+      }
+    });
+  }
+
+  protected clearFilters(): void {
+    this.resetFilters();
+  }
+
+  private resetFilters(): void {
+    this.query.set('');
+    this.typeId.set(null);
+    this.currentPage.set(0);
+    this.debouncedQuery.set('');
+    clearTimeout(this.searchDebounceTimer);
+  }
 
   protected onSearch(value: string): void {
     this.query.set(value);

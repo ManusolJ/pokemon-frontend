@@ -1,21 +1,33 @@
 <app-modal [open]="open()" title="Add Pokemon" (closed)="closed.emit()">
   <div modal-toolbar class="flex flex-col gap-3">
-    <div
-      class="flex items-center gap-2 px-2.5 py-3 bg-brand-raised border border-solid border-brand-line rounded-xl text-brand-dim"
-    >
-      <i class="pi pi-search"></i>
-      <input
-        #nameSearch
-        type="text"
-        autofocus
-        placeholder="Search by name…"
-        class="flex-1 bg-transparent border-0 outline-0 text-brand-text text-sm"
-        [value]="query()"
-        (input)="onSearch(nameSearch.value)"
-      />
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <div
+        class="flex flex-1 min-w-48 items-center gap-2 px-2.5 py-3 bg-brand-raised border border-solid border-brand-line rounded-xl text-brand-dim transition-colors focus-within:border-brand-red/50"
+      >
+        <i class="pi pi-search"></i>
+        <input
+          #nameSearch
+          type="text"
+          autofocus
+          placeholder="Search by name…"
+          class="flex-1 bg-transparent border-0 outline-0 text-brand-text text-sm"
+          [value]="query()"
+          (input)="onSearch(nameSearch.value)"
+        />
+      </div>
+
+      <button
+        type="button"
+        (click)="clearFilters()"
+        [disabled]="!hasFilters()"
+        class="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-xs font-semibold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer transition-colors hover:text-brand-text disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        <i class="pi pi-filter-slash"></i>
+        Clear filters
+      </button>
     </div>
 
-    <div class="flex gap-1.5">
+    <div class="flex gap-1.5 flex-wrap">
       @for (type of types(); track type.id) {
         <button
           type="button"

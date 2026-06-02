@@ -4,16 +4,21 @@ import { CategoryMeta } from '@shared/interfaces/team-builder/category-meta.inte
 import { MoveCategoryKey } from '@shared/interfaces/ui/move-detail/move-category-key.interface';
 
 import { MoveService } from '@core/services/move.service';
+import { TypeService } from '@core/services/type.service';
 
 import { Modal } from '@shared/components/modal/modal';
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
 
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
-import { map } from 'rxjs';
+import { SkeletonModule } from 'primeng/skeleton';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+
+import { map, of, switchMap, tap } from 'rxjs';
 
 import { rxResource } from '@angular/core/rxjs-interop';
 import {
+  effect,
   input,
   inject,
   output,
@@ -26,7 +31,8 @@ import {
 type MoveSort = 'default' | 'power' | 'name';
 type MoveCategoryFilter = 'all' | MoveCategoryKey;
 
-const PAGE_SIZE = 60;
+const PAGE_SIZE = 12;
+const SEARCH_DEBOUNCE_MS = 300;
 const DEFAULT_CATEGORY_KEY: MoveCategoryKey = 'status';
 
 const CATEGORY_META: Record<MoveCategoryKey, CategoryMeta> = {
@@ -50,7 +56,7 @@ const CATEGORY_OPTIONS: ReadonlyArray<{ readonly id: MoveCategoryFilter; readonl
   ];
 
 @Component({
-  imports: [Modal, TypeBadge],
+  imports: [Modal, TypeBadge, PaginatorModule, SkeletonModule],
   selector: 'app-move-picker',
   styleUrl: './move-picker.css',
   templateUrl: './move-picker.html',
@@ -58,6 +64,7 @@ const CATEGORY_OPTIONS: ReadonlyArray<{ readonly id: MoveCategoryFilter; readonl
 })
 export class MovePicker {
   private readonly moveService = inject(MoveService);
+  private readonly typeService = inject(TypeService);
 
   readonly open = input.required<boolean>();
   readonly pokemonId = input<number | null>(null);
@@ -67,87 +74,126 @@ export class MovePicker {
   readonly closed = output<void>();
   readonly picked = output<MoveRead | null>();
 
+  protected readonly pageSize = PAGE_SIZE;
   protected readonly sortOptions = SORT_OPTIONS;
   protected readonly categoryOptions = CATEGORY_OPTIONS;
+  protected readonly skeletons = computed<readonly void[]>(() => Array.from({ length: PAGE_SIZE }));
 
   protected readonly query = signal('');
-  protected readonly sort = signal<MoveSort>('default');
   protected readonly typeId = signal<number | null>(null);
+
+  protected readonly sort = signal<MoveSort>('default');
   protected readonly category = signal<MoveCategoryFilter>('all');
 
-  private readonly moveResource = rxResource({
-    params: () => {
-      if (!this.open()) {
-        return undefined;
-      }
-      const id = this.pokemonId();
-      return id == null ? undefined : { pokemonId: id };
-    },
-    stream: ({ params }) =>
-      this.moveService
-        .getMovePageWithFilter(
-          { pokemonId: params.pokemonId },
-          { page: 0, size: PAGE_SIZE, sort: 'id', direction: 'ASC' },
-        )
-        .pipe(map((page) => page.content)),
+  protected readonly currentPage = signal(0);
+  protected readonly totalRecords = signal(0);
+
+  private readonly debouncedQuery = signal('');
+  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+  private readonly typesResource = rxResource({
+    stream: () =>
+      this.typeService
+        .getTypeCountWithFilter({})
+        .pipe(
+          switchMap((count) =>
+            count === 0
+              ? of<readonly TypeRead[]>([])
+              : this.typeService
+                  .getTypePageWithFilter(
+                    {},
+                    { page: 0, size: count, sort: 'name', direction: 'ASC' },
+                  )
+                  .pipe(map((page) => page.content)),
+          ),
+        ),
     defaultValue: [],
   });
 
-  protected readonly pool = computed(() => this.moveResource.value());
-  protected readonly loading = computed(() => this.moveResource.isLoading());
+  private readonly movesResource = rxResource({
+    params: () => ({
+      open: this.open(),
+      pokemonId: this.pokemonId(),
+      query: this.debouncedQuery(),
+      typeId: this.typeId(),
+      category: this.category(),
+      sort: this.sort(),
+      page: this.currentPage(),
+    }),
+    stream: ({ params }) => {
+      if (!params.open || params.pokemonId == null) {
+        return of<MoveRead[]>([]);
+      }
+      const sortParam = params.sort === 'default' ? 'id' : params.sort;
+      return this.moveService
+        .getMovePageWithFilter(
+          {
+            pokemonId: params.pokemonId,
+            name: params.query.trim() || undefined,
+            typeId: params.typeId ?? undefined,
+            category: params.category === 'all' ? undefined : params.category,
+          },
+          { page: params.page, size: PAGE_SIZE, sort: sortParam, direction: 'ASC' },
+        )
+        .pipe(
+          tap((response) => this.totalRecords.set(response.page.totalElements)),
+          map((response) => response.content),
+        );
+    },
+    defaultValue: [],
+  });
 
+  protected readonly types = computed(() => this.typesResource.value());
+  protected readonly moves = computed(() => this.movesResource.value());
+  protected readonly loading = computed(() => this.movesResource.isLoading());
   protected readonly disabledSet = computed(() => new Set(this.disabledMoveIds()));
 
-  protected readonly visible = computed<readonly MoveRead[]>(() => {
-    const query = this.query().trim().toLowerCase();
-    const typeId = this.typeId();
-    const category = this.category();
-    let list = this.pool().filter((move) => {
-      if (query && !move.name.toLowerCase().includes(query)) {
-        return false;
-      }
-      if (typeId !== null && move.type?.id !== typeId) {
-        return false;
-      }
-      if (category !== 'all' && move.category?.toLowerCase() !== category) {
-        return false;
-      }
-      return true;
-    });
-    const sort = this.sort();
-    if (sort === 'power') list = [...list].sort((a, b) => (b.power ?? 0) - (a.power ?? 0));
-    if (sort === 'name') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
-    return list;
-  });
+  protected readonly hasFilters = computed(
+    () =>
+      this.query().trim().length > 0 ||
+      this.typeId() !== null ||
+      this.category() !== 'all' ||
+      this.sort() !== 'default',
+  );
 
-  protected readonly poolTypes = computed<readonly TypeRead[]>(() => {
-    const seen = new Map<number, TypeRead>();
-    for (const move of this.pool()) {
-      if (move.type && !seen.has(move.type.id)) {
-        seen.set(move.type.id, move.type);
+  constructor() {
+    effect(() => {
+      if (!this.open()) {
+        this.resetFilters();
       }
-    }
-    return [...seen.values()];
-  });
+    });
+  }
 
   protected typeColor(name: string | undefined): string {
     return getTypeColor(name);
   }
 
-  protected onSearch(raw: string): void {
-    this.query.set(raw);
+  protected onSearch(value: string): void {
+    this.query.set(value);
+    clearTimeout(this.searchDebounceTimer);
+    this.searchDebounceTimer = setTimeout(() => {
+      this.debouncedQuery.set(value);
+      this.currentPage.set(0);
+    }, SEARCH_DEBOUNCE_MS);
   }
 
   protected toggleType(id: number): void {
     this.typeId.set(this.typeId() === id ? null : id);
+    this.currentPage.set(0);
   }
 
   protected setCategory(category: MoveCategoryFilter): void {
     this.category.set(category);
+    this.currentPage.set(0);
   }
 
   protected setSort(sort: MoveSort): void {
     this.sort.set(sort);
+    this.currentPage.set(0);
+  }
+
+  protected onPageChange(state: PaginatorState): void {
+    this.currentPage.set(state.page ?? 0);
   }
 
   protected categoryAbbr(category: string): string {
@@ -171,8 +217,22 @@ export class MovePicker {
     this.picked.emit(null);
   }
 
+  protected clearFilters(): void {
+    this.resetFilters();
+  }
+
   private categoryMeta(category: string | undefined): CategoryMeta {
     const key = (category?.toLowerCase() ?? DEFAULT_CATEGORY_KEY) as MoveCategoryKey;
     return CATEGORY_META[key] ?? CATEGORY_META[DEFAULT_CATEGORY_KEY];
+  }
+
+  private resetFilters(): void {
+    clearTimeout(this.searchDebounceTimer);
+    this.query.set('');
+    this.typeId.set(null);
+    this.currentPage.set(0);
+    this.category.set('all');
+    this.sort.set('default');
+    this.debouncedQuery.set('');
   }
 }
