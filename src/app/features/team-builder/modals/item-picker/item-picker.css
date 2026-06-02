@@ -1,0 +1,17 @@
+:host {
+  display: contents;
+}
+
+.item-row:hover:not(.is-current) {
+  border-color: color-mix(in srgb, var(--color-brand-red) 50%, transparent);
+  background: color-mix(in srgb, var(--color-brand-red) 6%, var(--color-brand-raised));
+}
+
+.item-row.is-current {
+  border-color: color-mix(in srgb, var(--color-brand-red) 55%, transparent);
+  background: color-mix(in srgb, var(--color-brand-red) 12%, var(--color-brand-raised));
+}
+
+.item-row img {
+  image-rendering: pixelated;
+}
