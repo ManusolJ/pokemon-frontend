@@ -4,8 +4,8 @@ import { LEVEL_MAX, LEVEL_MIN } from '@shared/constants/stat.constants';
 
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
-import { CategoryMeta } from '@shared/interfaces/team-builder/category-meta.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
+import { CategoryMeta } from '@shared/interfaces/team-builder/move/category-meta.interface';
 import { SearchableOption } from '@shared/interfaces/ui/generic/searchable-option.interface';
 import { MoveCategoryKey } from '@shared/interfaces/ui/move-detail/move-category-key.interface';
 

@@ -1,7 +1,7 @@
 import { environment } from '@environments/environment';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
 

@@ -4,11 +4,11 @@ import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { TeamCreate } from '@shared/interfaces/pokemon/team/team-create.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
 import { ItemSummary } from '@shared/interfaces/pokemon/item/item-summary.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';
 import { AbilityRead } from '@shared/interfaces/pokemon/ability/ability-read.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 import { AbilitySummary } from '@shared/interfaces/pokemon/ability/ability-summary.interface';
 import { TeamPokemonCreate } from '@shared/interfaces/pokemon/team/team-pokemon-create.interface';
 

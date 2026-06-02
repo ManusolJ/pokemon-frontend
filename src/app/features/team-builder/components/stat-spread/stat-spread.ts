@@ -1,8 +1,8 @@
 import { EV_PER_STAT_MAX, EV_STEP, EV_TOTAL_MAX, STATS } from '@shared/constants/stat.constants';
 
-import { StatKey } from '@shared/interfaces/team-builder/stat-key.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
-import { StatSpread as StatSpreadValues } from '@shared/interfaces/team-builder/stat-spread.interface';
+import { StatKey } from '@shared/interfaces/team-builder/stats/stat-key.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
+import { StatSpread as StatSpreadValues } from '@shared/interfaces/team-builder/stats/stat-spread.interface';
 
 import { calcHp, calcStat, emptyEvs } from '@shared/utils/stats.util';
 

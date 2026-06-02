@@ -1,5 +1,5 @@
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 import { SegmentTone } from '@shared/interfaces/team-builder/analysis/segment-tone.interface';
 import { AttackerRow } from '@shared/interfaces/team-builder/analysis/attacker-row.interface';
 import { BucketCounts } from '@shared/interfaces/team-builder/analysis/bucket-counts.interface';

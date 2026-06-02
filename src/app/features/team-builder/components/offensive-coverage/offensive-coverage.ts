@@ -6,7 +6,7 @@ import {
 } from '@shared/constants/effectiveness.constants';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 import { DefenderEntry } from '@shared/interfaces/team-builder/analysis/defender-entry.interface';
 import { EffectivenessChart } from '@shared/interfaces/team-builder/analysis/effectiveness-chart.interface';
 

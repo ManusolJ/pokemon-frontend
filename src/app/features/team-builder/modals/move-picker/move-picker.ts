@@ -1,6 +1,6 @@
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
-import { CategoryMeta } from '@shared/interfaces/team-builder/category-meta.interface';
+import { CategoryMeta } from '@shared/interfaces/team-builder/move/category-meta.interface';
 import { MoveCategoryKey } from '@shared/interfaces/ui/move-detail/move-category-key.interface';
 
 import { MoveService } from '@core/services/move.service';

@@ -1,8 +1,8 @@
 import { environment } from '@environments/environment';
 
 import { RoleKey } from '@shared/interfaces/team-builder/role/role-key.interface';
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
 import { RoleGroup } from '@shared/interfaces/team-builder/role/role-group.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 
 import { classifyRole } from '@shared/utils/role.util';
 

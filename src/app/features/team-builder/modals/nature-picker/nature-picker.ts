@@ -1,5 +1,5 @@
-import { StatOption } from '@shared/interfaces/team-builder/stat-option.interface';
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
+import { SearchableOption } from '@shared/interfaces/ui/generic/searchable-option.interface';
 
 import { NatureService } from '@core/services/nature.service';
 
@@ -27,7 +27,7 @@ import {
 const PAGE_SIZE = 30;
 const SEARCH_DEBOUNCE_MS = 300;
 
-const STAT_OPTIONS: readonly StatOption[] = [
+const STAT_OPTIONS: readonly SearchableOption[] = [
   { label: 'Attack', value: 'attack' },
   { label: 'Defense', value: 'defense' },
   { label: 'Sp. Atk', value: 'special-attack' },
@@ -128,13 +128,15 @@ export class NaturePicker {
     }, SEARCH_DEBOUNCE_MS);
   }
 
-  protected toggleIncreased(value: string): void {
-    this.increasedStat.set(this.increasedStat() === value ? null : value);
+  protected toggleIncreased(value: SearchableOption['value']): void {
+    const next = String(value);
+    this.increasedStat.set(this.increasedStat() === next ? null : next);
     this.currentPage.set(0);
   }
 
-  protected toggleDecreased(value: string): void {
-    this.decreasedStat.set(this.decreasedStat() === value ? null : value);
+  protected toggleDecreased(value: SearchableOption['value']): void {
+    const next = String(value);
+    this.decreasedStat.set(this.decreasedStat() === next ? null : next);
     this.currentPage.set(0);
   }
 
