@@ -102,33 +102,77 @@
       </div>
 
       <div class="flex flex-col gap-3">
-        <app-searchable-select
-          label="Ability"
-          placeholder="Pick an ability"
-          searchPlaceholder="Search abilities…"
-          [options]="abilityOptions()"
-          [value]="abilityValue()"
-          (valueChange)="onAbility($event)"
-        />
+        <label class="flex flex-col gap-1.5">
+          <span class="basics__label">Ability</span>
+          <button
+            type="button"
+            (click)="openAbilityPicker.emit()"
+            [class.is-filled]="!!member.ability"
+            class="picker-row flex items-center gap-2 w-full px-3 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg text-left text-brand-text cursor-pointer transition-colors"
+          >
+            @if (member.ability) {
+              <span class="flex-1 text-[0.84375rem] font-semibold truncate">
+                {{ member.ability.name | titlecase }}
+              </span>
+            } @else {
+              <span class="flex-1 text-[0.8125rem] text-brand-dim">Pick an ability</span>
+            }
+            <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
+          </button>
+        </label>
 
-        <app-searchable-select
-          label="Nature"
-          placeholder="Pick a nature"
-          searchPlaceholder="Search natures…"
-          [options]="natureOptions()"
-          [value]="natureValue()"
-          (valueChange)="onNature($event)"
-        />
+        <label class="flex flex-col gap-1.5">
+          <span class="basics__label">Nature</span>
+          <button
+            type="button"
+            (click)="openNaturePicker.emit()"
+            [class.is-filled]="!!member.nature"
+            class="picker-row flex items-center gap-2 w-full px-3 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg text-left text-brand-text cursor-pointer transition-colors"
+          >
+            @if (member.nature) {
+              <span class="flex-1 min-w-0 flex items-center gap-2">
+                <span class="text-[0.84375rem] font-semibold truncate">
+                  {{ member.nature.name | titlecase }}
+                </span>
+                @if (natureCaption(); as caption) {
+                  <span class="text-[0.6875rem] text-brand-muted truncate">{{ caption }}</span>
+                }
+              </span>
+            } @else {
+              <span class="flex-1 text-[0.8125rem] text-brand-dim">Pick a nature</span>
+            }
+            <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
+          </button>
+        </label>
 
-        <app-searchable-select
-          label="Held item"
-          [placeholder]="heldItemPlaceholder()"
-          searchPlaceholder="Search items…"
-          [options]="itemOptions()"
-          [value]="itemValue()"
-          [disabled]="isMega()"
-          (valueChange)="onItem($event)"
-        />
+        <label class="flex flex-col gap-1.5">
+          <span class="basics__label">Held item</span>
+          <button
+            type="button"
+            (click)="openItemPicker.emit()"
+            [disabled]="isMega()"
+            [class.is-filled]="!!member.item"
+            class="picker-row flex items-center gap-2 w-full px-3 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg text-left text-brand-text cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            @if (member.item) {
+              <span class="size-5 shrink-0 flex items-center justify-center">
+                <img
+                  [src]="getImgUrl(member.item.spriteUrl)"
+                  [alt]="member.item.name"
+                  class="w-full h-full object-contain"
+                />
+              </span>
+              <span class="flex-1 text-[0.84375rem] font-semibold truncate">
+                {{ member.item.name | titlecase }}
+              </span>
+            } @else {
+              <span class="flex-1 text-[0.8125rem] text-brand-dim">{{
+                heldItemPlaceholder()
+              }}</span>
+            }
+            <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
+          </button>
+        </label>
 
         <app-searchable-select
           label="Tera type"

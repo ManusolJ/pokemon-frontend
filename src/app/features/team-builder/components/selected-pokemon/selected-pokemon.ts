@@ -6,9 +6,6 @@ import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
 import { CategoryMeta } from '@shared/interfaces/team-builder/category-meta.interface';
-import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
-import { ItemSummary } from '@shared/interfaces/pokemon/item/item-summary.interface';
-import { AbilityEmbed } from '@shared/interfaces/pokemon/ability/ability-embed.interface';
 import { SearchableOption } from '@shared/interfaces/ui/generic/searchable-option.interface';
 import { MoveCategoryKey } from '@shared/interfaces/ui/move-detail/move-category-key.interface';
 
@@ -33,9 +30,9 @@ const CATEGORY_META: Record<MoveCategoryKey, CategoryMeta> = {
 
 const MEGA_NAME_SEGMENT = 'mega';
 const NAME_SEGMENT_SEPARATOR = '-';
+const NUMERIC_STAT_PLACEHOLDER = '—';
 const HELD_ITEM_PLACEHOLDER_DEFAULT = 'No item';
 const HELD_ITEM_PLACEHOLDER_MEGA = 'Mega stone (auto)';
-const NUMERIC_STAT_PLACEHOLDER = '—';
 
 @Component({
   imports: [SearchableSelect, TypeBadge, NameNormalizerPipe, TitleCasePipe],
@@ -46,12 +43,12 @@ const NUMERIC_STAT_PLACEHOLDER = '—';
 })
 export class SelectedPokemon {
   readonly types = input<readonly TypeRead[]>([]);
-  readonly items = input<readonly ItemSummary[]>([]);
-  readonly natures = input<readonly NatureRead[]>([]);
   readonly member = input.required<TeamMember | null>();
-  readonly abilities = input<readonly AbilityEmbed[]>([]);
 
+  readonly openItemPicker = output<void>();
   readonly openMovePicker = output<number>();
+  readonly openNaturePicker = output<void>();
+  readonly openAbilityPicker = output<void>();
   readonly memberChange = output<TeamMember>();
 
   protected readonly levelMin = LEVEL_MIN;
@@ -63,25 +60,6 @@ export class SelectedPokemon {
     getTypeColor(this.member()?.secondaryType?.name ?? this.member()?.primaryType.name),
   );
 
-  protected readonly itemOptions = computed<SearchableOption[]>(() =>
-    this.items().map((item) => ({ label: item.name, value: item.id, imageUrl: item.spriteUrl })),
-  );
-
-  protected readonly abilityOptions = computed<SearchableOption[]>(() =>
-    this.abilities().map((embed) => ({ label: embed.ability.name, value: embed.ability.id })),
-  );
-
-  protected readonly natureOptions = computed<SearchableOption[]>(() =>
-    this.natures().map((nature) => ({
-      label: nature.name,
-      value: nature.id,
-      caption:
-        nature.increasedStat === nature.decreasedStat
-          ? 'Neutral'
-          : `+${nature.increasedStat} · −${nature.decreasedStat}`,
-    })),
-  );
-
   protected readonly teraOptions = computed<SearchableOption[]>(() =>
     this.types().map((type) => ({
       label: type.name,
@@ -90,10 +68,17 @@ export class SelectedPokemon {
     })),
   );
 
-  protected readonly itemValue = computed(() => this.member()?.item?.id ?? null);
-  protected readonly abilityValue = computed(() => this.member()?.ability?.id ?? null);
-  protected readonly natureValue = computed(() => this.member()?.nature?.id ?? null);
   protected readonly teraValue = computed(() => this.member()?.teraType?.id ?? null);
+
+  protected readonly natureCaption = computed<string | null>(() => {
+    const nature = this.member()?.nature;
+    if (!nature) {
+      return null;
+    }
+    return nature.increasedStat === nature.decreasedStat
+      ? 'Neutral'
+      : `+${nature.increasedStat} · −${nature.decreasedStat}`;
+  });
 
   protected readonly isMega = computed(() => {
     const name = this.member()?.name;
@@ -134,23 +119,6 @@ export class SelectedPokemon {
       return;
     }
     this.patchMember({ shiny: !member.shiny });
-  }
-
-  protected onItem(id: string | number | null): void {
-    this.patchMember({ item: findById(this.items(), id) });
-  }
-
-  protected onAbility(id: string | number | null): void {
-    if (id === null || id === undefined) {
-      this.patchMember({ ability: null });
-      return;
-    }
-    const match = this.abilities().find((embed) => embed.ability.id === id);
-    this.patchMember({ ability: match?.ability ?? null });
-  }
-
-  protected onNature(id: string | number | null): void {
-    this.patchMember({ nature: findById(this.natures(), id) });
   }
 
   protected onTera(id: string | number | null): void {

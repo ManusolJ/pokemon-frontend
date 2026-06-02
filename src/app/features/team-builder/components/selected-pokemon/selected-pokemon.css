@@ -93,6 +93,25 @@
   border-color: color-mix(in srgb, var(--accent) 50%, transparent);
 }
 
+.picker-row {
+  transition:
+    border-color 140ms,
+    background-color 140ms;
+}
+
+.picker-row:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-brand-red) 50%, transparent);
+}
+
+.picker-row.is-filled {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-brand-red) 8%, var(--color-brand-raised)),
+    var(--color-brand-raised) 65%
+  );
+  border-color: color-mix(in srgb, var(--color-brand-red) 26%, transparent);
+}
+
 .move-row__cat--phys {
   color: #e0503f;
   background: color-mix(in srgb, #e0503f 14%, transparent);
