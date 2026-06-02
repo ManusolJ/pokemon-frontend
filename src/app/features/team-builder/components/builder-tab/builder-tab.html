@@ -78,8 +78,8 @@
       role="status"
     >
       <i class="pi pi-exclamation-triangle text-brand-red"></i>
-      Some pickers couldn't load their options. You can still build, but item, ability, nature, or
-      tera-type lists may be incomplete.
+      Couldn't load the tera-type list. You can still build, but tera-type options may be
+      incomplete.
     </div>
   }
 
@@ -103,13 +103,13 @@
         </span>
         <div class="flex-1 min-h-0 overflow-hidden">
           <app-selected-pokemon
-            [items]="items()"
             [types]="types()"
-            [natures]="natures()"
             [member]="state.activeMember()"
-            [abilities]="abilities()"
             (memberChange)="state.updateActiveMember($event)"
             (openMovePicker)="onOpenMovePicker($event)"
+            (openItemPicker)="onOpenItemPicker()"
+            (openNaturePicker)="onOpenNaturePicker()"
+            (openAbilityPicker)="onOpenAbilityPicker()"
           />
         </div>
       </section>
@@ -134,7 +134,10 @@
           Stat spread
         </span>
         <div class="flex-1 min-h-0 overflow-hidden">
-          <app-stat-spread [member]="state.activeMember()" (memberChange)="state.updateActiveMember($event)" />
+          <app-stat-spread
+            [member]="state.activeMember()"
+            (memberChange)="state.updateActiveMember($event)"
+          />
         </div>
       </section>
     </div>
@@ -154,4 +157,26 @@
   [open]="movePickerSlot() !== null"
   [disabledMoveIds]="disabledMoveIds()"
   [pokemonId]="state.activeMember()?.pokemonId ?? null"
+/>
+
+<app-item-picker
+  [open]="itemPickerOpen()"
+  [currentItemId]="currentItemId()"
+  (picked)="onItemPicked($event)"
+  (closed)="onItemPickerClosed()"
+/>
+
+<app-nature-picker
+  [open]="naturePickerOpen()"
+  [currentNatureId]="currentNatureId()"
+  (picked)="onNaturePicked($event)"
+  (closed)="onNaturePickerClosed()"
+/>
+
+<app-ability-picker
+  [open]="abilityPickerOpen()"
+  [abilities]="abilities()"
+  [currentAbilityId]="currentAbilityId()"
+  (picked)="onAbilityPicked($event)"
+  (closed)="onAbilityPickerClosed()"
 />

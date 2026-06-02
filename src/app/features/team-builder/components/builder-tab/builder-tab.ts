@@ -1,5 +1,6 @@
 import { LEVEL_MAX } from '@shared/constants/stat.constants';
 
+import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { TeamCreate } from '@shared/interfaces/pokemon/team/team-create.interface';
@@ -7,13 +8,13 @@ import { TeamMember } from '@shared/interfaces/team-builder/team-member.interfac
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
 import { ItemSummary } from '@shared/interfaces/pokemon/item/item-summary.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';
+import { AbilityRead } from '@shared/interfaces/pokemon/ability/ability-read.interface';
+import { AbilitySummary } from '@shared/interfaces/pokemon/ability/ability-summary.interface';
 import { TeamPokemonCreate } from '@shared/interfaces/pokemon/team/team-pokemon-create.interface';
 
 import { AuthService } from '@core/services/auth.service';
-import { ItemService } from '@core/services/item.service';
 import { TeamService } from '@core/services/team.service';
 import { TypeService } from '@core/services/type.service';
-import { NatureService } from '@core/services/nature.service';
 import { TeamBuilderStateService } from '@core/services/team-builder-state.service';
 
 import { TeamGrid } from '@features/team-builder/components/team-grid/team-grid';
@@ -21,6 +22,9 @@ import { StatSpread } from '@features/team-builder/components/stat-spread/stat-s
 import { SelectedPokemon } from '@features/team-builder/components/selected-pokemon/selected-pokemon';
 
 import { MovePicker } from '@features/team-builder/modals/move-picker/move-picker';
+import { ItemPicker } from '@features/team-builder/modals/item-picker/item-picker';
+import { NaturePicker } from '@features/team-builder/modals/nature-picker/nature-picker';
+import { AbilityPicker } from '@features/team-builder/modals/ability-picker/ability-picker';
 import { PokemonPicker } from '@features/team-builder/modals/pokemon-picker/pokemon-picker';
 
 import { emptyEvs, maxIvs } from '@shared/utils/stats.util';
@@ -42,7 +46,17 @@ import { RouterLink } from '@angular/router';
 const EMPTY_MOVE_SLOTS: ReadonlyArray<MoveRead | null> = [null, null, null, null];
 
 @Component({
-  imports: [TeamGrid, SelectedPokemon, StatSpread, PokemonPicker, MovePicker, RouterLink],
+  imports: [
+    TeamGrid,
+    SelectedPokemon,
+    StatSpread,
+    PokemonPicker,
+    MovePicker,
+    ItemPicker,
+    NaturePicker,
+    AbilityPicker,
+    RouterLink,
+  ],
   selector: 'app-builder-tab',
   styleUrl: './builder-tab.css',
   templateUrl: './builder-tab.html',
@@ -52,54 +66,17 @@ export class BuilderTab {
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
   private readonly teamService = inject(TeamService);
-  private readonly itemService = inject(ItemService);
   private readonly typeService = inject(TypeService);
-  private readonly natureService = inject(NatureService);
   protected readonly state = inject(TeamBuilderStateService);
 
   protected readonly movePickerSlot = signal<number | null>(null);
   protected readonly pokemonPickerSlot = signal<number | null>(null);
+  protected readonly itemPickerOpen = signal(false);
+  protected readonly naturePickerOpen = signal(false);
+  protected readonly abilityPickerOpen = signal(false);
 
   protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);
-
-  private readonly itemsResource = rxResource({
-    stream: () =>
-      this.itemService
-        .getItemCountWithFilter({})
-        .pipe(
-          switchMap((count) =>
-            count === 0
-              ? of<readonly ItemSummary[]>([])
-              : this.itemService
-                  .getItemSummaryPageWithFilter(
-                    {},
-                    { page: 0, size: count, sort: 'name', direction: 'ASC' },
-                  )
-                  .pipe(map((page) => page.content)),
-          ),
-        ),
-    defaultValue: [],
-  });
-
-  private readonly naturesResource = rxResource({
-    stream: () =>
-      this.natureService
-        .getNatureCountWithFilter({})
-        .pipe(
-          switchMap((count) =>
-            count === 0
-              ? of<readonly NatureRead[]>([])
-              : this.natureService
-                  .getNaturePageWithFilter(
-                    {},
-                    { page: 0, size: count, sort: 'name', direction: 'ASC' },
-                  )
-                  .pipe(map((page) => page.content)),
-          ),
-        ),
-    defaultValue: [],
-  });
 
   private readonly typesResource = rxResource({
     stream: () => {
@@ -124,16 +101,9 @@ export class BuilderTab {
     defaultValue: [],
   });
 
-  protected readonly items = computed(() => this.itemsResource.value());
   protected readonly types = computed(() => this.typesResource.value());
-  protected readonly natures = computed(() => this.naturesResource.value());
 
-  protected readonly optionsError = computed(
-    () =>
-      !!this.itemsResource.error() ||
-      !!this.typesResource.error() ||
-      !!this.naturesResource.error(),
-  );
+  protected readonly optionsError = computed(() => !!this.typesResource.error());
 
   protected readonly isAuthenticated = this.authService.isAuthenticated;
 
@@ -160,6 +130,14 @@ export class BuilderTab {
       .map((move, index) => (index === slot ? null : (move?.id ?? null)))
       .filter((id): id is number => id !== null);
   });
+
+  protected readonly currentItemId = computed(() => this.state.activeMember()?.item?.id ?? null);
+  protected readonly currentNatureId = computed(
+    () => this.state.activeMember()?.nature?.id ?? null,
+  );
+  protected readonly currentAbilityId = computed(
+    () => this.state.activeMember()?.ability?.id ?? null,
+  );
 
   protected readonly canSave = computed(() => {
     if (this.saving()) {
@@ -249,6 +227,67 @@ export class BuilderTab {
 
   protected onMovePickerClosed(): void {
     this.movePickerSlot.set(null);
+  }
+
+  protected onOpenItemPicker(): void {
+    if (this.state.activeMember()) {
+      this.itemPickerOpen.set(true);
+    }
+  }
+
+  protected onItemPicked(item: ItemRead | null): void {
+    const member = this.state.activeMember();
+    if (!member) {
+      return;
+    }
+    const next: ItemSummary | null = item
+      ? { id: item.id, name: item.name, spriteUrl: item.spriteUrl }
+      : null;
+    this.state.updateActiveMember({ ...member, item: next });
+    this.itemPickerOpen.set(false);
+  }
+
+  protected onItemPickerClosed(): void {
+    this.itemPickerOpen.set(false);
+  }
+
+  protected onOpenNaturePicker(): void {
+    if (this.state.activeMember()) {
+      this.naturePickerOpen.set(true);
+    }
+  }
+
+  protected onNaturePicked(nature: NatureRead | null): void {
+    const member = this.state.activeMember();
+    if (!member) {
+      return;
+    }
+    this.state.updateActiveMember({ ...member, nature });
+    this.naturePickerOpen.set(false);
+  }
+
+  protected onNaturePickerClosed(): void {
+    this.naturePickerOpen.set(false);
+  }
+
+  protected onOpenAbilityPicker(): void {
+    if (this.state.activeMember()) {
+      this.abilityPickerOpen.set(true);
+    }
+  }
+
+  protected onAbilityPicked(ability: AbilityRead | null): void {
+    const member = this.state.activeMember();
+    if (!member) {
+      return;
+    }
+    const next: AbilitySummary | null = ability ? { id: ability.id, name: ability.name } : null;
+    this.state.updateActiveMember({ ...member, ability: next });
+    this.abilityPickerOpen.set(false);
+  }
+
+  protected onAbilityPickerClosed(): void {
+    this.abilityPickerOpen.set(false);
   }
 
   protected resetAll(): void {
