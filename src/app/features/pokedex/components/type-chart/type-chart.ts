@@ -1,13 +1,22 @@
 import { PokemonType } from '@shared/enums/pokemon-types.enum';
 
+import {
+  DOUBLE_RESISTED_MULTIPLIER,
+  DOUBLE_WEAK_MULTIPLIER,
+  IMMUNE_MULTIPLIER,
+  NEUTRAL_MULTIPLIER,
+  RESISTED_MULTIPLIER,
+  SUPER_EFFECTIVE_MULTIPLIER,
+} from '@shared/constants/effectiveness.constants';
+
 import { MatrixRow } from '@shared/interfaces/ui/type-chart/matrix-row.interface';
 import { MatrixCell } from '@shared/interfaces/ui/type-chart/matrix-cell.interface';
 import { ProfileGroup } from '@shared/interfaces/ui/type-chart/profile-group.interface';
 import { DefenseProfile } from '@shared/interfaces/ui/type-chart/defense-profile.interface';
 import { MultiplierMeta } from '@shared/interfaces/ui/type-chart/multiplier-meta.interface';
-import { TypeEffectivenessRead } from '@shared/interfaces/pokemon/type/type-effectiveness-read.interface';
+import { EffectivenessChart } from '@shared/interfaces/team-builder/analysis/effectiveness-chart.interface';
 
-import { TypeService } from '@core/services/type.service';
+import { TypeEffectivenessService } from '@core/services/type-effectiveness.service';
 
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
 
@@ -24,8 +33,6 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-type EffectivenessChart = ReadonlyMap<PokemonType, ReadonlyMap<PokemonType, number>>;
-
 const MULTIPLIER_META: Record<string, Omit<MultiplierMeta, 'value'>> = {
   '0': { label: '0', tone: 'immune' },
   '0.25': { label: '¼', tone: 'quarter' },
@@ -35,19 +42,10 @@ const MULTIPLIER_META: Record<string, Omit<MultiplierMeta, 'value'>> = {
   '4': { label: '4', tone: 'superhi' },
 };
 
-const DEFAULT_MULTIPLIER_META = MULTIPLIER_META['1'];
+const DEFAULT_MULTIPLIER_META = MULTIPLIER_META[String(NEUTRAL_MULTIPLIER)];
 
 const MAX_DEFENDERS = 2;
 const TYPE_COUNT = Object.keys(PokemonType).length;
-
-const IMMUNE_MULTIPLIER = 0;
-const NEUTRAL_MULTIPLIER = 1;
-const RESISTED_MULTIPLIER = 0.5;
-const DOUBLE_WEAK_MULTIPLIER = 4;
-const SUPER_EFFECTIVE_MULTIPLIER = 2;
-const DOUBLE_RESISTED_MULTIPLIER = 0.25;
-
-const MATRIX_PAGE_SIZE = 500;
 
 const TYPE_BORDER_ALPHA_SUFFIX = '80';
 const TYPE_BACKGROUND_MIX_PERCENT = 12;
@@ -64,7 +62,7 @@ const EMPTY_SLOT_COLOR = 'var(--color-brand-dim)';
 })
 export class TypeChart implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly typeService = inject(TypeService);
+  private readonly typeEffectivenessService = inject(TypeEffectivenessService);
 
   protected readonly loading = signal(true);
   protected readonly types = signal<PokemonType[]>([]);
@@ -79,66 +77,14 @@ export class TypeChart implements OnInit {
     return [selectedDefenders[0] ?? null, selectedDefenders[1] ?? null];
   });
 
-  protected readonly matrix = computed<MatrixRow[]>(() => {
-    const allTypes = this.types();
-    return allTypes.map((attacker) => ({
-      attacker,
-      cells: allTypes.map((defender) => ({
-        defender,
-        ...resolveMultiplierMeta(this.getEffectiveness(attacker, defender)),
-      })),
-    }));
-  });
+  protected readonly matrix = computed<MatrixRow[]>(() => this.buildMatrix());
 
   protected readonly combinedEffectiveness = computed<ReadonlyMap<
     PokemonType,
     MultiplierMeta
-  > | null>(() => {
-    const selectedDefenders = this.defenders();
-    if (!selectedDefenders.length) {
-      return null;
-    }
+  > | null>(() => this.buildCombinedEffectiveness());
 
-    return new Map(
-      this.types().map((attacker) => [
-        attacker,
-        resolveMultiplierMeta(this.calculateCombinedMultiplier(attacker, selectedDefenders)),
-      ]),
-    );
-  });
-
-  protected readonly profile = computed<DefenseProfile | null>(() => {
-    const selectedDefenders = this.defenders();
-    if (!selectedDefenders.length || !this.types().length) {
-      return null;
-    }
-
-    const typesByMultiplier = this.groupTypesByMultiplier(selectedDefenders);
-    const typesWithMultiplier = (multiplier: number) => typesByMultiplier.get(multiplier) ?? [];
-
-    const doubleWeak = typesWithMultiplier(DOUBLE_WEAK_MULTIPLIER);
-    const superEffective = typesWithMultiplier(SUPER_EFFECTIVE_MULTIPLIER);
-    const resisted = typesWithMultiplier(RESISTED_MULTIPLIER);
-    const doubleResisted = typesWithMultiplier(DOUBLE_RESISTED_MULTIPLIER);
-    const immune = typesWithMultiplier(IMMUNE_MULTIPLIER);
-    const neutral = typesWithMultiplier(NEUTRAL_MULTIPLIER);
-
-    const groups: ProfileGroup[] = [
-      { label: 'Double weak', detail: '4× damage', tone: 'super', types: doubleWeak },
-      { label: 'Weak to', detail: '2× damage', tone: 'super', types: superEffective },
-      { label: 'Resists', detail: '½× damage', tone: 'resist', types: resisted },
-      { label: 'Doubly resists', detail: '¼× damage', tone: 'resist', types: doubleResisted },
-      { label: 'Immune to', detail: '0× damage', tone: 'immune', types: immune },
-    ];
-
-    return {
-      weaknesses: doubleWeak.length + superEffective.length,
-      resistances: resisted.length + doubleResisted.length,
-      immunities: immune.length,
-      groups,
-      neutral,
-    };
-  });
+  protected readonly profile = computed<DefenseProfile | null>(() => this.buildProfile());
 
   protected readonly skeletonRows = Array.from({ length: TYPE_COUNT });
 
@@ -160,13 +106,11 @@ export class TypeChart implements OnInit {
 
   protected getCellClasses(cell: MatrixCell): string {
     const classes = ['fx', `fx--${cell.tone}`];
-
     if (this.isDefender(cell.defender)) {
       classes.push('is-defender');
     } else if (this.hasSelection()) {
       classes.push('dimmed');
     }
-
     return classes.join(' ');
   }
 
@@ -209,7 +153,7 @@ export class TypeChart implements OnInit {
   protected toggleDefender(type: PokemonType): void {
     this.defenders.update((current) => {
       if (current.includes(type)) {
-        return current.filter((t) => t !== type);
+        return current.filter((existing) => existing !== type);
       }
       if (current.length < MAX_DEFENDERS) {
         return [...current, type];
@@ -220,6 +164,78 @@ export class TypeChart implements OnInit {
 
   protected clear(): void {
     this.defenders.set([]);
+  }
+
+  private fetchEffectivenessMatrix(): void {
+    this.typeEffectivenessService
+      .loadChart()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ chart, types }) => {
+          this.effectivenessChart.set(chart);
+          this.types.set(types.map((type) => type.name.toLowerCase() as PokemonType));
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
+  }
+
+  private buildMatrix(): MatrixRow[] {
+    const allTypes = this.types();
+    return allTypes.map((attacker) => ({
+      attacker,
+      cells: allTypes.map((defender) => ({
+        defender,
+        ...resolveMultiplierMeta(this.getEffectiveness(attacker, defender)),
+      })),
+    }));
+  }
+
+  private buildCombinedEffectiveness(): ReadonlyMap<PokemonType, MultiplierMeta> | null {
+    const selectedDefenders = this.defenders();
+    if (!selectedDefenders.length) {
+      return null;
+    }
+    return new Map(
+      this.types().map((attacker) => [
+        attacker,
+        resolveMultiplierMeta(this.calculateCombinedMultiplier(attacker, selectedDefenders)),
+      ]),
+    );
+  }
+
+  private buildProfile(): DefenseProfile | null {
+    const selectedDefenders = this.defenders();
+    if (!selectedDefenders.length || !this.types().length) {
+      return null;
+    }
+
+    const typesByMultiplier = this.groupTypesByMultiplier(selectedDefenders);
+    const typesWithMultiplier = (multiplier: number): PokemonType[] =>
+      typesByMultiplier.get(multiplier) ?? [];
+
+    const doubleWeak = typesWithMultiplier(DOUBLE_WEAK_MULTIPLIER);
+    const superEffective = typesWithMultiplier(SUPER_EFFECTIVE_MULTIPLIER);
+    const resisted = typesWithMultiplier(RESISTED_MULTIPLIER);
+    const doubleResisted = typesWithMultiplier(DOUBLE_RESISTED_MULTIPLIER);
+    const immune = typesWithMultiplier(IMMUNE_MULTIPLIER);
+    const neutral = typesWithMultiplier(NEUTRAL_MULTIPLIER);
+
+    const groups: ProfileGroup[] = [
+      { label: 'Double weak', detail: '4× damage', tone: 'super', types: doubleWeak },
+      { label: 'Weak to', detail: '2× damage', tone: 'super', types: superEffective },
+      { label: 'Resists', detail: '½× damage', tone: 'resist', types: resisted },
+      { label: 'Doubly resists', detail: '¼× damage', tone: 'resist', types: doubleResisted },
+      { label: 'Immune to', detail: '0× damage', tone: 'immune', types: immune },
+    ];
+
+    return {
+      weaknesses: doubleWeak.length + superEffective.length,
+      resistances: resisted.length + doubleResisted.length,
+      immunities: immune.length,
+      groups,
+      neutral,
+    };
   }
 
   private getEffectiveness(attacker: PokemonType, defender: PokemonType): number {
@@ -240,56 +256,16 @@ export class TypeChart implements OnInit {
     selectedDefenders: readonly PokemonType[],
   ): Map<number, PokemonType[]> {
     const buckets = new Map<number, PokemonType[]>();
-
     for (const attacker of this.types()) {
       const multiplier = this.calculateCombinedMultiplier(attacker, selectedDefenders);
-      const bucket = buckets.get(multiplier);
-
-      if (bucket) {
-        bucket.push(attacker);
+      const existing = buckets.get(multiplier);
+      if (existing) {
+        existing.push(attacker);
       } else {
         buckets.set(multiplier, [attacker]);
       }
     }
-
     return buckets;
-  }
-
-  private fetchEffectivenessMatrix(): void {
-    this.typeService
-      .getTypeEffectivenessPageWithFilter({}, { page: 0, size: MATRIX_PAGE_SIZE })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => this.buildChartFromRows(response.content),
-        error: () => this.loading.set(false),
-      });
-  }
-
-  private buildChartFromRows(rows: readonly TypeEffectivenessRead[]): void {
-    const typeOrder: PokemonType[] = [];
-    const seenTypes = new Set<PokemonType>();
-    const chart = new Map<PokemonType, Map<PokemonType, number>>();
-
-    for (const row of rows) {
-      const attacker = row.attackingType.name.toLowerCase() as PokemonType;
-      const defender = row.defendingType.name.toLowerCase() as PokemonType;
-
-      if (!seenTypes.has(attacker)) {
-        seenTypes.add(attacker);
-        typeOrder.push(attacker);
-      }
-
-      let attackerRow = chart.get(attacker);
-      if (!attackerRow) {
-        attackerRow = new Map<PokemonType, number>();
-        chart.set(attacker, attackerRow);
-      }
-      attackerRow.set(defender, row.multiplier);
-    }
-
-    this.types.set(typeOrder);
-    this.effectivenessChart.set(chart);
-    this.loading.set(false);
   }
 }
 
