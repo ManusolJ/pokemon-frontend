@@ -1,0 +1,127 @@
+<app-modal [open]="open()" title="Choose a nature" (closed)="closed.emit()">
+  <div modal-toolbar class="flex flex-col gap-3">
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <div
+        class="flex flex-1 min-w-48 items-center gap-2 px-2.5 py-3 bg-brand-raised border border-solid border-brand-line rounded-xl text-brand-dim transition-colors focus-within:border-brand-red/50"
+      >
+        <i class="pi pi-search"></i>
+        <input
+          #nameSearch
+          type="text"
+          autofocus
+          placeholder="Search by nature name…"
+          class="flex-1 bg-transparent border-0 outline-0 text-brand-text text-sm"
+          [value]="query()"
+          (input)="onSearch(nameSearch.value)"
+        />
+      </div>
+
+      <button
+        type="button"
+        (click)="clearFilters()"
+        [disabled]="!hasFilters()"
+        class="seg-btn inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-xs font-semibold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer transition-colors hover:text-brand-text disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        <i class="pi pi-filter-slash"></i>
+        Clear filters
+      </button>
+    </div>
+
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <div class="inline-flex items-center gap-1.5">
+        <span class="text-[0.625rem] font-bold tracking-wider uppercase text-brand-dim mr-1">
+          <i class="pi pi-chevron-up mr-1 text-green-400"></i>Up
+        </span>
+        @for (option of statOptions; track option.value) {
+          <button
+            type="button"
+            (click)="toggleIncreased(option.value)"
+            [class.is-active]="increasedStat() === option.value"
+            class="seg-btn px-2.5 py-1 rounded-md text-xs font-semibold text-brand-muted bg-transparent border border-solid border-brand-line cursor-pointer transition-colors hover:text-brand-text"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+
+      <div class="inline-flex items-center gap-1.5">
+        <span class="text-[0.625rem] font-bold tracking-wider uppercase text-brand-dim mr-1">
+          <i class="pi pi-chevron-down mr-1 text-rose-400"></i>Down
+        </span>
+        @for (option of statOptions; track option.value) {
+          <button
+            type="button"
+            (click)="toggleDecreased(option.value)"
+            [class.is-active]="decreasedStat() === option.value"
+            class="seg-btn px-2.5 py-1 rounded-md text-xs font-semibold text-brand-muted bg-transparent border border-solid border-brand-line cursor-pointer transition-colors hover:text-brand-text"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="px-3 pt-3 pb-3">
+    @if (currentNatureId() !== null) {
+      <button
+        type="button"
+        (click)="clearNature()"
+        class="flex items-center gap-2 w-full px-3 py-2.5 mb-3 bg-transparent border border-dashed border-brand-line rounded-lg text-brand-dim text-sm cursor-pointer transition-colors hover:text-brand-text hover:border-brand-red"
+      >
+        <i class="pi pi-times"></i>
+        Clear nature
+      </button>
+    }
+
+    @if (loading()) {
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2.5">
+        @for (skeleton of skeletons(); track $index) {
+          <p-skeleton height="4.5rem"></p-skeleton>
+        }
+      </div>
+    } @else if (natures().length === 0) {
+      <p class="text-center text-brand-dim py-10 text-sm">No natures match those filters.</p>
+    } @else {
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2.5">
+        @for (nature of natures(); track nature.id) {
+          <button
+            type="button"
+            (click)="onPick(nature)"
+            [class.is-current]="isCurrent(nature)"
+            class="nature-row flex flex-col gap-1.5 px-3 py-2.5 rounded-lg bg-brand-raised border border-solid border-brand-line text-left text-brand-text cursor-pointer transition-colors"
+          >
+            <span class="font-semibold text-sm">
+              {{ nature.name | titlecase }}
+            </span>
+            @if (isNeutral(nature)) {
+              <span class="text-[0.6875rem] text-brand-muted">Neutral</span>
+            } @else {
+              <span class="flex items-center gap-2 text-[0.6875rem] font-semibold">
+                <span class="inline-flex items-center gap-1 text-green-400">
+                  <i class="pi pi-chevron-up"></i>{{ statLabel(nature.increasedStat) }}
+                </span>
+                <span class="text-brand-dim">·</span>
+                <span class="inline-flex items-center gap-1 text-rose-400">
+                  <i class="pi pi-chevron-down"></i>{{ statLabel(nature.decreasedStat) }}
+                </span>
+              </span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <div modal-footer>
+    <p-paginator
+      class="paginator-dark"
+      [rows]="pageSize"
+      [pageLinkSize]="5"
+      [alwaysShow]="totalRecords() > pageSize"
+      [totalRecords]="totalRecords()"
+      [first]="currentPage() * pageSize"
+      (onPageChange)="onPageChange($event)"
+    />
+  </div>
+</app-modal>
