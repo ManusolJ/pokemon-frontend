@@ -6,7 +6,7 @@ import { AbilityEmbed } from '@shared/interfaces/pokemon/ability/ability-embed.i
 import { AbilitySummary } from '@shared/interfaces/pokemon/ability/ability-summary.interface';
 import { SpeciesSummary } from '@shared/interfaces/pokemon/pokemon/species-summary.interface';
 
-import { StatSpread } from './stat-spread.interface';
+import { StatSpread } from '@shared/interfaces/team-builder/stats/stat-spread.interface';
 
 export interface TeamMember {
   readonly baseStats: StatSpread;

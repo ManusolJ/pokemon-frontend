@@ -1,4 +1,4 @@
-export interface StatRow {
+export interface BaseStatRow {
   readonly label: string;
   readonly value: number;
 }

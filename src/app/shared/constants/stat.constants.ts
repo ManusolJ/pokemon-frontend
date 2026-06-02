@@ -1,4 +1,4 @@
-import { StatMeta } from '@shared/interfaces/team-builder/stat-meta.interface';
+import { StatMeta } from '@shared/interfaces/team-builder/stats/stat-meta.interface';
 
 export const STATS: ReadonlyArray<StatMeta> = [
   { key: 'hp', label: 'HP', short: 'HP' },

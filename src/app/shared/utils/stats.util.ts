@@ -1,4 +1,4 @@
-import { StatSpread } from '@shared/interfaces/team-builder/stat-spread.interface';
+import { StatSpread } from '@shared/interfaces/team-builder/stats/stat-spread.interface';
 
 export function emptyEvs(): StatSpread {
   return { hp: 0, attack: 0, defense: 0, specialAttack: 0, specialDefense: 0, speed: 0 };
