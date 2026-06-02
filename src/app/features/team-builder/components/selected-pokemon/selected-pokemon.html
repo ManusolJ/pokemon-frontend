@@ -1,188 +1,186 @@
 @if (member(); as member) {
   <div class="grid grid-cols-2 flex-1 gap-4">
-      <div
-        class="identity relative flex flex-col gap-4 px-4.5 py-4 rounded-2xl overflow-hidden"
-        [style.--accent]="accent()"
-        [style.--accent-b]="secondaryAccent()"
+    <div
+      class="identity relative flex flex-col gap-4 px-4.5 py-4 rounded-2xl overflow-hidden"
+      [style.--accent]="accent()"
+      [style.--accent-b]="secondaryAccent()"
+    >
+      <span
+        class="identity__big-num absolute -top-2 right-2 text-6xl font-extrabold leading-none tracking-tighter pointer-events-none"
       >
-        <span
-          class="identity__big-num absolute -top-2 right-2 text-6xl font-extrabold leading-none tracking-tighter pointer-events-none"
-        >
-          {{ member.species.nationalDexNumber }}
-        </span>
+        {{ member.species.nationalDexNumber }}
+      </span>
 
-        <span
-          class="identity__art relative h-fit w-fit"
-          [class.identity__art--shiny]="member.shiny"
-        >
-          <img
-            [src]="getImgUrl(member.shiny ? member.artworkShiny : member.artwork)"
-            [alt]="member.name"
-            class="w-full h-full object-contain"
+      <span class="identity__art relative h-fit w-fit" [class.identity__art--shiny]="member.shiny">
+        <img
+          [src]="getImgUrl(member.shiny ? member.artworkShiny : member.artwork)"
+          [alt]="member.name"
+          class="w-full h-full object-contain"
+        />
+        @if (member.shiny) {
+          <span
+            class="identity__sparkle absolute top-0 left-0 text-xl leading-none pointer-events-none"
+            aria-hidden="true"
+          >
+            &#x2726;
+          </span>
+        }
+      </span>
+
+      <div class="relative z-1 min-w-0">
+        <span class="block font-mono text-[0.6875rem] text-brand-dim">
+          №{{ member.species.nationalDexNumber }} · Lv. {{ member.level }}
+        </span>
+        <h2 class="identity__name m-0 my-0.5 text-2xl font-bold tracking-tight text-brand-text">
+          {{ member.nickname || member.name | nameNormalizer | titlecase }}
+        </h2>
+        @if (member.nickname) {
+          <span class="block text-[0.6875rem] text-brand-muted">
+            {{ member.name | nameNormalizer | titlecase }}
+          </span>
+        }
+        <div class="flex gap-1.5 mt-2">
+          <app-type-badge [name]="member.primaryType.name" size="sm" />
+          @if (member.secondaryType) {
+            <app-type-badge [name]="member.secondaryType.name" size="sm" />
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <div class="w-full flex gap-4">
+        <label class="flex flex-col gap-1.5 flex-1">
+          <span class="basics__label">Nickname</span>
+          <input
+            #nickInput
+            type="text"
+            [value]="member.nickname"
+            [placeholder]="member.species.name | titlecase"
+            (input)="onNickname(nickInput.value)"
+            maxlength="20"
+            class="w-full px-3 py-2.25 bg-brand-raised border border-solid border-brand-line rounded-lg text-brand-text text-sm font-semibold outline-0 transition-colors focus:border-brand-red/60"
           />
-          @if (member.shiny) {
+        </label>
+        <label class="flex flex-col gap-1.5 shrink-0 w-24">
+          <span class="basics__label">Level</span>
+          <input
+            #levelInput
+            type="number"
+            [value]="member.level"
+            [min]="levelMin"
+            [max]="levelMax"
+            (input)="onLevel(levelInput.value)"
+            class="w-full px-3 py-2.25 bg-brand-raised border border-solid border-brand-line rounded-lg text-brand-text text-sm font-mono font-semibold text-center outline-0 transition-colors focus:border-brand-red/60"
+          />
+        </label>
+
+        <button
+          type="button"
+          (click)="toggleShiny()"
+          [class.is-on]="member.shiny"
+          [attr.aria-pressed]="member.shiny"
+          class="basics__shiny flex flex-col gap-1.5 p-0 bg-transparent border-0 cursor-pointer shrink-0"
+        >
+          <span class="basics__label self-start">Shiny</span>
+          <span
+            class="basics__shiny-row flex items-center justify-between gap-2 px-3 py-2.25 bg-brand-raised border border-solid border-brand-line rounded-lg transition-colors"
+          >
             <span
-              class="identity__sparkle absolute top-0 left-0 text-xl leading-none pointer-events-none"
+              class="basics__shiny-sparkle text-lg leading-none text-brand-dim transition-colors"
               aria-hidden="true"
             >
               &#x2726;
             </span>
-          }
-        </span>
-
-        <div class="relative z-1 min-w-0">
-          <span class="block font-mono text-[0.6875rem] text-brand-dim">
-            №{{ member.species.nationalDexNumber }} · Lv. {{ member.level }}
-          </span>
-          <h2 class="identity__name m-0 my-0.5 text-2xl font-bold tracking-tight text-brand-text">
-            {{ member.nickname || member.name | nameNormalizer | titlecase }}
-          </h2>
-          @if (member.nickname) {
-            <span class="block text-[0.6875rem] text-brand-muted">
-              {{ member.name | nameNormalizer | titlecase }}
+            <span class="basics__shiny-track relative w-7.5 h-4 rounded-full transition-colors">
+              <i
+                class="basics__shiny-thumb absolute top-0.5 left-0.5 size-3 rounded-full bg-white transition-transform"
+              ></i>
             </span>
-          }
-          <div class="flex gap-1.5 mt-2">
-            <app-type-badge [name]="member.primaryType.name" size="sm" />
-            @if (member.secondaryType) {
-              <app-type-badge [name]="member.secondaryType.name" size="sm" />
-            }
-          </div>
-        </div>
+          </span>
+        </button>
       </div>
 
-      <div class="flex flex-col gap-4">
-        <div class="w-full flex gap-4">
-          <label class="flex flex-col gap-1.5 flex-1">
-            <span class="basics__label">Nickname</span>
-            <input
-              #nickInput
-              type="text"
-              [value]="member.nickname"
-              [placeholder]="member.species.name | titlecase"
-              (input)="onNickname(nickInput.value)"
-              maxlength="20"
-              class="w-full px-3 py-2.25 bg-brand-raised border border-solid border-brand-line rounded-lg text-brand-text text-sm font-semibold outline-0 transition-colors focus:border-brand-red/60"
-            />
-          </label>
-          <label class="flex flex-col gap-1.5 shrink-0">
-            <span class="basics__label">Level</span>
-            <input
-              #levelInput
-              type="number"
-              [value]="member.level"
-              [min]="levelMin"
-              [max]="levelMax"
-              (input)="onLevel(levelInput.value)"
-              class="w-full px-3 py-2.25 bg-brand-raised border border-solid border-brand-line rounded-lg text-brand-text text-sm font-mono font-semibold text-center outline-0 transition-colors focus:border-brand-red/60"
-            />
-          </label>
+      <div class="flex flex-col gap-3">
+        <app-searchable-select
+          label="Ability"
+          placeholder="Pick an ability"
+          searchPlaceholder="Search abilities…"
+          [options]="abilityOptions()"
+          [value]="abilityValue()"
+          (valueChange)="onAbility($event)"
+        />
 
+        <app-searchable-select
+          label="Nature"
+          placeholder="Pick a nature"
+          searchPlaceholder="Search natures…"
+          [options]="natureOptions()"
+          [value]="natureValue()"
+          (valueChange)="onNature($event)"
+        />
+
+        <app-searchable-select
+          label="Held item"
+          [placeholder]="heldItemPlaceholder()"
+          searchPlaceholder="Search items…"
+          [options]="itemOptions()"
+          [value]="itemValue()"
+          [disabled]="isMega()"
+          (valueChange)="onItem($event)"
+        />
+
+        <app-searchable-select
+          label="Tera type"
+          placeholder="Pick a type"
+          searchPlaceholder="Search types…"
+          [options]="teraOptions()"
+          [value]="teraValue()"
+          [capitalize]="true"
+          (valueChange)="onTera($event)"
+        />
+      </div>
+
+      <div class="mt-auto pb-2 flex flex-col gap-4">
+        <span class="basics__label">Moves</span>
+        @for (move of member.moves; track $index; let i = $index) {
           <button
             type="button"
-            (click)="toggleShiny()"
-            [class.is-on]="member.shiny"
-            [attr.aria-pressed]="member.shiny"
-            class="basics__shiny flex flex-col gap-1.5 p-0 bg-transparent border-0 cursor-pointer shrink-0"
+            (click)="openMovePicker.emit(i)"
+            [style.--accent]="moveAccent(move)"
+            [class.is-filled]="!!move"
+            class="move-row flex items-center gap-2.75 w-full px-3 py-2.5 bg-brand-raised border border-solid border-brand-line border-l-[3px] rounded-lg text-left text-brand-text cursor-pointer"
           >
-            <span class="basics__label self-start">Shiny</span>
-            <span
-              class="basics__shiny-row flex items-center justify-between gap-2 px-3 py-2.25 bg-brand-raised border border-solid border-brand-line rounded-lg transition-colors"
-            >
+            @if (move) {
               <span
-                class="basics__shiny-sparkle text-lg leading-none text-brand-dim transition-colors"
-                aria-hidden="true"
+                class="move-row__name flex-1 text-[0.84375rem] font-semibold truncate text-left"
               >
-                &#x2726;
+                {{ move.name | nameNormalizer | titlecase }}
               </span>
-              <span class="basics__shiny-track relative w-7.5 h-4 rounded-full transition-colors">
-                <i
-                  class="basics__shiny-thumb absolute top-0.5 left-0.5 size-3 rounded-full bg-white transition-transform"
-                ></i>
+              <span
+                class="inline-flex items-center gap-1 font-mono text-[0.6875rem] text-brand-muted"
+              >
+                <span>{{ move.power || '&mdash;' }}</span>
+                <span class="text-brand-dim">·</span>
+                <span>{{ move.accuracy || '&mdash;' }}</span>
               </span>
-            </span>
-          </button>
-        </div>
-
-        <div class="flex flex-col gap-3">
-          <app-searchable-select
-            label="Ability"
-            placeholder="Pick an ability"
-            searchPlaceholder="Search abilities…"
-            [options]="abilityOptions()"
-            [value]="abilityValue()"
-            (valueChange)="onAbility($event)"
-          />
-
-          <app-searchable-select
-            label="Nature"
-            placeholder="Pick a nature"
-            searchPlaceholder="Search natures…"
-            [options]="natureOptions()"
-            [value]="natureValue()"
-            (valueChange)="onNature($event)"
-          />
-
-          <app-searchable-select
-            label="Held item"
-            placeholder="No item"
-            searchPlaceholder="Search items…"
-            [options]="itemOptions()"
-            [value]="itemValue()"
-            (valueChange)="onItem($event)"
-          />
-
-          <app-searchable-select
-            label="Tera type"
-            placeholder="Pick a type"
-            searchPlaceholder="Search types…"
-            [options]="teraOptions()"
-            [value]="teraValue()"
-            [capitalize]="true"
-            (valueChange)="onTera($event)"
-          />
-        </div>
-
-        <div class="flex flex-col flex-1 justify-self-end gap-4">
-          <span class="basics__label">Moves</span>
-          @for (move of member.moves; track $index; let i = $index) {
-            <button
-              type="button"
-              (click)="openMovePicker.emit(i)"
-              [style.--accent]="moveAccent(move)"
-              [class.is-filled]="!!move"
-              class="move-row flex items-center gap-2.75 w-full px-3 py-2.5 bg-brand-raised border border-solid border-brand-line border-l-[3px] rounded-lg text-left text-brand-text cursor-pointer"
-            >
-              @if (move) {
-                <span
-                  class="move-row__name flex-1 text-[0.84375rem] font-semibold truncate text-left"
-                >
-                  {{ move.name | nameNormalizer | titlecase }}
-                </span>
-                <span
-                  class="inline-flex items-center gap-1 font-mono text-[0.6875rem] text-brand-muted"
-                >
-                  <span>{{ move.power || '&mdash;' }}</span>
-                  <span class="text-brand-dim">·</span>
-                  <span>{{ move.accuracy || '&mdash;' }}</span>
-                </span>
-                <span
-                  class="shrink-0 font-mono text-[0.5625rem] font-bold tracking-wider px-1.5 py-0.5 rounded-[5px]"
-                  [class]="categoryClass(move)"
-                >
-                  {{ categoryAbbr(move) }}
-                </span>
-                @if (move.type) {
-                  <app-type-badge [name]="move.type.name" size="sm" />
-                }
-              } @else {
-                <span class="flex-1 text-[0.8125rem] text-brand-dim text-left">+ Add a move</span>
+              <span
+                class="shrink-0 font-mono text-[0.5625rem] font-bold tracking-wider px-1.5 py-0.5 rounded-[5px]"
+                [class]="categoryClass(move)"
+              >
+                {{ categoryAbbr(move) }}
+              </span>
+              @if (move.type) {
+                <app-type-badge [name]="move.type.name" size="sm" />
               }
-              <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
-            </button>
-          }
-        </div>
+            } @else {
+              <span class="flex-1 text-[0.8125rem] text-brand-dim text-left">+ Add a move</span>
+            }
+            <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
+          </button>
+        }
       </div>
+    </div>
   </div>
 } @else {
   <div

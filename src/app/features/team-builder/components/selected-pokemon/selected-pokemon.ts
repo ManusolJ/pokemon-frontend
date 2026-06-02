@@ -19,7 +19,7 @@ import { getTypeColor } from '@shared/utils/get-type-color.util';
 
 import { TitleCasePipe } from '@angular/common';
 
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
 
 type MoveCategoryKey = 'physical' | 'special' | 'status';
 
@@ -35,6 +35,11 @@ const CATEGORY_META: Record<MoveCategoryKey, CategoryMeta> = {
   special: { abbr: 'SPC', class: 'move-row__cat--spec' },
   status: { abbr: 'STA', class: 'move-row__cat--stat' },
 };
+
+const MEGA_NAME_SEGMENT = 'mega';
+const NAME_SEGMENT_SEPARATOR = '-';
+const HELD_ITEM_PLACEHOLDER_DEFAULT = 'No item';
+const HELD_ITEM_PLACEHOLDER_MEGA = 'Mega stone (auto)';
 
 @Component({
   imports: [SearchableSelect, TypeBadge, NameNormalizerPipe, TitleCasePipe],
@@ -93,6 +98,27 @@ export class SelectedPokemon {
   protected readonly abilityValue = computed(() => this.member()?.ability?.id ?? null);
   protected readonly natureValue = computed(() => this.member()?.nature?.id ?? null);
   protected readonly teraValue = computed(() => this.member()?.teraType?.id ?? null);
+
+  protected readonly isMega = computed(() => {
+    const name = this.member()?.name;
+    if (!name) {
+      return false;
+    }
+    return name.toLowerCase().split(NAME_SEGMENT_SEPARATOR).includes(MEGA_NAME_SEGMENT);
+  });
+
+  protected readonly heldItemPlaceholder = computed(() =>
+    this.isMega() ? HELD_ITEM_PLACEHOLDER_MEGA : HELD_ITEM_PLACEHOLDER_DEFAULT,
+  );
+
+  constructor() {
+    effect(() => {
+      const member = this.member();
+      if (member && this.isMega() && member.item !== null) {
+        this.patchMember({ item: null });
+      }
+    });
+  }
 
   protected onNickname(value: string): void {
     this.patchMember({ nickname: value });

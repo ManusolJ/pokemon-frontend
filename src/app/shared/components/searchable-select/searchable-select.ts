@@ -27,6 +27,7 @@ export class SearchableSelect {
   private readonly hostRef = inject(ElementRef<HTMLElement>);
 
   readonly label = input<string>();
+  readonly disabled = input<boolean>(false);
   readonly clearable = input<boolean>(true);
   readonly capitalize = input<boolean>(false);
   readonly placeholder = input<string>('Select…');
@@ -54,6 +55,9 @@ export class SearchableSelect {
   });
 
   protected toggle(): void {
+    if (this.disabled()) {
+      return;
+    }
     if (this.open()) {
       this.close();
     } else {

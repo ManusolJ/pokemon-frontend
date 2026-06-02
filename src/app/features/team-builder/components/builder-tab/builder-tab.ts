@@ -193,6 +193,14 @@ export class BuilderTab {
     }
 
     const member: TeamMember = {
+      baseStats: {
+        hp: pokemon.baseHp,
+        attack: pokemon.baseAtk,
+        defense: pokemon.baseDef,
+        specialAttack: pokemon.baseSpAtk,
+        specialDefense: pokemon.baseSpDef,
+        speed: pokemon.baseSpeed,
+      },
       pokemonId: pokemon.id,
       name: pokemon.name,
       spriteDefault: pokemon.spriteDefault,

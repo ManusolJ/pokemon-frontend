@@ -18,22 +18,21 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
   input,
   output,
   signal,
-  inject,
-  computed,
-  Component,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { map, of, switchMap, tap } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 const PAGE_SIZE = 27;
+const SEARCH_DEBOUNCE_MS = 300;
 
-//TODO: Cleanup logic. Add debouncing. Revise for CLEAN CODE and DRY.
-//TODO: Cleanup CSS.
 @Component({
   imports: [Modal, TypeBadge, NameNormalizerPipe, PaginatorModule, SkeletonModule],
   selector: 'app-pokemon-picker',
@@ -45,16 +44,22 @@ export class PokemonPicker {
   private readonly typeService = inject(TypeService);
   private readonly pokemonService = inject(PokemonService);
 
-  protected readonly skeletons = computed<readonly void[]>(() => Array.from({ length: PAGE_SIZE }));
-
   readonly open = input.required<boolean>();
 
   readonly closed = output<void>();
   readonly picked = output<PokemonRead>();
 
   protected readonly pageSize = PAGE_SIZE;
+  protected readonly skeletons = computed<readonly void[]>(() => Array.from({ length: PAGE_SIZE }));
+
   protected readonly currentPage = signal(0);
   protected readonly totalRecords = signal(0);
+
+  protected readonly query = signal('');
+  protected readonly typeId = signal<number | null>(null);
+
+  private readonly debouncedQuery = signal('');
+  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
   private readonly typesResource = rxResource({
     stream: () =>
@@ -76,39 +81,48 @@ export class PokemonPicker {
   });
 
   private readonly pokemonResource = rxResource({
-    params: () => (this.query() || this.typeId() || this.currentPage()) && this.open(),
-    stream: () =>
-      this.pokemonService
+    params: () => ({
+      open: this.open(),
+      query: this.debouncedQuery(),
+      typeId: this.typeId(),
+      page: this.currentPage(),
+    }),
+    stream: ({ params }) => {
+      if (!params.open) {
+        return of<PokemonSummary[]>([]);
+      }
+      return this.pokemonService
         .getPokemonSummaryPageWithFilter(
           {
-            primaryTypeId: this.typeId() ?? undefined,
-            name: this.query(),
+            primaryTypeId: params.typeId ?? undefined,
+            name: params.query.trim() || undefined,
           },
           {
-            page: this.currentPage(),
+            page: params.page,
             size: PAGE_SIZE,
             sort: 'sortOrder',
             direction: 'ASC',
           },
         )
         .pipe(
-          tap((page) => this.totalRecords.set(page.page.totalElements)),
-          map((page) => page.content),
-        ),
+          tap((response) => this.totalRecords.set(response.page.totalElements)),
+          map((response) => response.content),
+        );
+    },
     defaultValue: [],
   });
 
   protected readonly loading = computed<boolean>(() => this.pokemonResource.isLoading());
-
-  protected readonly query = signal('');
-  protected readonly typeId = signal<number | null>(null);
-
   protected readonly types = computed(() => this.typesResource.value());
   protected readonly pokemon = computed(() => this.pokemonResource.value());
 
-  protected onSearch(raw: string): void {
-    this.query.set(raw);
-    this.currentPage.set(0);
+  protected onSearch(value: string): void {
+    this.query.set(value);
+    clearTimeout(this.searchDebounceTimer);
+    this.searchDebounceTimer = setTimeout(() => {
+      this.debouncedQuery.set(value);
+      this.currentPage.set(0);
+    }, SEARCH_DEBOUNCE_MS);
   }
 
   protected toggleType(id: number): void {
@@ -125,13 +139,12 @@ export class PokemonPicker {
   }
 
   protected typesOf(pokemon: PokemonSummary): TypeRead[] {
-    return [pokemon.primaryType, pokemon.secondaryType].filter((t): t is TypeRead => !!t);
+    return [pokemon.primaryType, pokemon.secondaryType].filter((type): type is TypeRead => !!type);
   }
 
   protected onPick(pick: PokemonSummary): void {
     this.pokemonService.getOnePokemon({ id: pick.id }).subscribe({
       next: (result) => this.picked.emit(result),
-      error: () => {},
     });
   }
 

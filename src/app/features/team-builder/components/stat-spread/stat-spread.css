@@ -1,0 +1,77 @@
+:host {
+  display: block;
+}
+
+.row__label,
+.spread__used-label,
+.spread__reset,
+.stepper--max {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.row__value,
+.row__stat,
+.spread__used {
+  font-family: 'Space Mono', monospace;
+}
+
+.row__stat--up {
+  color: #54c66f;
+}
+
+.row__stat--down {
+  color: #e0503f;
+}
+
+.row__bar-fill {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-brand-red) 60%, transparent),
+    var(--color-brand-red)
+  );
+  transition: width 160ms ease;
+}
+
+.row__value {
+  transition: color 120ms;
+}
+
+.row__value.is-active {
+  color: var(--color-brand-text);
+}
+
+.stepper {
+  transition:
+    color 120ms,
+    background-color 120ms,
+    border-color 120ms;
+}
+
+.stepper:hover {
+  color: var(--color-brand-text);
+  border-color: color-mix(in srgb, var(--color-brand-red) 45%, transparent);
+}
+
+.spread__used.is-over strong {
+  color: var(--color-brand-red);
+}
+
+.spread__reset {
+  transition:
+    color 120ms,
+    border-color 120ms;
+}
+
+.spread__reset:hover {
+  color: var(--color-brand-text);
+  border-color: color-mix(in srgb, var(--color-brand-red) 45%, transparent);
+}
+
+.spread__budget-fill {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-brand-red) 70%, transparent),
+    var(--color-brand-red)
+  );
+  transition: width 160ms ease;
+}

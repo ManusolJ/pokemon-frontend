@@ -1,1 +1,104 @@
-<p>stat-spread works!</p>
+@if (member(); as m) {
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2.5">
+      @for (s of stats; track s.key) {
+        <div class="grid grid-cols-[3.5rem_2.5rem_1fr_auto] items-center gap-3">
+          <span
+            class="row__label inline-flex items-center gap-1 text-xs font-bold text-brand-muted"
+          >
+            {{ s.short }}
+            @if (natureUp(s.key)) {
+              <span class="text-xs leading-none text-[#54c66f]" aria-label="Nature boosted">
+                ▲
+              </span>
+            }
+            @if (natureDown(s.key)) {
+              <span class="text-xs leading-none text-[#e0503f]" aria-label="Nature lowered">
+                ▼
+              </span>
+            }
+          </span>
+
+          <span
+            class="row__stat text-xs font-bold text-right text-brand-text"
+            [class.row__stat--up]="natureUp(s.key)"
+            [class.row__stat--down]="natureDown(s.key)"
+          >
+            {{ calculatedStats()?.[s.key] ?? '—' }}
+          </span>
+
+          <span class="h-2.25 rounded-full bg-white/6 overflow-hidden block" aria-hidden="true">
+            <span class="row__bar-fill block h-full" [style.width.%]="fillPct(m.evs[s.key])"></span>
+          </span>
+
+          <span class="inline-flex items-center gap-1.5">
+            <button
+              type="button"
+              (click)="step(s.key, stepNeg)"
+              class="stepper inline-flex items-center justify-center size-5 rounded-md bg-white/5 border border-solid border-brand-line text-brand-muted text-sm leading-none cursor-pointer"
+              aria-label="Decrease EVs"
+            >
+              −
+            </button>
+            <span
+              class="row__value text-xs w-6 text-center text-brand-dim"
+              [class.is-active]="m.evs[s.key] > 0"
+            >
+              {{ m.evs[s.key] }}
+            </span>
+            <button
+              type="button"
+              (click)="step(s.key, stepPos)"
+              class="stepper inline-flex items-center justify-center size-5 rounded-md bg-white/5 border border-solid border-brand-line text-brand-muted text-[0.8125rem] leading-none cursor-pointer"
+              aria-label="Increase EVs"
+            >
+              +
+            </button>
+            <button
+              type="button"
+              (click)="max(s.key)"
+              class="stepper stepper--max inline-flex items-center justify-center h-5 w-auto px-1.75 rounded-md bg-white/5 border border-solid border-brand-line text-brand-muted text-[0.59375rem] font-bold tracking-[0.03em] leading-none cursor-pointer"
+              [attr.aria-label]="'Max EVs in ' + s.label"
+            >
+              MAX
+            </button>
+          </span>
+        </div>
+      }
+    </div>
+
+    <footer class="pt-3.5 border-t border-white/5 flex flex-col gap-2">
+      <span class="spread__used-label text-xs font-bold tracking-tight uppercase text-brand-dim">
+        EVs used
+      </span>
+      <div class="flex items-center justify-between gap-3">
+        <span class="spread__used text-sm text-brand-muted" [class.is-over]="overBudget()">
+          <strong class="text-brand-text font-bold">{{ usedEvs() }}</strong> / {{ evTotalMax }}
+        </span>
+        <button
+          type="button"
+          (click)="resetAll()"
+          class="spread__reset text-xs font-bold tracking-wider py-1 px-2.5 rounded-md bg-white/5 border border-solid border-brand-line text-brand-muted cursor-pointer"
+        >
+          Reset all
+        </button>
+      </div>
+      <span class="h-1.5 rounded-full bg-white/6 overflow-hidden block" aria-hidden="true">
+        <span class="spread__budget-fill block h-full" [style.width.%]="budgetPct()"></span>
+      </span>
+    </footer>
+  </div>
+} @else {
+  <div
+    class="flex flex-col items-center justify-center gap-2.5 text-center py-8 px-4 text-brand-muted"
+  >
+    <span
+      class="inline-flex items-center justify-center size-10 rounded-xl bg-white/4 border border-solid border-brand-line text-brand-dim"
+      aria-hidden="true"
+    >
+      <i class="pi pi-chart-bar"></i>
+    </span>
+    <h2 class="text-sm font-bold text-brand-text">No Pokémon selected</h2>
+    <p class="text-sm max-w-64 leading-6">Pick a slot to distribute EVs.</p>
+  </div>
+}

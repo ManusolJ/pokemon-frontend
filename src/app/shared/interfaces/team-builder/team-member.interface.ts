@@ -9,6 +9,7 @@ import { SpeciesSummary } from '@shared/interfaces/pokemon/pokemon/species-summa
 import { StatSpread } from './stat-spread.interface';
 
 export interface TeamMember {
+  readonly baseStats: StatSpread;
   readonly pokemonId: number;
   readonly name: string;
   readonly spriteDefault: string;
