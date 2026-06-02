@@ -69,7 +69,7 @@
                 class="stat-tile text-3xl font-bold leading-none"
                 [class.text-brand-dim]="tile.faded"
                 [class.text-brand-text]="!tile.faded"
-                [style.color]="tile.accent && !tile.faded ? accent() : null"
+                [style.color]="tileAccentColor(tile)"
               >
                 {{ tile.value }}
               </span>

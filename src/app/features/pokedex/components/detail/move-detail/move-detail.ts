@@ -58,6 +58,13 @@ export class MoveDetail {
 
   protected readonly accent = computed(() => getTypeColor(this.move()?.type.name));
 
+  protected tileAccentColor(tile: MoveStatTile): string | null {
+    if (!tile.accent || tile.faded) {
+      return null;
+    }
+    return this.accent();
+  }
+
   protected readonly categoryStyle = computed<CategoryStyle>(() => {
     const rawCategory = this.move()?.category?.toLowerCase() as MoveCategoryKey | undefined;
     return CATEGORY_STYLES[rawCategory ?? DEFAULT_CATEGORY] ?? CATEGORY_STYLES[DEFAULT_CATEGORY];

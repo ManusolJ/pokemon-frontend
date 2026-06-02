@@ -28,13 +28,9 @@
           @for (slot of defenderSlots(); track $index) {
             <div
               class="flex max-w-90 items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-2 text-xs font-semibold uppercase tracking-wide"
-              [style.borderColor]="slot ? getTypeColor(slot) + '80' : 'var(--color-brand-line)'"
-              [style.background]="
-                slot
-                  ? 'color-mix(in srgb, ' + getTypeColor(slot) + ' 12%, transparent)'
-                  : 'transparent'
-              "
-              [style.color]="slot ? getTypeColor(slot) : 'var(--color-brand-dim)'"
+              [style.borderColor]="slotBorderColor(slot)"
+              [style.background]="slotBackground(slot)"
+              [style.color]="slotColor(slot)"
             >
               @if (slot) {
                 <span
@@ -166,7 +162,7 @@
                   <span class="dot size-2.75 rounded-full"></span>
                   <span
                     class="text-sm font-bold tracking-tight text-brand-muted"
-                    [style.color]="isDefender(type) ? getTypeColor(type) : null"
+                    [style.color]="defenderHeaderColor(type)"
                   >
                     {{ abbreviateType(type) }}
                   </span>

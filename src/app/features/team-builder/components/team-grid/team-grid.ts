@@ -31,12 +31,22 @@ export class TeamGrid {
   }
 
   protected typesOf(member: TeamMember): TypeRead[] {
-    return [member.primaryType, member.secondaryType].filter((t): t is TypeRead => !!t);
+    return [member.primaryType, member.secondaryType].filter(
+      (type): type is TypeRead => !!type,
+    );
   }
 
-  protected onRemove(event: Event, i: number): void {
+  protected displayNameFor(member: TeamMember): string {
+    return member.nickname || member.name;
+  }
+
+  protected spriteFor(member: TeamMember): string {
+    return member.shiny ? member.spriteShiny : member.spriteDefault;
+  }
+
+  protected onRemove(event: Event, index: number): void {
     event.stopPropagation();
-    this.slotRemove.emit(i);
+    this.slotRemove.emit(index);
   }
 
   protected getImgUrl(url: string): string {

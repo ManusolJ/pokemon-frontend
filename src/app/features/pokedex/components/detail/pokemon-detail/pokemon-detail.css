@@ -58,13 +58,28 @@
   );
 }
 
-/* TODO: Image size in pixels. Check later */
 .art img {
   width: 280px;
   height: 280px;
   max-width: 100%;
   object-fit: contain;
   filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--accent) 40%, transparent));
+}
+
+.gender-bar__male {
+  background-color: #3f8efc;
+}
+
+.gender-bar__female {
+  background-color: #ee6fa3;
+}
+
+.gender-bar__male-label {
+  color: #6fa8fc;
+}
+
+.gender-bar__female-label {
+  color: #ee6fa3;
 }
 
 .art__toggle {

@@ -13,7 +13,7 @@
 
       <span class="identity__art relative h-fit w-fit" [class.identity__art--shiny]="member.shiny">
         <img
-          [src]="getImgUrl(member.shiny ? member.artworkShiny : member.artwork)"
+          [src]="getImgUrl(artworkFor(member))"
           [alt]="member.name"
           class="w-full h-full object-contain"
         />
@@ -32,7 +32,7 @@
           №{{ member.species.nationalDexNumber }} · Lv. {{ member.level }}
         </span>
         <h2 class="identity__name m-0 my-0.5 text-2xl font-bold tracking-tight text-brand-text">
-          {{ member.nickname || member.name | nameNormalizer | titlecase }}
+          {{ displayNameFor(member) | nameNormalizer | titlecase }}
         </h2>
         @if (member.nickname) {
           <span class="block text-[0.6875rem] text-brand-muted">
@@ -160,9 +160,9 @@
               <span
                 class="inline-flex items-center gap-1 font-mono text-[0.6875rem] text-brand-muted"
               >
-                <span>{{ move.power || '&mdash;' }}</span>
+                <span>{{ movePowerText(move) }}</span>
                 <span class="text-brand-dim">·</span>
-                <span>{{ move.accuracy || '&mdash;' }}</span>
+                <span>{{ moveAccuracyText(move) }}</span>
               </span>
               <span
                 class="shrink-0 font-mono text-[0.5625rem] font-bold tracking-wider px-1.5 py-0.5 rounded-[5px]"

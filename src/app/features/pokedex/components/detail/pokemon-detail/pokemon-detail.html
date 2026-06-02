@@ -128,14 +128,14 @@
               <span class="mt-1.5 text-sm font-semibold text-brand-muted">Genderless</span>
             } @else {
               <div class="flex h-2 mt-2.5 rounded-full overflow-hidden border border-brand-line">
-                <span class="bg-[#3f8efc]" [style.width.%]="gender().male"></span>
-                <span class="bg-[#ee6fa3]" [style.width.%]="gender().female"></span>
+                <span class="gender-bar__male" [style.width.%]="gender().male"></span>
+                <span class="gender-bar__female" [style.width.%]="gender().female"></span>
               </div>
               <div class="flex justify-between mt-1.5 font-mono text-xs">
-                <span class="text-[#6fa8fc]">
+                <span class="gender-bar__male-label">
                   <i class="pi pi-mars text-xs"></i>{{ gender().male }}%
                 </span>
-                <span class="text-[#ee6fa3]">
+                <span class="gender-bar__female-label">
                   <i class="pi pi-venus text-xs"></i>{{ gender().female }}%
                 </span>
               </div>

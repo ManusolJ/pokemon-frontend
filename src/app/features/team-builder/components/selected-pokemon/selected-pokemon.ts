@@ -5,10 +5,12 @@ import { LEVEL_MAX, LEVEL_MIN } from '@shared/constants/stat.constants';
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
+import { CategoryMeta } from '@shared/interfaces/team-builder/category-meta.interface';
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
 import { ItemSummary } from '@shared/interfaces/pokemon/item/item-summary.interface';
 import { AbilityEmbed } from '@shared/interfaces/pokemon/ability/ability-embed.interface';
 import { SearchableOption } from '@shared/interfaces/ui/generic/searchable-option.interface';
+import { MoveCategoryKey } from '@shared/interfaces/ui/move-detail/move-category-key.interface';
 
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
 import { SearchableSelect } from '@shared/components/searchable-select/searchable-select';
@@ -20,13 +22,6 @@ import { getTypeColor } from '@shared/utils/get-type-color.util';
 import { TitleCasePipe } from '@angular/common';
 
 import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
-
-type MoveCategoryKey = 'physical' | 'special' | 'status';
-
-interface CategoryMeta {
-  readonly abbr: string;
-  readonly class: string;
-}
 
 const DEFAULT_CATEGORY_KEY: MoveCategoryKey = 'status';
 
@@ -40,6 +35,7 @@ const MEGA_NAME_SEGMENT = 'mega';
 const NAME_SEGMENT_SEPARATOR = '-';
 const HELD_ITEM_PLACEHOLDER_DEFAULT = 'No item';
 const HELD_ITEM_PLACEHOLDER_MEGA = 'Mega stone (auto)';
+const NUMERIC_STAT_PLACEHOLDER = '—';
 
 @Component({
   imports: [SearchableSelect, TypeBadge, NameNormalizerPipe, TitleCasePipe],
@@ -171,6 +167,22 @@ export class SelectedPokemon {
 
   protected categoryAbbr(move: MoveRead | null): string {
     return this.categoryMeta(move).abbr;
+  }
+
+  protected artworkFor(member: TeamMember): string {
+    return member.shiny ? member.artworkShiny : member.artwork;
+  }
+
+  protected displayNameFor(member: TeamMember): string {
+    return member.nickname || member.name;
+  }
+
+  protected movePowerText(move: MoveRead): string {
+    return move.power ? String(move.power) : NUMERIC_STAT_PLACEHOLDER;
+  }
+
+  protected moveAccuracyText(move: MoveRead): string {
+    return move.accuracy ? String(move.accuracy) : NUMERIC_STAT_PLACEHOLDER;
   }
 
   protected getImgUrl(url: string): string {

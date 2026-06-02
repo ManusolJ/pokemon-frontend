@@ -51,7 +51,12 @@
           class="meta__btn meta__btn--primary inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
         >
           <span class="flex items-center gap-2 text-sm">
-            <i class="pi pi-save"></i>{{ saving() ? 'Saving…' : 'Save Team' }}
+            <i class="pi pi-save"></i>
+            @if (saving()) {
+              Saving…
+            } @else {
+              Save Team
+            }
           </span>
         </button>
       } @else {

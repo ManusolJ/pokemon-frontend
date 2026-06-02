@@ -153,7 +153,7 @@ export class PokemonDetail {
   );
 
   protected readonly error = computed(
-    () => this.pokemonResource.error() !== null || this.speciesResource.error() !== null,
+    () => this.pokemonResource.error() !== undefined || this.speciesResource.error() !== undefined,
   );
 
   protected readonly shiny = signal(false);

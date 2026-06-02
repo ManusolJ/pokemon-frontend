@@ -16,7 +16,7 @@ const MESSAGE_MAX_LENGTH = 2000;
 @Component({
   imports: [ReactiveFormsModule],
   selector: 'app-contact',
-  styleUrl: './contact.css',
+  styleUrls: ['./contact.css', '../auth/styles/auth-form.css'],
   templateUrl: './contact.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

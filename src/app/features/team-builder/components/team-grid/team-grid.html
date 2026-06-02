@@ -15,7 +15,7 @@
           [style.--accent]="accentFor(m)"
           [class.is-active]="activeIndex() === i"
           class="slot slot--filled relative w-full min-h-38 flex flex-col items-start py-3 px-3.5 rounded-xl overflow-hidden cursor-pointer text-left border-[1.5px] border-solid border-brand-line"
-          [attr.aria-label]="'Edit ' + (m.nickname || m.name)"
+          [attr.aria-label]="'Edit ' + displayNameFor(m)"
         >
           <span class="slot__num text-[0.6875rem] text-brand-dim">
             №{{ m.species.nationalDexNumber }}
@@ -26,7 +26,7 @@
             [class.slot__art--shiny]="m.shiny"
           >
             <img
-              [src]="getImgUrl(m.shiny ? m.spriteShiny : m.spriteDefault)"
+              [src]="getImgUrl(spriteFor(m))"
               [alt]="m.name"
               class="w-full h-full object-contain"
               loading="lazy"
@@ -44,7 +44,7 @@
           <span
             class="slot__name font-bold text-[0.9375rem] tracking-[-0.2px] text-brand-text capitalize whitespace-nowrap overflow-hidden text-ellipsis max-w-full"
           >
-            {{ m.nickname || m.name }}
+            {{ displayNameFor(m) }}
           </span>
           <span class="text-[0.6875rem] text-brand-dim mt-0.5">
             @if (m.item) {
