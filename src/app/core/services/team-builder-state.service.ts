@@ -1,8 +1,7 @@
-import { TeamMember } from '@shared/interfaces/team-builder/team-member.interface';
+import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
+import { PersistedState } from '@shared/interfaces/team-builder/member/persisted-state.interface';
 
 import { computed, Injectable, signal } from '@angular/core';
-
-import { PersistedState } from '@shared/interfaces/team-builder/persisted-state.interface';
 
 const SLOT_COUNT = 6;
 const STORAGE_KEY = 'teamBuilderState';
