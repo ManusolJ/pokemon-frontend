@@ -1,0 +1,104 @@
+<section class="py-10">
+  <header class="text-center">
+    <h1 class="text-brand-text text-2xl font-bold tracking-tight">Database Seed</h1>
+    <p class="text-brand-muted mt-1 text-sm">Populate or refresh Pokemon data from PokéAPI.</p>
+  </header>
+
+  <div class="danger">
+    <div class="danger__head">
+      <i class="pi pi-exclamation-triangle"></i>
+      <h2>Danger Zone — Seed Process</h2>
+    </div>
+    <p class="danger__lead">
+      Triggering the seed will download and replace all Pokemon data (species, moves, abilities,
+      items, types, natures) from PokéAPI. This operation:
+    </p>
+    <ul class="danger__bullets">
+      <li><i class="pi pi-clock"></i> May take several minutes to complete</li>
+      <li><i class="pi pi-database"></i> Replaces all existing seeded entries</li>
+      <li><i class="pi pi-ban"></i> Cannot be cancelled once started</li>
+    </ul>
+
+    <div class="danger__footer">
+      <div class="danger__copy">
+        @switch (status()) {
+          @case ('arming') {
+            <span>
+              Read the warning above before proceeding
+              <strong class="text-brand-red"> ({{ countdown() }}s)</strong>
+            </span>
+          }
+          @case ('ready') {
+            <span class="text-brand-red font-semibold">Confirmed. Start the seed.</span>
+          }
+          @case ('running') {
+            <span>Seed running. Check the Logs tab for progress.</span>
+          }
+          @case ('done') {
+            <span class="text-brand-text font-semibold">
+              <i class="pi pi-check"></i> Seed job started successfully.
+            </span>
+          }
+          @default {
+            <span>Read the warning above before proceeding</span>
+          }
+        }
+      </div>
+      <button
+        type="button"
+        class="danger__btn"
+        [class.danger__btn--arming]="status() === 'arming'"
+        [class.danger__btn--ready]="status() === 'ready'"
+        (click)="onTriggerClick()"
+        [disabled]="buttonDisabled()"
+      >
+        @if (status() === 'running') {
+          <i class="pi pi-spin pi-spinner"></i>
+        }
+        {{ buttonLabel() }}
+      </button>
+    </div>
+
+    @if (status() === 'error') {
+      <p class="danger__error">Could not start the seed job. Please try again.</p>
+    }
+  </div>
+
+  @if (seedLog(); as log) {
+    <div class="border-brand-line bg-brand-surface mt-6 rounded-2xl border p-6">
+      <div class="mb-4 flex items-center gap-2">
+        <i class="pi pi-list-check text-brand-red"></i>
+        <h2 class="text-brand-text text-base font-bold">Seed log #{{ log.id }}</h2>
+      </div>
+
+      <dl class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+        <div class="seed-log__row">
+          <dt>Status</dt>
+          <dd>
+            <span class="seed-log__status">{{ log.status }}</span>
+          </dd>
+        </div>
+        <div class="seed-log__row">
+          <dt>Triggered by</dt>
+          <dd>{{ log.triggeredBy }}</dd>
+        </div>
+        <div class="seed-log__row">
+          <dt>Started</dt>
+          <dd>{{ formatDateTime(log.startedAt) }}</dd>
+        </div>
+        <div class="seed-log__row">
+          <dt>Completed</dt>
+          <dd>{{ formatDateTime(log.completedAt) }}</dd>
+        </div>
+        <div class="seed-log__row">
+          <dt>Entries added</dt>
+          <dd class="font-mono tabular-nums">{{ log.entriesAdded.toLocaleString() }}</dd>
+        </div>
+        <div class="seed-log__row">
+          <dt>Errors</dt>
+          <dd class="font-mono tabular-nums">{{ log.errors.toLocaleString() }}</dd>
+        </div>
+      </dl>
+    </div>
+  }
+</section>
