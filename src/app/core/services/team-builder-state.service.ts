@@ -1,3 +1,4 @@
+import { TeamDraft } from '@shared/interfaces/team-builder/member/team-draft.interface';
 import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
 import { PersistedState } from '@shared/interfaces/team-builder/member/persisted-state.interface';
 
@@ -6,33 +7,20 @@ import { computed, Injectable, signal } from '@angular/core';
 const SLOT_COUNT = 6;
 const STORAGE_KEY = 'teamBuilderState';
 
-function emptySlots(): ReadonlyArray<TeamMember | null> {
-  return Array.from({ length: SLOT_COUNT }, () => null);
-}
-
-function loadState(): PersistedState | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return null;
-    }
-    return JSON.parse(raw) as PersistedState;
-  } catch {
-    return null;
-  }
-}
-
 @Injectable({ providedIn: 'root' })
 export class TeamBuilderStateService {
   private readonly _teamName = signal('');
   private readonly _isPrivate = signal(true);
   private readonly _activeIndex = signal<number | null>(null);
   private readonly _members = signal<ReadonlyArray<TeamMember | null>>(emptySlots());
+  private readonly _sourceTeamId = signal<number | null>(null);
 
   readonly teamName = this._teamName.asReadonly();
   readonly isPrivate = this._isPrivate.asReadonly();
   readonly members = this._members.asReadonly();
   readonly activeIndex = this._activeIndex.asReadonly();
+
+  readonly sourceTeamId = this._sourceTeamId.asReadonly();
 
   readonly activeMember = computed<TeamMember | null>(() => {
     const i = this._activeIndex();
@@ -50,6 +38,7 @@ export class TeamBuilderStateService {
       this._isPrivate.set(saved.isPrivate);
       this._members.set(saved.members);
       this._activeIndex.set(saved.activeIndex);
+      this._sourceTeamId.set(saved.sourceTeamId ?? null);
     }
   }
 
@@ -95,7 +84,17 @@ export class TeamBuilderStateService {
     this._isPrivate.set(true);
     this._activeIndex.set(null);
     this._members.set(emptySlots());
+    this._sourceTeamId.set(null);
     localStorage.removeItem(STORAGE_KEY);
+  }
+
+  loadFromTeam(draft: TeamDraft): void {
+    this._teamName.set(draft.name);
+    this._isPrivate.set(draft.isPrivate);
+    this._members.set(draft.members);
+    this._activeIndex.set(firstFilledIndex(draft.members));
+    this._sourceTeamId.set(draft.sourceId);
+    this.persist();
   }
 
   private persist(): void {
@@ -104,7 +103,29 @@ export class TeamBuilderStateService {
       isPrivate: this._isPrivate(),
       members: this._members(),
       activeIndex: this._activeIndex(),
+      sourceTeamId: this._sourceTeamId(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+}
+
+function emptySlots(): ReadonlyArray<TeamMember | null> {
+  return Array.from({ length: SLOT_COUNT }, () => null);
+}
+
+function firstFilledIndex(members: ReadonlyArray<TeamMember | null>): number | null {
+  const index = members.findIndex((member) => member !== null);
+  return index === -1 ? null : index;
+}
+
+function loadState(): PersistedState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    return JSON.parse(raw) as PersistedState;
+  } catch {
+    return null;
   }
 }

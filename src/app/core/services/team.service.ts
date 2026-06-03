@@ -31,6 +31,11 @@ export class TeamService extends BaseApiService {
     return this.post<TeamRead>(`${ENDPOINT}${TEAM_PUBLIC_ID_ENDPOINT}`, filter);
   }
 
+  //TODO: Implement slug based retrieval
+  // getOnePublicTeamBySlug(filter: TeamFilter): Observable<TeamRead> {
+  //   return null
+  // }
+
   getPublicTeamPageWithFilter(
     filter: TeamFilter,
     pageable?: Pageable,
@@ -46,7 +51,10 @@ export class TeamService extends BaseApiService {
     return this.post<TeamRead>(`${ENDPOINT}${TEAM_SELF_ENDPOINT}`, filter);
   }
 
-  getSelfTeamPageWithFilter(filter: TeamFilter, pageable?: Pageable): Observable<Page<TeamSummary>> {
+  getSelfTeamPageWithFilter(
+    filter: TeamFilter,
+    pageable?: Pageable,
+  ): Observable<Page<TeamSummary>> {
     return this.postPaged<Page<TeamSummary>>(
       `${ENDPOINT}${TEAM_SELF_FILTER_ENDPOINT}`,
       filter,
