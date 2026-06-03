@@ -1,6 +1,6 @@
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 
 @Component({
   imports: [PaginatorModule],
@@ -16,7 +16,8 @@ export class ListShell {
   readonly total = input.required<number>();
   readonly totalPages = input.required<number>();
 
-  protected readonly page = signal(0);
+  readonly page = signal(0);
+  readonly pageChange = output<number>();
 
   pageSize = input.required<number>();
 
@@ -36,6 +37,7 @@ export class ListShell {
 
   protected onPageChange(event: PaginatorState): void {
     this.page.set(event.page ?? 0);
+    this.pageChange.emit(this.page());
   }
 
   protected readonly firstRecordIndex = computed(() => this.page() * this.pageSize());
