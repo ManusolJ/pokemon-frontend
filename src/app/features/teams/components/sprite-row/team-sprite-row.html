@@ -1,4 +1,4 @@
-<div class="flex" [style.gap.px]="gap()" role="list" aria-label="Team Pokemon">
+<div class="flex flex-wrap" [style.gap.px]="gap()" role="list" aria-label="Team Pokemon">
   @for (slot of slots(); track slot.key) {
     @if (slot.url) {
       <span

@@ -75,7 +75,7 @@
     }
 
     @if (loading()) {
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2.5">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,170px),1fr))] gap-2.5">
         @for (skeleton of skeletons(); track $index) {
           <p-skeleton height="4.5rem"></p-skeleton>
         }
@@ -83,7 +83,7 @@
     } @else if (natures().length === 0) {
       <p class="text-center text-brand-dim py-10 text-sm">No natures match those filters.</p>
     } @else {
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2.5">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,170px),1fr))] gap-2.5">
         @for (nature of natures(); track nature.id) {
           <button
             type="button"

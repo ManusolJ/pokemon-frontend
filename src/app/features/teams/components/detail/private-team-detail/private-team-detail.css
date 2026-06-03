@@ -25,10 +25,11 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 1.25rem 2.25rem 0;
+  padding: 0;
   font-family: 'Space Mono', monospace;
   font-size: 0.72rem;
   color: var(--color-brand-dim);
+  flex-wrap: wrap;
 }
 
 .crumbs__link {
@@ -60,11 +61,24 @@
 .hero__title {
   margin: 0 0 0.875rem;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.05;
   color: var(--color-brand-text);
+  word-break: break-word;
+}
+
+@media (min-width: 640px) {
+  .hero__title {
+    font-size: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero__title {
+    font-size: 2.5rem;
+  }
 }
 
 .hero__meta {

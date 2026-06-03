@@ -1,6 +1,6 @@
-<div class="flex flex-col gap-3 px-4 py-4 h-full overflow-hidden">
+<div class="flex flex-col gap-3 px-3 sm:px-4 py-3 sm:py-4 lg:h-full lg:overflow-hidden">
   <div
-    class="flex items-center gap-3 px-3.5 py-4 bg-brand-surface border border-solid border-brand-line rounded-2xl"
+    class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-3 sm:px-3.5 py-3 sm:py-4 bg-brand-surface border border-solid border-brand-line rounded-2xl"
   >
     <label
       class="flex flex-1 items-center gap-2.5 px-2.5 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg transition-colors duration-100"
@@ -18,7 +18,7 @@
       />
     </label>
 
-    <div class="flex shrink-0 gap-3">
+    <div class="flex flex-wrap shrink-0 gap-2 sm:gap-3">
       <button
         type="button"
         (click)="state.togglePrivate()"
@@ -93,15 +93,15 @@
     </div>
   }
 
-  <div class="grid grid-cols-2 gap-3 flex-1 min-h-0">
-    <div class="flex flex-col gap-3 min-h-0">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:flex-1 lg:min-h-0">
+    <div class="flex flex-col gap-3 lg:min-h-0">
       <section
-        class="flex-1 min-h-0 overflow-hidden flex flex-col gap-3 bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+        class="flex flex-col gap-3 lg:flex-1 lg:min-h-0 lg:overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
       >
         <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
           Selected Pokemon
         </span>
-        <div class="flex-1 min-h-0 overflow-hidden">
+        <div class="flex-1 lg:min-h-0 lg:overflow-hidden">
           <app-selected-pokemon
             [types]="types()"
             [member]="state.activeMember()"
@@ -115,7 +115,7 @@
       </section>
     </div>
 
-    <div class="flex flex-col gap-3 min-h-0">
+    <div class="flex flex-col gap-3 lg:min-h-0">
       <section
         class="flex flex-col gap-3 shrink-0 bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
       >
@@ -128,12 +128,12 @@
         />
       </section>
       <section
-        class="flex flex-1 min-h-0 overflow-hidden flex-col gap-3 bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
+        class="flex flex-col gap-3 lg:flex-1 lg:min-h-0 lg:overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
       >
         <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
           Stat spread
         </span>
-        <div class="flex-1 min-h-0 overflow-hidden">
+        <div class="flex-1 lg:min-h-0 lg:overflow-hidden">
           <app-stat-spread
             [member]="state.activeMember()"
             (memberChange)="state.updateActiveMember($event)"

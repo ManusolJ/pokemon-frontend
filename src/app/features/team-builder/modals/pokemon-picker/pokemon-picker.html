@@ -42,9 +42,9 @@
     </div>
   </div>
 
-  <div class="p-5">
+  <div class="p-3 sm:p-5">
     @if (loading()) {
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,140px),1fr))] sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
         @for (skeleton of skeletons(); track $index) {
           <p-skeleton height="12rem"></p-skeleton>
         }
@@ -52,7 +52,7 @@
     } @else if (pokemon().length === 0) {
       <p class="text-center text-brand-dim px-10 text-sm">No Pokémon match those filters.</p>
     } @else {
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,140px),1fr))] sm:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
         @for (pokemon of pokemon(); track pokemon.id) {
           <button
             type="button"

@@ -1,13 +1,13 @@
 @if (open()) {
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-7 bg-black/60 backdrop-blur-xs"
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 lg:p-7 bg-black/60 backdrop-blur-xs"
     (click)="onBackdropClick()"
     role="presentation"
   >
     <div
       role="dialog"
       aria-modal="true"
-      class="flex flex-col max-h-full w-full max-w-8/10 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl shadow-2xl"
+      class="flex flex-col max-h-full h-full sm:h-auto w-full max-w-full sm:max-w-9/10 lg:max-w-8/10 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-none sm:rounded-2xl shadow-2xl"
       [attr.aria-label]="title()"
       (click)="$event.stopPropagation()"
     >

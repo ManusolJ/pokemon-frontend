@@ -7,7 +7,7 @@
   </div>
 } @else if (team(); as currentTeam) {
   <div class="detail" [style.--accent]="accent()">
-    <div class="flex items-center gap-3 px-9 pt-5">
+    <div class="flex items-center gap-3 px-4 sm:px-6 lg:px-9 pt-4 sm:pt-5">
       <button
         type="button"
         class="inline-flex items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-1.5 text-xs font-bold text-brand-muted transition-colors hover:border-brand-red/40 hover:text-brand-text cursor-pointer"
@@ -27,11 +27,11 @@
       </nav>
     </div>
 
-    <section class="hero relative px-9 pt-5 pb-7 overflow-hidden">
+    <section class="hero relative px-4 sm:px-6 lg:px-9 pt-4 sm:pt-5 pb-6 sm:pb-7 overflow-hidden">
       <div class="hero__glow" aria-hidden="true"></div>
 
       <div
-        class="relative grid grid-cols-[minmax(0,1fr)_auto] max-[900px]:grid-cols-1 gap-6 items-start"
+        class="relative grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-4 lg:gap-6 items-start"
       >
         <div class="min-w-0">
           <h1 class="hero__title">{{ currentTeam.name }}</h1>
@@ -44,7 +44,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-2.5 min-w-65">
+        <div class="flex flex-col gap-2.5 w-full lg:min-w-65 lg:w-auto">
           <button
             type="button"
             class="primary-btn"
@@ -99,7 +99,7 @@
     </section>
 
     <section
-      class="flex items-center gap-2.5 mx-9 mb-5.5 py-3.5 px-4.5 bg-brand-surface border border-brand-line rounded-xl"
+      class="flex items-start sm:items-center gap-2.5 mx-4 sm:mx-6 lg:mx-9 mb-5.5 py-3 sm:py-3.5 px-3.5 sm:px-4.5 bg-brand-surface border border-brand-line rounded-xl flex-col sm:flex-row"
     >
       <span class="coverage__label">Type coverage</span>
       <div class="flex flex-1 flex-wrap gap-[0.3rem]">
@@ -109,12 +109,12 @@
       </div>
     </section>
 
-    <section class="px-9 pb-9">
+    <section class="px-4 sm:px-6 lg:px-9 pb-6 sm:pb-9">
       <header class="flex items-center justify-between mb-3.5 pb-2.5 border-b border-white/4.5">
         <span class="roster__label">The team</span>
         <span class="roster__meta">{{ filled() }} pokémon</span>
       </header>
-      <div class="grid grid-cols-2 max-[900px]:grid-cols-1 gap-3.5">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
         @for (member of currentTeam.pokemon; track member.id) {
           <app-team-pokemon-card [member]="member" />
         }

@@ -19,7 +19,7 @@
 
   <app-team-sprite-row [sprites]="team().pokemonSprites" [size]="58" />
 
-  <footer class="flex items-center gap-1.5 mt-auto">
+  <footer class="flex items-center flex-wrap gap-1.5 mt-auto">
     <button type="button" class="card-btn" (click)="emit($event, 'edit')">
       <i class="pi pi-pen-to-square"></i>Edit
     </button>

@@ -1,6 +1,12 @@
 :host {
-  height: 100%;
   display: flex;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  :host {
+    height: 100%;
+  }
 }
 
 .identity__big-num,

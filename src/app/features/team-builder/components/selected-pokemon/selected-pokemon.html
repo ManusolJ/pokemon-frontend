@@ -1,5 +1,5 @@
 @if (member(); as member) {
-  <div class="grid grid-cols-2 flex-1 gap-4">
+  <div class="grid grid-cols-1 lg:grid-cols-2 flex-1 gap-4">
     <div
       class="identity relative flex flex-col gap-4 px-4.5 py-4 rounded-2xl overflow-hidden"
       [style.--accent]="accent()"
@@ -49,8 +49,8 @@
     </div>
 
     <div class="flex flex-col gap-4">
-      <div class="w-full flex gap-4">
-        <label class="flex flex-col gap-1.5 flex-1">
+      <div class="w-full flex flex-wrap gap-3 sm:gap-4">
+        <label class="flex flex-col gap-1.5 flex-1 min-w-40">
           <span class="basics__label">Nickname</span>
           <input
             #nickInput
