@@ -20,24 +20,27 @@
     [class.panel--expanded]="expanded()"
   >
     <div class="panel-inner">
-      <div class="px-6 pb-6 pt-2 flex flex-col items-center gap-1.5 text-sm text-center">
-        <p class="font-semibold text-lg">Pokémon Team Builder &copy; 2025 - All rights reserved</p>
+      <div
+        class="px-4 sm:px-6 pb-5 sm:pb-6 pt-2 flex flex-col items-center gap-1.5 text-xs sm:text-sm text-center"
+      >
+        <p class="font-semibold text-base sm:text-lg">
+          Pokémon Team Builder &copy; 2025 - All rights reserved
+        </p>
         <p class="text-brand-muted">Created by Manuel Soler Juan - Web Development Project</p>
-        <p class="text-brand-muted">
+        <p class="text-brand-muted break-all sm:break-normal">
           <a href="mailto:mansoljua@edu.alu.gva.es">mansoljua&commat;edu.alu.gva.es</a>
         </p>
         <p class="text-brand-muted">
           <a href="https://github.com/ManusolJ" target="_blank">GitHub: ManusolJ</a>
         </p>
-        <p class="text-brand-muted">
+        <p class="text-brand-muted flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
           <a routerLink="/about" class="hover:text-white transition-colors">About us</a>
-          <span class="mx-2 text-white/30">|</span>
+          <span class="text-white/30">|</span>
           <a routerLink="/terms" class="hover:text-white transition-colors">Terms of Use</a>
         </p>
-        <p class="text-brand-muted text-xs max-w-md mt-1">
-          This site is not affiliated with Nintendo, Game Freak, or The Pokémon Company.
-          <br />
-          Pokémon and related content are &copy; of their respective owners.
+        <p class="text-brand-muted text-[0.7rem] sm:text-xs max-w-md mt-1 leading-relaxed">
+          This site is not affiliated with Nintendo, Game Freak, or The Pokémon Company. Pokémon and
+          related content are &copy; of their respective owners.
         </p>
       </div>
     </div>

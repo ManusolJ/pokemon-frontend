@@ -1,21 +1,21 @@
 <header class="sticky top-0 z-50 bg-brand-bg/90 backdrop-blur-md border-b border-brand-line">
   <nav
-    class="mx-auto max-w-9/12 h-16 px-6 lg:px-8 flex items-center justify-between gap-8"
+    class="mx-auto w-full lg:max-w-9/12 h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 lg:gap-8"
     aria-label="Primary"
   >
-    <a routerLink="/" class="group flex items-center gap-2.5 shrink-0">
+    <a routerLink="/" (click)="closeMenu()" class="group flex items-center gap-2.5 shrink-0">
       <img
         src="/favicon.ico"
         alt="Logo"
         aria-hidden="true"
-        class="w-9 h-9 transition-transform group-hover:scale-110"
+        class="w-8 h-8 sm:w-9 sm:h-9 transition-transform group-hover:scale-110"
       />
-      <span class="font-bold text-brand-text tracking-tight">
+      <span class="font-bold text-brand-text tracking-tight text-sm sm:text-base">
         Pokémon <span class="font-semibold text-brand-muted">Team Builder</span>
       </span>
     </a>
 
-    <ul class="flex items-center gap-1">
+    <ul class="hidden lg:flex items-center gap-1">
       @for (item of items; track item.path) {
         <li>
           <a [routerLink]="item.path" routerLinkActive="nav-link--active" class="nav-link">
@@ -25,7 +25,7 @@
       }
     </ul>
 
-    <div class="flex items-center gap-3 shrink-0">
+    <div class="hidden lg:flex items-center gap-3 shrink-0">
       @if (isAuthenticated()) {
         @if (isAdmin()) {
           <a routerLink="/admin" routerLinkActive="nav-link--active" class="nav-link">Admin</a>
@@ -37,5 +37,83 @@
         <a routerLink="/auth/registration" class="nav-cta">Register</a>
       }
     </div>
+
+    <button
+      type="button"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="primary-mobile-menu"
+      aria-label="Toggle navigation menu"
+      class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-brand-muted hover:text-brand-text hover:bg-white/5 transition-colors cursor-pointer"
+    >
+      <i
+        class="pi text-xl transition-transform duration-200"
+        [class.pi-bars]="!menuOpen()"
+        [class.pi-times]="menuOpen()"
+      ></i>
+    </button>
   </nav>
+
+  <div
+    id="primary-mobile-menu"
+    [attr.inert]="!menuOpen() ? '' : null"
+    class="lg:hidden panel bg-brand-bg/95 backdrop-blur-md border-t border-brand-line"
+    [class.panel--expanded]="menuOpen()"
+  >
+    <div class="panel-inner">
+      <div class="px-4 sm:px-6 py-4 flex flex-col gap-1">
+        <ul class="flex flex-col gap-1">
+          @for (item of items; track item.path) {
+            <li>
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="nav-link--active"
+                (click)="closeMenu()"
+                class="nav-link block w-full"
+              >
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        </ul>
+
+        <div class="mt-3 pt-3 border-t border-brand-line flex flex-col gap-2">
+          @if (isAuthenticated()) {
+            @if (isAdmin()) {
+              <a
+                routerLink="/admin"
+                routerLinkActive="nav-link--active"
+                (click)="closeMenu()"
+                class="nav-link block w-full"
+                >Admin</a
+              >
+            }
+            <a
+              routerLink="/profile"
+              routerLinkActive="nav-link--active"
+              (click)="closeMenu()"
+              class="nav-link block w-full"
+              >Profile</a
+            >
+            <button type="button" (click)="logout()" class="nav-cta w-full justify-center">
+              Logout
+            </button>
+          } @else {
+            <a
+              routerLink="/auth/login"
+              (click)="closeMenu()"
+              class="nav-ghost block w-full px-3 py-2"
+              >Login</a
+            >
+            <a
+              routerLink="/auth/registration"
+              (click)="closeMenu()"
+              class="nav-cta w-full justify-center"
+              >Register</a
+            >
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
