@@ -1,0 +1,12 @@
+<span
+  class="inline-flex items-center gap-1.5 py-1 px-2 rounded-full font-bold text-xs tracking-wider uppercase border border-solid badge"
+  [class.is-public]="isPublic()"
+  [class.is-sm]="size() === 'sm'"
+>
+  @if (isPublic()) {
+    <i class="pi pi-globe text-xs"></i>
+  } @else {
+    <i class="pi pi-lock text-xs"></i>
+  }
+  {{ label() }}
+</span>

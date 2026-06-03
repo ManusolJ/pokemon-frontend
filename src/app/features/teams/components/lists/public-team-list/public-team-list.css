@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.sort-strip {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--color-brand-line);
+  background: var(--color-brand-surface);
+}
+
+.sort-btn {
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: var(--color-brand-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 120ms,
+    background 120ms;
+}
+
+.sort-btn:hover {
+  color: var(--color-brand-text);
+}
+
+.sort-btn.is-active {
+  color: var(--color-brand-text);
+  font-weight: 700;
+  background: rgb(255 255 255 / 0.06);
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}

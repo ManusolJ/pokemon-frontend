@@ -1,0 +1,23 @@
+:host {
+  display: inline-block;
+}
+
+.team-sprite-row {
+  display: flex;
+}
+
+.slot {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    color-mix(in srgb, var(--accent) 6%, transparent) 70%,
+    var(--color-brand-raised, #1b1f27)
+  );
+  border: color-mix(in srgb, var(--accent) 32%, transparent);
+}
+
+.slot img {
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 6px color-mix(in srgb, var(--accent) 35%, transparent));
+}

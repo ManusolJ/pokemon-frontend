@@ -1,0 +1,19 @@
+:host {
+  display: inline-flex;
+}
+
+.badge {
+  --accent: var(--color-brand-dim);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  border: color-mix(in srgb, var(--accent) 32%, transparent);
+}
+
+.badge.is-public {
+  --accent: #54c66f;
+}
+
+.badge.is-sm {
+  padding: 0.18rem 0.5rem;
+  font-size: 0.625rem;
+}

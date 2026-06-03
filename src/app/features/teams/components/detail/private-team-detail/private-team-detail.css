@@ -1,0 +1,229 @@
+:host {
+  display: block;
+}
+
+.detail-skeleton,
+.detail-error {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: var(--color-brand-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 8rem);
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.25rem 2.25rem 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--color-brand-dim);
+}
+
+.crumbs__link {
+  color: var(--color-brand-dim);
+  text-decoration: none;
+  cursor: pointer;
+}
+.crumbs__link:hover {
+  color: var(--color-brand-muted);
+}
+.crumbs__current {
+  color: var(--color-brand-muted);
+}
+
+.hero__glow {
+  position: absolute;
+  top: -2.5rem;
+  left: -2.5rem;
+  right: -2.5rem;
+  height: 15rem;
+  background: radial-gradient(
+    60% 100% at 30% 0%,
+    color-mix(in srgb, var(--accent) 18%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.hero__title {
+  margin: 0 0 0.875rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--color-brand-text);
+}
+
+.hero__meta {
+  display: flex;
+  align-items: center;
+  gap: 1.125rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--color-brand-dim);
+  flex-wrap: wrap;
+}
+
+.primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.625rem 0.95rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--accent) 32%, transparent);
+  transition: opacity 140ms;
+}
+.primary-btn:hover {
+  opacity: 0.92;
+}
+
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.6rem 0.95rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--color-brand-line);
+  background: var(--color-brand-surface);
+  color: var(--color-brand-muted);
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background 140ms,
+    color 140ms,
+    border-color 140ms;
+}
+.ghost-btn:hover {
+  background: var(--color-brand-raised);
+  color: var(--color-brand-text);
+}
+.ghost-btn--grow {
+  flex: 1;
+}
+
+.ghost-btn.is-success {
+  color: #54c66f;
+  border-color: color-mix(in srgb, #54c66f 45%, transparent);
+  background: color-mix(in srgb, #54c66f 12%, var(--color-brand-surface));
+}
+
+.ghost-btn--danger {
+  color: #e0503f;
+  border-color: color-mix(in srgb, #e0503f 30%, transparent);
+}
+.ghost-btn--danger:hover {
+  color: #e0503f;
+  border-color: color-mix(in srgb, #e0503f 50%, transparent);
+  background: color-mix(in srgb, #e0503f 8%, var(--color-brand-surface));
+}
+
+.stat-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin: 1.625rem 0 0;
+  background: rgb(255 255 255 / 0.045);
+  border-radius: 0.875rem;
+  overflow: hidden;
+  border: 1px solid var(--color-brand-line);
+}
+
+.stat-cell {
+  background: var(--color-brand-surface);
+  padding: 0.875rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.stat-cell dt {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-brand-dim);
+}
+
+.stat-cell__value {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-brand-text);
+}
+.stat-cell__value--accent {
+  color: var(--color-brand-red);
+}
+
+.only-you__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 0.815rem;
+  color: var(--color-brand-text);
+}
+
+.only-you__copy {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.75rem;
+  color: var(--color-brand-dim);
+}
+
+.coverage__label,
+.roster__label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-brand-dim);
+}
+
+.roster__meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.69rem;
+  color: var(--color-brand-dim);
+}
+
+.roster__empty {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.875rem;
+  background: rgb(255 255 255 / 0.015);
+  border: 1.5px dashed var(--color-brand-line);
+  color: var(--color-brand-dim);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+}

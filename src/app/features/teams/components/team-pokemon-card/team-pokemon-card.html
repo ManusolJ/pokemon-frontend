@@ -1,0 +1,69 @@
+<article
+  class="member-card flex flex-col gap-3 px-4 pt-3.5 pb-4"
+  [class.is-shiny]="isShiny()"
+  [style.--accent]="accent()"
+>
+  <div class="flex items-center gap-3.5">
+    <span class="member-card__sprite relative inline-flex shrink-0 items-center justify-center">
+      @if (member().pokemon.spriteDefault) {
+        <img [src]="spriteUrl()" [alt]="member().pokemon.name" loading="lazy" />
+      }
+      @if (isShiny()) {
+        <span
+          class="absolute -top-1 -right-1 text-sm leading-none text-amber-300 drop-shadow-[0_0_4px_rgba(247,208,44,0.85)]"
+          aria-hidden="true"
+        >
+          &#x2726;
+        </span>
+      }
+    </span>
+
+    <div class="flex flex-1 min-w-0 flex-col gap-0.5">
+      <h3 class="font-bold text-brand-text">{{ displayName() | titlecase }}</h3>
+      <div class="flex flex-wrap gap-1">
+        @for (type of types(); track type.id) {
+          <app-type-badge [name]="type.name" size="sm" />
+        }
+      </div>
+      <span class="text-xs text-brand-dim">
+        Lv. {{ member().level }}
+        @if (isShiny()) {
+          <span class="text-amber-300">· Shiny</span>
+        }
+      </span>
+    </div>
+  </div>
+
+  <dl class="member-card__meta grid grid-cols-2 gap-x-3 gap-y-1.5 py-2 m-0">
+    <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
+      <dt>Ability</dt>
+      <dd>{{ member().ability?.name ?? '—' | titlecase }}</dd>
+    </div>
+    <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
+      <dt>Item</dt>
+      <dd>{{ member().heldItem?.name ?? '—' | titlecase }}</dd>
+    </div>
+    <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
+      <dt>Nature</dt>
+      <dd>{{ member().nature?.name ?? '—' | titlecase }}</dd>
+    </div>
+    @if (member().teraType) {
+      <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
+        <dt>Tera</dt>
+        <dd>{{ member().teraType?.name ?? '—' | titlecase }}</dd>
+      </div>
+    }
+  </dl>
+
+  <div class="grid grid-cols-2 gap-1.5" role="list" aria-label="Moves">
+    @for (slot of moveSlots(); track slot.key) {
+      @if (slot.move) {
+        <span class="member-card__move is-filled" role="listitem">
+          {{ slot.move.name | titlecase }}
+        </span>
+      } @else {
+        <span class="member-card__move" role="listitem" aria-label="Empty move slot">—</span>
+      }
+    }
+  </div>
+</article>

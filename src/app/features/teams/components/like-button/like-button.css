@@ -1,0 +1,26 @@
+:host {
+  display: inline-flex;
+}
+
+.btn.is-sm {
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  padding: 0.35rem 0.65rem;
+}
+
+.btn:hover:not(.is-disabled) {
+  color: var(--color-brand-red);
+  border-color: color-mix(in srgb, var(--color-brand-red) 30%, transparent);
+  background: color-mix(in srgb, var(--color-brand-red) 8%, var(--color-brand-surface));
+}
+
+.btn.is-liked {
+  color: var(--color-brand-red);
+  border-color: color-mix(in srgb, var(--color-brand-red) 42%, transparent);
+  background: color-mix(in srgb, var(--color-brand-red) 13%, transparent);
+}
+
+.btn.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

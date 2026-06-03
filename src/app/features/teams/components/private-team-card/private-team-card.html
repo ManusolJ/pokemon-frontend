@@ -1,0 +1,58 @@
+<article
+  tabindex="0"
+  role="button"
+  (click)="onSelect()"
+  class="relative flex flex-col gap-4 px-5 py-4 rounded-2xl cursor-pointer text-left border border-solid border-brand-line shadow transition-all duration-150 ease-in card"
+  [class.is-empty]="isEmpty()"
+  (keydown.enter)="onSelect()"
+  [attr.aria-label]="'Open team ' + team().name"
+>
+  <div class="flex items-start gap-3">
+    <div class="flex-1 min-w-0 flex flex-col gap-1">
+      <app-visibility-badge [isPublic]="isPublic()" size="sm" />
+      <h3 class="font-bold tracking-tight leading-5 text-brand-text text-xl">{{ team().name }}</h3>
+      <span class="text-xs text-brand-dim">
+        Edited {{ editedLabel() }} · {{ filled() }}/{{ slotCount }} slots filled
+      </span>
+    </div>
+  </div>
+
+  <app-team-sprite-row [sprites]="team().pokemonSprites" [size]="58" />
+
+  <footer class="flex items-center gap-1.5 mt-auto">
+    <button type="button" class="card-btn" (click)="emit($event, 'edit')">
+      <i class="pi pi-pen-to-square"></i>Edit
+    </button>
+
+    <button type="button" class="card-btn" (click)="emit($event, 'toggle-visibility')">
+      @if (isPublic()) {
+        <i class="pi pi-lock"></i>
+      } @else {
+        <i class="pi pi-globe"></i>
+      }
+      {{ publishLabel() }}
+    </button>
+
+    @if (isPublic()) {
+      <button
+        type="button"
+        class="card-btn"
+        (click)="emit($event, 'share')"
+        aria-label="Copy share link"
+      >
+        <i class="pi pi-share-alt"></i>
+      </button>
+    }
+
+    <span class="flex-1"></span>
+
+    <button
+      type="button"
+      class="card-btn card-btn--danger"
+      (click)="emit($event, 'delete')"
+      aria-label="Delete team"
+    >
+      <i class="pi pi-trash"></i>
+    </button>
+  </footer>
+</article>

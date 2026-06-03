@@ -5,6 +5,7 @@ export interface PokemonSummary {
   name: string;
   order: number;
   spriteDefault: string;
+  spriteShiny: string;
   primaryType: TypeRead;
   secondaryType: TypeRead | null;
 }

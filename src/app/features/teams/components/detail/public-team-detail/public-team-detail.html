@@ -1,0 +1,124 @@
+@if (loading()) {
+  <div class="detail-skeleton">Loading team…</div>
+} @else if (error() || !team()) {
+  <div class="detail-error">
+    <p>We couldn't load that team.</p>
+    <button type="button" class="ghost-btn" (click)="back()">Back to community</button>
+  </div>
+} @else if (team(); as currentTeam) {
+  <div class="detail" [style.--accent]="accent()">
+    <div class="flex items-center gap-3 px-9 pt-5">
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-1.5 text-xs font-bold text-brand-muted transition-colors hover:border-brand-red/40 hover:text-brand-text cursor-pointer"
+        (click)="back()"
+        aria-label="Back to community list"
+      >
+        <i class="pi pi-chevron-left text-xs"></i>
+        Back
+      </button>
+
+      <nav class="crumbs flex-1 p-0" aria-label="Breadcrumb">
+        <a routerLink="/teams" class="crumbs__link">Teams</a>
+        <span aria-hidden="true">›</span>
+        <a routerLink="/teams/shared-teams" class="crumbs__link">Community</a>
+        <span aria-hidden="true">›</span>
+        <span class="crumbs__current">{{ currentTeam.name }}</span>
+      </nav>
+    </div>
+
+    <section class="hero relative px-9 pt-5 pb-7 overflow-hidden">
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <div
+        class="relative grid grid-cols-[minmax(0,1fr)_auto] max-[900px]:grid-cols-1 gap-6 items-start"
+      >
+        <div class="min-w-0">
+          <h1 class="hero__title">{{ currentTeam.name }}</h1>
+          <div class="flex items-center gap-3">
+            <span class="hero__avatar" aria-hidden="true">{{ ownerInitial() }}</span>
+            <div class="flex flex-col">
+              <span class="hero__handle">{{ currentTeam.owner.username }}</span>
+              <span class="hero__sub">shared {{ createdLabel() }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5 min-w-65">
+          <button
+            type="button"
+            class="primary-btn"
+            [disabled]="importing()"
+            (click)="takeIntoBuilder()"
+          >
+            @if (importing()) {
+              <i class="pi pi-spin pi-spinner"></i>
+              Loading team…
+            } @else {
+              <i class="pi pi-external-link"></i>
+              Take into Team Builder
+            }
+          </button>
+          <div class="flex gap-2">
+            <app-like-button
+              [liked]="currentTeam.likedByCurrentUser"
+              [count]="currentTeam.likeCount"
+              [teamId]="currentTeam.id"
+              (toggle)="onLikeToggle($event)"
+            />
+            <button
+              type="button"
+              class="ghost-btn ghost-btn--grow"
+              [class.is-success]="shareCopied()"
+              (click)="share()"
+            >
+              @if (shareCopied()) {
+                <i class="pi pi-check"></i>
+                Copied!
+              } @else {
+                <i class="pi pi-share-alt"></i>
+                Share
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <dl class="stat-grid">
+        <div class="stat-cell">
+          <dt>Likes</dt>
+          <dd class="stat-cell__value stat-cell__value--accent">
+            {{ currentTeam.likeCount | number }}
+          </dd>
+        </div>
+        <div class="stat-cell">
+          <dt>Slots filled</dt>
+          <dd class="stat-cell__value">{{ filled() }}/{{ slotCount }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section
+      class="flex items-center gap-2.5 mx-9 mb-5.5 py-3.5 px-4.5 bg-brand-surface border border-brand-line rounded-xl"
+    >
+      <span class="coverage__label">Type coverage</span>
+      <div class="flex flex-1 flex-wrap gap-[0.3rem]">
+        @for (type of typeSpread(); track type.id) {
+          <app-type-badge [name]="type.name" size="sm" />
+        }
+      </div>
+    </section>
+
+    <section class="px-9 pb-9">
+      <header class="flex items-center justify-between mb-3.5 pb-2.5 border-b border-white/4.5">
+        <span class="roster__label">The team</span>
+        <span class="roster__meta">{{ filled() }} pokémon</span>
+      </header>
+      <div class="grid grid-cols-2 max-[900px]:grid-cols-1 gap-3.5">
+        @for (member of currentTeam.pokemon; track member.id) {
+          <app-team-pokemon-card [member]="member" />
+        }
+      </div>
+    </section>
+  </div>
+}

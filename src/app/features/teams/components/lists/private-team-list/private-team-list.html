@@ -1,0 +1,71 @@
+<app-list-shell
+  title="My teams"
+  noun="saved"
+  [page]="page()"
+  [total]="total()"
+  [hideSidebar]="true"
+  [loading]="loading()"
+  [skeletonCount]="pageSize"
+  [totalPages]="totalPages()"
+  (pageChange)="onPageChange($event)"
+>
+  <div toolbar class="flex flex-wrap items-center gap-2.5">
+    <label
+      class="flex flex-1 min-w-48 items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-2 text-brand-dim transition-colors focus-within:border-brand-red/40"
+    >
+      <i class="pi pi-search text-xs"></i>
+      <input
+        #search
+        type="text"
+        autocomplete="off"
+        placeholder="Search team name…"
+        class="flex-1 bg-transparent text-sm text-brand-text outline-none placeholder:text-brand-dim"
+        [value]="searchInput()"
+        (input)="onSearchInput(search.value)"
+      />
+    </label>
+
+    <div class="tab-strip" role="tablist" aria-label="Visibility">
+      @for (tab of tabs; track tab.id) {
+        <button
+          type="button"
+          role="tab"
+          (click)="setTab(tab.id)"
+          [class.is-active]="activeTab() === tab.id"
+          [attr.aria-selected]="activeTab() === tab.id"
+          class="tab-btn"
+        >
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+
+    <div class="sort-strip">
+      @for (sort of sorts; track sort.id) {
+        <button
+          type="button"
+          (click)="setSort(sort.id)"
+          [class.is-active]="sortId() === sort.id"
+          class="sort-btn"
+        >
+          {{ sort.label }}
+        </button>
+      }
+    </div>
+
+    <button type="button" class="new-btn" (click)="newTeam()" aria-label="Start a new team">
+      <i class="pi pi-plus text-sm"></i>
+      New team
+    </button>
+  </div>
+
+  <div grid class="team-grid">
+    @for (team of items(); track team.id) {
+      <app-private-team-card
+        [team]="team"
+        (select)="onSelect($event)"
+        (action)="onAction($event)"
+      />
+    }
+  </div>
+</app-list-shell>

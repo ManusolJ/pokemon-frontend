@@ -1,13 +1,36 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { TeamSummary } from '@shared/interfaces/pokemon/team/team-summary.interface';
+import { TeamLikeToggleEvent } from '@shared/interfaces/ui/team/team-like-toggle-event.interface';
 
-// INFO: This component is currently unused, but will be used in the future when the team card feature is implemented.
-// INFO: The team card component will be a reusable component that displays a summary of a team, including its name, creator, and a preview of the Pokémon in the team. It will be used in both the public and private team lists to provide a consistent and visually appealing way to display teams.
-// INFO: It will have quick actions button for viewing and liking teams.
+import { LikeButton } from '@features/teams/components/like-button/like-button';
+import { TeamSpriteRow } from '@features/teams/components/sprite-row/team-sprite-row';
+
+import { formatRelativeDate } from '@shared/utils/format-date.util';
+
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+
 @Component({
+  imports: [LikeButton, TeamSpriteRow],
   selector: 'app-team-card',
-  imports: [],
-  templateUrl: './team-card.html',
   styleUrl: './team-card.css',
+  templateUrl: './team-card.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamCard {}
+export class TeamCard {
+  readonly team = input.required<TeamSummary>();
+
+  readonly select = output<number>();
+  readonly likeToggle = output<TeamLikeToggleEvent>();
+
+  protected readonly createdLabel = computed(() => formatRelativeDate(this.team().createdAt));
+  protected readonly ownerInitial = computed(() =>
+    this.team().owner.username.charAt(0).toUpperCase(),
+  );
+
+  protected onSelect(): void {
+    this.select.emit(this.team().id);
+  }
+
+  protected onLikeToggle(liked: boolean): void {
+    this.likeToggle.emit({ id: this.team().id, liked });
+  }
+}

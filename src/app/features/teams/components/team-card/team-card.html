@@ -1,1 +1,45 @@
-<p>team-card works!</p>
+<article
+  tabindex="0"
+  role="button"
+  class="relative flex flex-col gap-4 py-4 px-5 text-left rounded-2xl cursor-pointer border border-solid border-brand-line shadow-lg team-card transition-all duration-150 ease-in"
+  (click)="onSelect()"
+  (keydown.enter)="onSelect()"
+  [attr.aria-label]="'Open team ' + team().name"
+>
+  <div class="flex items-start gap-3">
+    <div class="flex-1 min-w-0">
+      <span class="block mb-1 text-xs text-brand-dim">{{ createdLabel() }}</span>
+      <h3 class="font-bold text-lg tracking-tight leading-5 text-brand-text">{{ team().name }}</h3>
+    </div>
+
+    <app-like-button
+      [liked]="team().likedByCurrentUser"
+      [count]="team().likeCount"
+      [teamId]="team().id"
+      size="sm"
+      (toggle)="onLikeToggle($event)"
+    />
+  </div>
+
+  <div class="flex items-center gap-2">
+    <span
+      class="w-6 h-6 rounded-full inline-flex items-center justify-center text-brand-text font-bold text-xs border border-solid border-brand-line avatar"
+      aria-hidden="true"
+      >{{ ownerInitial() }}</span
+    >
+    <span class="font-bold text-xs text-brand-muted">{{ team().owner.username }}</span>
+  </div>
+
+  <app-team-sprite-row [sprites]="team().pokemonSprites" [size]="62" />
+
+  <div class="flex items-center justify-end mt-auto">
+    <button
+      type="button"
+      class="inline-flex items-center gap-2 py-2 px-3 rounded-lg border border-solid cursor-pointer transition-all duration-150 ease-in view-btn"
+      (click)="onSelect(); $event.stopPropagation()"
+    >
+      <i class="pi pi-eye"></i>
+      View team
+    </button>
+  </div>
+</article>

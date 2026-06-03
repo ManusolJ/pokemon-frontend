@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  --accent: var(--color-brand-red);
+}
+
+.team-card {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--accent) 16%, transparent),
+    var(--color-brand-surface) 60%
+  );
+}
+
+.team-card:hover,
+.team-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--accent) 18%, transparent);
+  outline: none;
+}
+
+.team-card__author {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.avatar {
+  background: color-mix(in srgb, var(--accent) 35%, var(--color-brand-raised));
+}
+
+.view-btn {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.view-btn:hover {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}

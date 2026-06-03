@@ -1,9 +1,8 @@
 import { TeamMember } from './team-member.interface';
 
-export interface PersistedState {
-  readonly teamName: string;
+export interface TeamDraft {
+  readonly name: string;
   readonly isPrivate: boolean;
-  readonly activeIndex: number | null;
   readonly members: ReadonlyArray<TeamMember | null>;
-  readonly sourceTeamId: number | null;
+  readonly sourceId: number | null;
 }

@@ -1,0 +1,29 @@
+<div class="flex" [style.gap.px]="gap()" role="list" aria-label="Team Pokemon">
+  @for (slot of slots(); track slot.key) {
+    @if (slot.url) {
+      <span
+        class="shrink-0 rounded-lg border border-solid shadow-lg flex items-center justify-center slot"
+        role="listitem"
+        [style.width.px]="size()"
+        [style.height.px]="size()"
+      >
+        <img
+          [src]="slot.url"
+          alt=""
+          loading="lazy"
+          [style.width.px]="spriteSize()"
+          [style.height.px]="spriteSize()"
+        />
+      </span>
+    } @else {
+      <span
+        class="shrink-0 rounded-lg border border-dashed border-brand-line bg-black/10 flex items-center justify-center text-brand-dim"
+        role="listitem"
+        aria-label="Empty slot"
+        [style.width.px]="size()"
+        [style.height.px]="size()"
+        >—</span
+      >
+    }
+  }
+</div>

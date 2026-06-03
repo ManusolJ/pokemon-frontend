@@ -1,0 +1,13 @@
+<button
+  type="button"
+  class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full font-bold text-xs text-brand-muted bg-brand-surface border border-solid border-brand-line cursor-pointer transition-all btn"
+  [class.is-liked]="liked()"
+  (click)="onClick($event)"
+  [attr.aria-label]="label()"
+  [class.is-sm]="size() === 'sm'"
+>
+  <i class="pi pi-heart"></i>
+  @if (formattedCount() !== null) {
+    <span class="leading-4">{{ formattedCount() }}</span>
+  }
+</button>
