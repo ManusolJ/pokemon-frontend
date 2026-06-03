@@ -1,6 +1,7 @@
 export type FilterFieldKind = 'search' | 'chips' | 'select' | 'range' | 'toggle';
 
-export type FilterValue = string | number | boolean;
+export type FilterScalar = string | number | boolean;
+export type FilterValue = FilterScalar | readonly FilterScalar[];
 
 export interface FilterOption {
   readonly label: string;
@@ -22,4 +23,7 @@ export interface FilterField {
   readonly min?: number;
   readonly max?: number;
   readonly step?: number;
+
+  readonly multi?: boolean;
+  readonly maxSelections?: number;
 }

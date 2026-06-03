@@ -1,5 +1,6 @@
 import {
   FilterField,
+  FilterScalar,
   FilterValue,
   FilterOption,
 } from '@shared/interfaces/ui/filter/filter-field.interface';
@@ -37,19 +38,41 @@ export class FilterSidebar {
   }
 
   protected isChipActive(field: FilterField, option: FilterOption): boolean {
-    if (field.key) {
-      return this.state()[field.key] == option.value;
+    if (!field.key) {
+      return false;
     }
-
-    return false;
+    const current = this.state()[field.key];
+    if (field.multi) {
+      return Array.isArray(current) && current.includes(option.value);
+    }
+    return current == option.value;
   }
 
   protected toggleChip(field: FilterField, option: FilterOption): void {
     if (!field.key) {
       return;
     }
-    const isAlreadySelected = this.state()[field.key] === option.value;
-    this.patch({ [field.key]: isAlreadySelected ? undefined : option.value });
+
+    if (!field.multi) {
+      const isAlreadySelected = this.state()[field.key] === option.value;
+      this.patch({ [field.key]: isAlreadySelected ? undefined : option.value });
+      return;
+    }
+
+    const current = this.state()[field.key];
+    const selected: FilterScalar[] = Array.isArray(current) ? [...current] : [];
+    const index = selected.indexOf(option.value);
+
+    if (index >= 0) {
+      selected.splice(index, 1);
+    } else {
+      if (field.maxSelections !== undefined && selected.length >= field.maxSelections) {
+        return;
+      }
+      selected.push(option.value);
+    }
+
+    this.patch({ [field.key]: selected.length > 0 ? selected : undefined });
   }
 
   protected onSearch(field: FilterField, rawValue: string): void {
@@ -117,5 +140,7 @@ export class FilterSidebar {
 }
 
 function isApplied(value: FilterValue | undefined): value is FilterValue {
-  return value !== undefined && value !== '';
+  if (value === undefined || value === '') return false;
+  if (Array.isArray(value)) return value.length > 0;
+  return true;
 }

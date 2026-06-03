@@ -77,8 +77,14 @@ export class PokemonList implements OnInit {
 
   protected readonly fields = computed<FilterField[]>(() => [
     { kind: 'search', key: 'name', label: 'Search', placeholder: 'Search Pokémon' },
-    { kind: 'chips', key: 'primaryTypeId', label: 'Type', options: this.typeOptions() },
-    { kind: 'chips', key: 'secondaryTypeId', label: 'Secondary type', options: this.typeOptions() },
+    {
+      kind: 'chips',
+      key: 'typeIds',
+      label: 'Type',
+      multi: true,
+      maxSelections: 2,
+      options: this.typeOptions(),
+    },
     {
       kind: 'select',
       key: 'generation',

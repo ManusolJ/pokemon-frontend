@@ -95,7 +95,7 @@ export class PokemonPicker {
       return this.pokemonService
         .getPokemonSummaryPageWithFilter(
           {
-            primaryTypeId: params.typeId ?? undefined,
+            typeIds: params.typeId == null ? undefined : [params.typeId],
             name: params.query.trim() || undefined,
           },
           {

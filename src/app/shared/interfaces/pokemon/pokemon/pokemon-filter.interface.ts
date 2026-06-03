@@ -4,6 +4,7 @@ export interface PokemonFilter {
   nameExact?: string;
   primaryTypeId?: number;
   secondaryTypeId?: number;
+  typeIds?: readonly number[];
   minHeight?: number;
   maxHeight?: number;
   minWeight?: number;
