@@ -1,1 +1,7 @@
-<p>team-layout works!</p>
+<div class="flex h-full w-full flex-col">
+  <app-tab-nav [items]="items" ariaLabel="Shared Teams sections" />
+
+  <div class="w-full flex-1 min-h-0">
+    <router-outlet />
+  </div>
+</div>
