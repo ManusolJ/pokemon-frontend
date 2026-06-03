@@ -1,15 +1,45 @@
-<div class="flex h-full w-full min-h-0 pb-4 overflow-hidden">
+<div class="flex flex-col lg:flex-row h-full w-full min-h-0 pb-4 overflow-hidden">
   @if (!hideSidebar()) {
-    <aside class="w-64 shrink-0 min-h-0 overflow-y-auto border-r border-brand-line p-5">
-      <ng-content select="[sidebar]"></ng-content>
+    <div
+      class="sidebar__backdrop lg:hidden"
+      [class.sidebar__backdrop--open]="sidebarOpen()"
+      (click)="toggleSidebar()"
+      aria-hidden="true"
+    ></div>
+
+    <aside
+      id="list-shell-sidebar"
+      class="sidebar"
+      [class.sidebar--open]="sidebarOpen()"
+      role="dialog"
+      aria-label="Filters"
+    >
+      <div class="sidebar__inner">
+        <header
+          class="sidebar__header lg:hidden flex items-center justify-between gap-3 px-4 py-3 border-b border-brand-line bg-brand-bg/95 backdrop-blur-md sticky top-0 z-10"
+        >
+          <h2 class="text-sm font-bold tracking-tight text-brand-text">Filters</h2>
+          <button
+            type="button"
+            (click)="toggleSidebar()"
+            aria-label="Close filters"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-brand-muted hover:text-brand-text hover:bg-white/5 transition-colors cursor-pointer"
+          >
+            <i class="pi pi-times text-lg"></i>
+          </button>
+        </header>
+        <div class="sidebar__body">
+          <ng-content select="[sidebar]"></ng-content>
+        </div>
+      </div>
     </aside>
   }
 
-  <section class="flex-1 min-w-0 px-6 py-6 lg:px-8 relative">
-    <div class="mb-6 flex items-end justify-between gap-4">
-      <div>
-        <h1 class="text-brand-text text-2xl font-bold tracking-tight">{{ title() }}</h1>
-        <p class="mt-1 text-sm text-brand-muted">
+  <section class="flex-1 min-w-0 flex flex-col min-h-0 px-4 sm:px-6 lg:px-8">
+    <div class="mb-4 sm:mb-6 flex items-end justify-between gap-3 flex-wrap">
+      <div class="min-w-0">
+        <h1 class="text-brand-text text-xl sm:text-2xl font-bold tracking-tight">{{ title() }}</h1>
+        <p class="mt-1 text-xs sm:text-sm text-brand-muted">
           @if (loading()) {
             Loading…
           } @else {
@@ -17,51 +47,55 @@
           }
         </p>
       </div>
-      <ng-content select="[toolbar]"></ng-content>
+      <div class="flex items-center gap-2 flex-wrap">
+        @if (!hideSidebar()) {
+          <button
+            type="button"
+            (click)="toggleSidebar()"
+            [attr.aria-expanded]="sidebarOpen()"
+            aria-controls="list-shell-sidebar"
+            class="lg:hidden inline-flex items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-2 text-xs font-semibold text-brand-text hover:border-brand-red/45 transition-colors cursor-pointer"
+          >
+            <i class="pi pi-filter text-xs"></i>
+            Filters
+          </button>
+        }
+        <ng-content select="[toolbar]"></ng-content>
+      </div>
     </div>
 
-    @if (loading()) {
-      <div class="skeleton-grid">
-        @for (skeleton of skeletons(); track $index) {
-          <div
-            class="h-56 animate-pulse rounded-2xl border border-brand-line bg-brand-surface"
-          ></div>
-        }
-      </div>
-    } @else if (isEmpty()) {
-      <div
-        class="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-brand-line py-24 text-center"
-      >
-        <span class="text-brand-text font-semibold">No matches</span>
-        <span class="text-brand-muted text-sm">Try loosening your filters.</span>
-      </div>
-    } @else {
-      <ng-content select="[grid]"></ng-content>
-    }
+    <div class="flex-1 min-h-0 overflow-y-auto">
+      @if (loading()) {
+        <div class="skeleton-grid">
+          @for (skeleton of skeletons(); track $index) {
+            <div
+              class="h-56 animate-pulse rounded-2xl border border-brand-line bg-brand-surface"
+            ></div>
+          }
+        </div>
+      } @else if (isEmpty()) {
+        <div
+          class="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-brand-line py-16 sm:py-24 px-4 text-center"
+        >
+          <span class="text-brand-text font-semibold">No matches</span>
+          <span class="text-brand-muted text-sm">Try loosening your filters.</span>
+        </div>
+      } @else {
+        <ng-content select="[grid]"></ng-content>
+      }
+    </div>
 
-    @if (!loading() && totalPages() > 1) {
-      <div class="flex items-center justify-center gap-4 absolute bottom-0 -left-1/2 -right-1/2">
-        <button
-          type="button"
-          (click)="goToPreviousPage()"
-          [disabled]="!hasPreviousPage()"
-          class="cursor-pointer rounded-lg border border-brand-line bg-brand-surface px-4 py-2 text-sm font-semibold text-brand-text transition-colors enabled:hover:border-brand-red/45 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          Previous
-        </button>
-        <span class="text-brand-muted text-sm tabular-nums">
-          Page <span class="text-brand-text font-semibold">{{ page() + 1 }}</span> of
-          {{ totalPages() }}
-        </span>
-        <button
-          type="button"
-          (click)="goToNextPage()"
-          [disabled]="!hasNextPage()"
-          class="cursor-pointer rounded-lg border border-brand-line bg-brand-surface px-4 py-2 text-sm font-semibold text-brand-text transition-colors enabled:hover:border-brand-red/45 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          Next
-        </button>
-      </div>
+    @if (!isEmpty() && total() > pageSize()) {
+      <p-paginator
+        class="list-paginator mt-2 bg-transparent border-0 justify-center"
+        [rows]="pageSize()"
+        [pageLinkSize]="5"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first}–{last} of {totalRecords}"
+        [totalRecords]="total()"
+        [first]="firstRecordIndex()"
+        (onPageChange)="onPageChange($event)"
+      />
     }
   </section>
 </div>

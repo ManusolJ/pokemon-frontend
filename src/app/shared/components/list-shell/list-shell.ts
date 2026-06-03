@@ -1,38 +1,42 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 
 @Component({
-  imports: [],
+  imports: [PaginatorModule],
   selector: 'app-list-shell',
   styleUrl: './list-shell.css',
   templateUrl: './list-shell.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListShell {
-  readonly total = input<number>(0);
   readonly loading = input<boolean>(false);
   readonly noun = input<string>('results');
   readonly title = input.required<string>();
-  readonly skeletonCount = input.required<number>();
+  readonly total = input.required<number>();
+  readonly totalPages = input.required<number>();
 
-  readonly page = input<number>(0);
-  readonly totalPages = input<number>(0);
+  protected readonly page = signal(0);
+
+  pageSize = input.required<number>();
+
   readonly hideSidebar = input<boolean>(false);
 
-  readonly pageChange = output<number>();
+  protected readonly sidebarOpen = signal(false);
 
   protected readonly skeletons = computed<readonly void[]>(() =>
-    Array.from({ length: this.skeletonCount() }),
+    Array.from({ length: this.pageSize() }),
   );
 
-  protected readonly hasPreviousPage = computed(() => this.page() > 0);
   protected readonly isEmpty = computed(() => !this.loading() && this.total() === 0);
-  protected readonly hasNextPage = computed(() => this.page() < this.totalPages() - 1);
 
-  protected goToPreviousPage(): void {
-    if (this.hasPreviousPage()) this.pageChange.emit(this.page() - 1);
+  protected toggleSidebar(): void {
+    this.sidebarOpen.update((v) => !v);
   }
 
-  protected goToNextPage(): void {
-    if (this.hasNextPage()) this.pageChange.emit(this.page() + 1);
+  protected onPageChange(event: PaginatorState): void {
+    this.page.set(event.page ?? 0);
   }
+
+  protected readonly firstRecordIndex = computed(() => this.page() * this.pageSize());
 }

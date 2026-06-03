@@ -11,3 +11,11 @@
   color: var(--color-brand-text);
   border-bottom-color: var(--color-brand-red);
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
