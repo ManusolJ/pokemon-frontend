@@ -72,7 +72,7 @@
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   gap: 0.875rem;
   align-items: start;
 }
@@ -85,8 +85,19 @@
 }
 
 .form-row__action {
-  margin-top: 1.7rem;
   min-width: 6rem;
+  justify-self: end;
+}
+
+@media (min-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .form-row__action {
+    margin-top: 1.7rem;
+    justify-self: auto;
+  }
 }
 
 .btn-ghost {
@@ -147,13 +158,22 @@
 
 .danger-card {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 1rem;
   background-color: var(--color-brand-surface);
   border: 1px solid rgb(238 90 90 / 0.25);
   border-radius: 0.9rem;
-  padding: 1.5rem 1.75rem;
+  padding: 1.25rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .danger-card {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 1.75rem;
+  }
 }
 
 .danger-card__copy {

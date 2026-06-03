@@ -1,7 +1,9 @@
 <div class="flex h-full w-full min-h-0 flex-col">
   <app-tab-nav [items]="tabs" ariaLabel="Admin sections" />
 
-  <div class="mx-auto flex w-full max-w-9/12 min-h-0 flex-1 flex-col px-6 lg:px-8">
+  <div
+    class="mx-auto flex w-full lg:max-w-9/12 min-h-0 flex-1 flex-col px-4 sm:px-6 lg:px-8"
+  >
     <router-outlet />
   </div>
 </div>

@@ -171,6 +171,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  overflow-x: auto;
 }
 
 .row {
@@ -190,10 +191,23 @@
 
 .row--seed {
   grid-template-columns: 3rem 7rem minmax(11rem, 1.4fr) 6rem 9rem 9rem 5rem;
+  min-width: 56rem;
 }
 
 .row--audit {
   grid-template-columns: 3rem 8rem minmax(11rem, 1.2fr) minmax(0, 1fr) 9rem;
+  min-width: 50rem;
+}
+
+@media (min-width: 1024px) {
+  .rows {
+    overflow-x: visible;
+  }
+
+  .row--seed,
+  .row--audit {
+    min-width: 0;
+  }
 }
 
 .row--skeleton {
