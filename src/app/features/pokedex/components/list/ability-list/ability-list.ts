@@ -45,7 +45,7 @@ export class AbilityList implements OnInit {
 
   private readonly reload = new Subject<void>();
 
-  readonly skeletonCount = PAGE_SIZE;
+  readonly pageSize = PAGE_SIZE;
 
   ngOnInit(): void {
     this.subscribeToReloads();

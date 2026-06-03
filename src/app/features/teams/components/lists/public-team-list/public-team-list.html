@@ -1,12 +1,10 @@
 <app-list-shell
-  title="Community teams"
-  [page]="page()"
   [total]="total()"
+  title="Community teams"
   [hideSidebar]="true"
+  [pageSize]="pageSize"
   [loading]="loading()"
-  [skeletonCount]="pageSize"
   [totalPages]="totalPages()"
-  (pageChange)="onPageChange($event)"
 >
   <div toolbar class="flex flex-wrap items-center gap-2.5">
     <label

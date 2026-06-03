@@ -68,7 +68,7 @@ export class NatureList implements OnInit {
     },
   ];
 
-  readonly skeletonCount = PAGE_SIZE;
+  readonly pageSize = PAGE_SIZE;
 
   private filter: NatureFilter = {};
 

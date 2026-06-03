@@ -33,11 +33,13 @@ import { forkJoin, map, of } from 'rxjs';
 
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
 
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 type MoveGroupKey = 'level' | 'tutor' | 'machine';
+
+const POKEDEX_ROUTE = '/pokedex/pokemon/';
 
 const STAT_MAX = 200;
 const GENDER_RATE_DIVISOR = 8;
@@ -73,6 +75,7 @@ const STAT_COLOR_LOWEST = '#E0503F';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonDetail {
+  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly moveService = inject(MoveService);
   private readonly pokemonService = inject(PokemonService);
@@ -82,6 +85,8 @@ export class PokemonDetail {
   private readonly pokemonId = toSignal(
     this.route.paramMap.pipe(map((params) => Number(params.get('id')))),
   );
+
+  private readonly totalCount = this.speciesService.totalCount;
 
   private readonly pokemonResource = rxResource({
     params: () => {
@@ -176,9 +181,25 @@ export class PokemonDetail {
     return result;
   });
 
-  protected readonly nextPokemonRoute = computed(() => {
+  protected readonly previousPokemonRoute = computed(() => {
     const id = this.pokemonId();
-    return id == null || Number.isNaN(id) ? null : ['/pokedex/pokemon', id + 1];
+    if (id == null || Number.isNaN(id) || id <= 1) {
+      return null;
+    }
+
+    return `${POKEDEX_ROUTE}${id - 1}`;
+  });
+
+  protected readonly nextPokemonRoute = computed<string | null>(() => {
+    const id = this.pokemonId();
+    const max = this.totalCount();
+    if (id == null || Number.isNaN(id)) {
+      return null;
+    }
+    if (max > 0 && id >= max) {
+      return null;
+    }
+    return `${POKEDEX_ROUTE}${id + 1}`;
   });
 
   protected readonly accent = computed(() => getTypeColor(this.pokemon()?.primaryType.name));

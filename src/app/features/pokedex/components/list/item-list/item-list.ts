@@ -43,7 +43,7 @@ export class ItemList implements OnInit {
     { kind: 'search', key: 'name', label: 'Search', placeholder: 'Search items' },
   ];
 
-  readonly skeletonCount = PAGE_SIZE;
+  readonly pageSize = PAGE_SIZE;
 
   private filter: ItemFilter = {};
 

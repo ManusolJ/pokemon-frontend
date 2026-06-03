@@ -16,12 +16,21 @@ import { BaseApiService } from './base-api.service';
 
 import { Observable } from 'rxjs';
 
-import { Injectable } from '@angular/core';
+import { computed, Injectable } from '@angular/core';
+
+import { rxResource } from '@angular/core/rxjs-interop';
 
 const ENDPOINT: string = 'species/';
 
 @Injectable({ providedIn: 'root' })
 export class SpeciesService extends BaseApiService {
+  private readonly totalCountResource = rxResource({
+    stream: () => this.getSpeciesCountWithFilter({}),
+    defaultValue: 0,
+  });
+
+  readonly totalCount = computed(() => this.totalCountResource.value());
+
   getOneSpecies(filter: PokemonFilter): Observable<SpeciesRead> {
     return this.post<SpeciesRead>(`${ENDPOINT}${ID_ENDPOINT}`, filter);
   }

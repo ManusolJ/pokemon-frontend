@@ -61,7 +61,7 @@ export class MoveList implements OnInit {
   private readonly reload = new Subject<void>();
   private readonly typeOptions = signal<FilterOption[]>([]);
 
-  readonly skeletonCount = PAGE_SIZE;
+  readonly pageSize = PAGE_SIZE;
 
   protected readonly fields = computed<FilterField[]>(() => [
     { kind: 'search', key: 'name', label: 'Search', placeholder: 'Search moves' },

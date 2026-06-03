@@ -1,13 +1,14 @@
 <app-list-shell
   title="Moves"
   noun="moves"
-  [skeletonCount]="skeletonCount"
   [total]="total()"
   [loading]="loading()"
-  [page]="page()"
+  [pageSize]="pageSize"
   [totalPages]="totalPages()"
+  +
   (pageChange)="onPageChange($event)"
 >
+  >
   <app-filter-sidebar sidebar [fields]="fields()" (filterChange)="onFilterChange($event)" />
 
   <div grid class="move-grid">

@@ -1,13 +1,13 @@
 <app-list-shell
   noun="natures"
   title="Natures"
-  [page]="page()"
   [total]="total()"
   [loading]="loading()"
+  [pageSize]="pageSize"
   [totalPages]="totalPages()"
-  [skeletonCount]="skeletonCount"
   (pageChange)="onPageChange($event)"
 >
+  >
   <app-filter-sidebar sidebar [fields]="fields" (filterChange)="onFilterChange($event)" />
 
   <div grid class="nature-grid">

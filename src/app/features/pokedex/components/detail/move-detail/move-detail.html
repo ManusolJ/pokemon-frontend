@@ -13,7 +13,7 @@
   </div>
 } @else {
   @if (move(); as move) {
-    <article class="block px-6 pb-16 lg:px-8" [style.--accent]="accent()">
+    <article class="block px-4 sm:px-6 pb-10 sm:pb-16 lg:px-8" [style.--accent]="accent()">
       <nav class="flex items-center justify-between gap-3 py-5">
         <a routerLink="/pokedex/moves" class="nav-pill">
           <span aria-hidden="true">&#x2190;</span>
@@ -26,23 +26,23 @@
           {{ move.category | nameNormalizer }}
         </span>
 
-        <div class="relative px-10 pt-5 pb-9">
-          <h1
-            class="move-hero__title m-0 text-5xl font-bold leading-none tracking-tighter text-brand-text max-md:text-[2.5rem]"
+        <div class="relative px-5 sm:px-10 pt-4 sm:pt-5 pb-6 sm:pb-9">
+          <h2
+            class="move-hero__title m-0 text-3xl sm:text-4xl lg:text-5xl font-bold leading-none tracking-tighter text-brand-text"
           >
             {{ move.name | nameNormalizer | titlecase }}
-          </h1>
+          </h2>
 
-          <div class="flex gap-2 mt-4.5">
+          <div class="flex flex-wrap gap-2 mt-3 sm:mt-4.5">
             <app-type-badge [name]="move.type.name" />
             <span
               class="cat-badge inline-flex items-center gap-1.75 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase"
               [style.color]="categoryStyle().color"
               [style.background]="
-                'color-mix(in srgb, ' + categoryStyle().color + ' 13%, transparent)'
+                'color-mix(in srgb, ' + categoryStyle().color + ' 15%, transparent)'
               "
               [style.border]="
-                '1px solid color-mix(in srgb, ' + categoryStyle().color + ' 32%, transparent)'
+                '1px solid color-mix(in srgb, ' + categoryStyle().color + ' 30%, transparent)'
               "
             >
               <span class="text-xs">{{ categoryStyle().glyph }}</span>
@@ -57,7 +57,7 @@
       </div>
 
       <div class="flex flex-col gap-5.5 mt-5">
-        <div class="grid grid-cols-5 gap-3.5 max-md:grid-cols-2">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-3.5">
           @for (tile of statTiles(); track tile.label) {
             <div
               class="flex flex-col gap-2 min-w-0 px-5 py-4.5 bg-brand-surface border border-brand-line rounded-xl"
@@ -77,7 +77,7 @@
           }
         </div>
 
-        <div class="grid grid-cols-[1.4fr_1fr] gap-5.5 items-start max-md:grid-cols-1">
+        <div class="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-4 lg:gap-5.5 items-start">
           <section class="bg-brand-surface border border-brand-line rounded-2xl p-6">
             <h2
               class="stat-tile m-0 mb-3.5 text-sm font-bold tracking-wide uppercase text-brand-text"

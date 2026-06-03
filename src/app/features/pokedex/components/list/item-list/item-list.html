@@ -2,12 +2,12 @@
   title="Items"
   noun="items"
   [total]="total()"
-  [page]="page()"
   [loading]="loading()"
+  [pageSize]="pageSize"
   [totalPages]="totalPages()"
-  [skeletonCount]="skeletonCount"
   (pageChange)="onPageChange($event)"
 >
+  >
   <app-filter-sidebar sidebar [fields]="fields" (filterChange)="onFilterChange($event)" />
 
   <div grid class="item-grid">

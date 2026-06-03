@@ -1,13 +1,13 @@
 <app-list-shell
-  noun="Pokémon"
-  title="Pokédex"
-  [page]="page()"
+  noun="Pokemon"
+  title="Pokedex"
   [total]="total()"
   [loading]="loading()"
+  [pageSize]="pageSize"
   [totalPages]="totalPages()"
-  [skeletonCount]="pageSize"
   (pageChange)="onPageChange($event)"
 >
+  >
   <app-filter-sidebar sidebar [fields]="fields()" (filterChange)="onFilterChange($event)" />
 
   <div toolbar class="flex gap-1 rounded-lg border border-brand-line bg-brand-surface p-1">

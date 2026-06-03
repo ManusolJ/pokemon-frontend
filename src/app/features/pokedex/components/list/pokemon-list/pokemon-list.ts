@@ -61,6 +61,7 @@ export class PokemonList implements OnInit {
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
   protected readonly loading = signal(false);
+
   protected readonly items = signal<SpeciesSummary[]>([]);
   protected readonly sort = signal<SpeciesSortField>('sortOrder');
 
@@ -140,8 +141,8 @@ export class PokemonList implements OnInit {
       min: 0,
       max: 255,
     },
-    { kind: 'range', label: 'Height', minKey: 'minHeight', maxKey: 'maxHeight', min: 0 },
-    { kind: 'range', label: 'Weight', minKey: 'minWeight', maxKey: 'maxWeight', min: 0 },
+    { kind: 'range', label: 'Height (m)', minKey: 'minHeight', maxKey: 'maxHeight', min: 0, step: 0.1 },
+    { kind: 'range', label: 'Weight (kg)', minKey: 'minWeight', maxKey: 'maxWeight', min: 0, step: 0.1 },
     {
       kind: 'range',
       label: 'Gender rate',
@@ -179,9 +180,26 @@ export class PokemonList implements OnInit {
   }
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
-    this.filter = applied as PokemonFilter;
+    this.filter = this.toBackendUnits(applied as PokemonFilter);
     this.page.set(0);
     this.load();
+  }
+
+  /**
+   * Backend stores weight in hectograms (1 kg = 10 hg) and height in decimeters
+   * (1 m = 10 dm). The UI takes kg / m, so convert here before sending.
+   */
+  private toBackendUnits(filter: PokemonFilter): PokemonFilter {
+    const KG_TO_HG = 10;
+    const M_TO_DM = 10;
+    const out: PokemonFilter = { ...filter };
+
+    if (out.minWeight != null) out.minWeight = Math.round(out.minWeight * KG_TO_HG);
+    if (out.maxWeight != null) out.maxWeight = Math.round(out.maxWeight * KG_TO_HG);
+    if (out.minHeight != null) out.minHeight = Math.round(out.minHeight * M_TO_DM);
+    if (out.maxHeight != null) out.maxHeight = Math.round(out.maxHeight * M_TO_DM);
+
+    return out;
   }
 
   protected onPageChange(pageIndex: number): void {

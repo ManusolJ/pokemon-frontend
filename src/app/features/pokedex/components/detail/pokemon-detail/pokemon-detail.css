@@ -59,11 +59,19 @@
 }
 
 .art img {
-  width: 280px;
-  height: 280px;
+  width: 220px;
+  height: 220px;
   max-width: 100%;
   object-fit: contain;
   filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--accent) 40%, transparent));
+  margin: auto;
+}
+
+@media (min-width: 1024px) {
+  .art img {
+    width: 280px;
+    height: 280px;
+  }
 }
 
 .gender-bar__male {

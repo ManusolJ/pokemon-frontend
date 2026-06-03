@@ -1,4 +1,4 @@
-<div class="px-6 pb-16 lg:px-8" [style.--accent]="accent()">
+<div class="px-4 sm:px-6 pb-10 sm:pb-16 lg:px-8" [style.--accent]="accent()">
   @if (loading()) {
     <div class="flex flex-col items-center gap-4 py-24 text-brand-muted">
       <span
@@ -21,24 +21,40 @@
         <span>Pokedex</span>
       </a>
       <div class="font-mono text-xs text-brand-dim">#{{ dexNumber() }}</div>
-      @if (nextPokemonRoute(); as route) {
-        <a [routerLink]="route" class="nav-pill">
+      <div class="inline-flex gap-2 justify-center">
+        <button
+          type="button"
+          [routerLink]="previousPokemonRoute()"
+          [disabled]="previousPokemonRoute() == null"
+          class="nav-pill flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <span aria-hidden="true">&#x2190;</span>
+          <span>Previous</span>
+        </button>
+        <button
+          type="button"
+          [routerLink]="nextPokemonRoute()"
+          [disabled]="nextPokemonRoute() == null"
+          class="nav-pill flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
           <span>Next</span>
           <span aria-hidden="true">&#x2192;</span>
-        </a>
-      }
+        </button>
+      </div>
     </nav>
 
     <section class="hero relative overflow-hidden rounded-3xl border border-brand-line">
       <span
-        class="hero__watermark absolute -top-9 right-6 font-extrabold text-[16rem] tracking-tighter pointer-events-none select-none"
+        class="hero__watermark absolute -top-4 sm:-top-9 right-3 sm:right-10 font-extrabold text-[7rem] sm:text-[12rem] lg:text-[16rem] tracking-tighter pointer-events-none select-none"
         aria-hidden="true"
       >
         {{ species?.nationalDexNumber }}
       </span>
 
-      <div class="relative grid grid-cols-[360px_1fr] gap-10 items-center px-8 py-10">
-        <div class="art relative text-center p-6 rounded-2xl border">
+      <div
+        class="relative grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6 lg:gap-10 items-center px-4 sm:px-8 py-6 sm:py-10"
+      >
+        <div class="art relative justify-center text-center p-4 sm:p-6 rounded-2xl border">
           @if (artwork(); as imgUrl) {
             <img [src]="getImgUrl(imgUrl)" [alt]="pokemon?.name" />
           }
@@ -69,11 +85,15 @@
         </div>
 
         <div>
-          <h1 class="identity m-0 font-bold text-6xl tracking-tighter text-brand-text capitalize">
+          <h1
+            class="identity m-0 font-bold text-3xl sm:text-5xl lg:text-6xl tracking-tighter text-brand-text capitalize"
+          >
             {{ pokemon?.name }}
           </h1>
-          <p class="mt-2.5 ml-1 text-base text-brand-muted">{{ species?.genus }}</p>
-          <div class="flex gap-2 mt-4.5">
+          <p class="mt-2 sm:mt-2.5 ml-1 text-sm sm:text-base text-brand-muted">
+            {{ species?.genus }}
+          </p>
+          <div class="flex flex-wrap gap-2 mt-3 sm:mt-4.5">
             @for (type of types(); track type.id) {
               <app-type-badge [name]="type.name" />
             }
@@ -82,9 +102,9 @@
       </div>
     </section>
 
-    <div class="grid grid-cols-2 gap-5 mt-5 items-stretch">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mt-4 sm:mt-5 items-stretch">
       <section
-        class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-6"
+        class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-4 sm:p-6"
       >
         <h2 class="card__title mb-4 text-sm font-bold uppercase text-brand-text tracking-wide">
           Basic data
@@ -165,7 +185,7 @@
         </div>
       </section>
 
-      <section class="h-full bg-brand-surface border border-brand-line rounded-2xl p-6">
+      <section class="h-full bg-brand-surface border border-brand-line rounded-2xl p-4 sm:p-6">
         <div class="flex items-baseline justify-between">
           <h2 class="card__title mb-0 text-sm font-bold uppercase text-brand-text tracking-wide">
             Base stats
@@ -211,9 +231,9 @@
       </section>
     </div>
 
-    <div class="grid grid-cols-2 gap-5 mt-5 items-stretch">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mt-4 sm:mt-5 items-stretch">
       <section
-        class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-6"
+        class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-4 sm:p-6"
       >
         <div class="flex items-baseline justify-between">
           <h2 class="card__title mb-4 text-sm font-bold uppercase text-brand-text tracking-wide">
@@ -245,7 +265,7 @@
       </section>
 
       <section
-        class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-6"
+        class="flex h-full flex-col bg-brand-surface border border-brand-line rounded-2xl p-4 sm:p-6"
       >
         <h2 class="card__title mb-4 text-sm font-bold uppercase text-brand-text tracking-wide">
           Breeding data
@@ -316,9 +336,11 @@
       </section>
     </div>
 
-    <section class="mt-5 bg-brand-surface border border-brand-line rounded-2xl overflow-hidden">
+    <section
+      class="mt-4 sm:mt-5 bg-brand-surface border border-brand-line rounded-2xl overflow-hidden"
+    >
       <div
-        class="flex items-center gap-3 flex-wrap px-5 py-4 border-b border-brand-line bg-white/1.5"
+        class="flex items-center gap-2 sm:gap-3 flex-wrap px-3 sm:px-5 py-3 sm:py-4 border-b border-brand-line bg-white/1.5"
       >
         <span class="movebar__label text-sm font-bold text-brand-text">Moves</span>
         <span class="font-mono text-xs text-brand-dim">{{ visibleMoves().length }}</span>
@@ -342,7 +364,7 @@
         </div>
       </div>
 
-      <div class="p-6.5">
+      <div class="p-3 sm:p-6.5">
         @let moves = visibleMoves();
         @if (moves.length === 0) {
           <div class="flex flex-col items-center justify-center text-center gap-2 py-10 px-4">
@@ -355,20 +377,22 @@
           <div class="moves-scroll">
             <div class="flex flex-col gap-2.5">
               @for (item of moves; track item.methodKey + '-' + item.entry.move.id) {
-                <div class="p-4.5 rounded-xl bg-white/3 border border-brand-line">
-                  <div class="flex items-center justify-between gap-4 flex-wrap">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                      <span class="move__name text-lg font-bold text-brand-text capitalize">
+                <div class="p-3 sm:p-4.5 rounded-xl bg-white/3 border border-brand-line">
+                  <div class="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
+                    <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-wrap">
+                      <span
+                        class="move__name text-base sm:text-lg font-bold text-brand-text capitalize"
+                      >
                         {{ item.entry.move.name | nameNormalizer | titlecase }}
                       </span>
                       <app-type-badge [name]="item.entry.move.type.name" />
                       <span
-                        class="move__category text-xs font-bold tracking-wide uppercase text-brand-dim py-0.5 px-2 rounded-full bg-brand-raised border border-brand-line"
+                        class="move__category text-[0.65rem] sm:text-xs font-bold tracking-wide uppercase text-brand-dim py-0.5 px-2 rounded-full bg-brand-raised border border-brand-line"
                       >
                         {{ item.entry.move.category | nameNormalizer | titlecase }}
                       </span>
                     </div>
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
                       <span class="inline-flex items-baseline gap-1.5">
                         <span
                           class="move__metric-label text-[0.6rem] font-bold tracking-wide uppercase text-brand-dim"
@@ -401,7 +425,9 @@
                       </span>
                     </div>
                   </div>
-                  <div class="flex items-center justify-between gap-4 mt-2">
+                  <div
+                    class="flex items-start sm:items-center justify-between gap-2 sm:gap-4 mt-2 flex-col sm:flex-row"
+                  >
                     <p class="m-0 flex-1 min-w-0 text-[0.8125rem] leading-6 text-brand-muted">
                       {{ item.entry.move.shortEffect }}
                     </p>

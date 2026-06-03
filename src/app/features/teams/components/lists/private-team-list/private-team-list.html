@@ -1,14 +1,13 @@
 <app-list-shell
-  title="My teams"
   noun="saved"
-  [page]="page()"
+  title="My teams"
   [total]="total()"
   [hideSidebar]="true"
   [loading]="loading()"
-  [skeletonCount]="pageSize"
+  [pageSize]="pageSize"
   [totalPages]="totalPages()"
-  (pageChange)="onPageChange($event)"
 >
+  >
   <div toolbar class="flex flex-wrap items-center gap-2.5">
     <label
       class="flex flex-1 min-w-48 items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-2 text-brand-dim transition-colors focus-within:border-brand-red/40"
