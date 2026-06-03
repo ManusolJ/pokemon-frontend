@@ -4,6 +4,7 @@ import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { TeamCreate } from '@shared/interfaces/pokemon/team/team-create.interface';
+import { TeamUpdate } from '@shared/interfaces/pokemon/team/team-update.interface';
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
 import { ItemSummary } from '@shared/interfaces/pokemon/item/item-summary.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';
@@ -29,7 +30,9 @@ import { PokemonPicker } from '@features/team-builder/modals/pokemon-picker/poke
 
 import { emptyEvs, maxIvs } from '@shared/utils/stats.util';
 
-import { map, of, switchMap } from 'rxjs';
+import { Observable, map, of, switchMap } from 'rxjs';
+
+import { TeamRead } from '@shared/interfaces/pokemon/team/team-read.interface';
 
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -312,19 +315,22 @@ export class BuilderTab {
         .map((m) => this.toBackendPokemon(m)),
     };
 
-    this.teamService
-      .createTeam(payload)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.resetAll();
-        },
-        error: () => {
-          this.saving.set(false);
-          this.saveError.set('Could not save the team. Please try again.');
-        },
-      });
+    const sourceId = this.state.sourceTeamId();
+    const request: Observable<TeamRead> =
+      sourceId === null
+        ? this.teamService.createTeam(payload)
+        : this.teamService.updateTeam(sourceId, payload satisfies TeamUpdate);
+
+    request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.saving.set(false);
+        this.resetAll();
+      },
+      error: () => {
+        this.saving.set(false);
+        this.saveError.set('Could not save the team. Please try again.');
+      },
+    });
   }
 
   private toBackendPokemon(member: TeamMember): TeamPokemonCreate {
