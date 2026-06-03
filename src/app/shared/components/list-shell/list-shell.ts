@@ -16,6 +16,7 @@ export class ListShell {
 
   readonly page = input<number>(0);
   readonly totalPages = input<number>(0);
+  readonly hideSidebar = input<boolean>(false);
 
   readonly pageChange = output<number>();
 
