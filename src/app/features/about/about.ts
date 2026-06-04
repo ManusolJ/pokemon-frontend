@@ -68,14 +68,12 @@ export class About {
     },
   ];
 
-  // TODO: replace placeholder BIO with something before deploying.
   protected readonly developer = {
     name: 'Manuel Soler Juan',
     role: 'Full-stack developer',
-    bio: 'TO BE ADDED',
+    bio: `My name is Manuel Soler Juan. I'm a junior dev who likes making interesting projects. This team builder is my first big project`,
   };
 
-  // TODO: replace dev site with actual website OR remove before deploying.
   protected readonly developerLinks: readonly DeveloperLink[] = [
     {
       glyph: 'GH',
@@ -92,10 +90,10 @@ export class About {
       label: 'linkedin.com/in/manuel-soler-juan',
       href: 'https://www.linkedin.com/in/manusolerj',
     },
-    {
-      glyph: 'web',
-      label: 'site.dev',
-      href: 'https://site.dev',
-    },
+    // {
+    //   glyph: 'web',
+    //   label: 'site.dev',
+    //   href: 'https://site.dev',
+    // },
   ];
 }
