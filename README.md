@@ -63,15 +63,21 @@ community sharing and an administration panel.
   </tr>
 </table>
 
-<table class="rd-mobile-table">
+<table align="center">
   <tr>
-    <td>
-      <img src="docs/screenshots/builder-m.png" alt="Team builder on mobile" width="240"><br>
-      <sub><b>Team builder - mobile</b></sub>
+    <td align="center">
+      <img width="440" height="1" alt="">
+      <br>
+      <img src="docs/screenshots/builder-m.png" alt="Team builder on mobile" width="240">
+      <br>
+      <sub><b>Team builder — mobile</b></sub>
     </td>
-    <td>
-      <img src="docs/screenshots/pokedex-m.png" alt="Pokédex on mobile" width="240"><br>
-      <sub><b>Pokédex - mobile</b></sub>
+    <td align="center">
+      <img width="440" height="1" alt="">
+      <br>
+      <img src="docs/screenshots/pokedex-m.png" alt="Pokédex on mobile" width="240">
+      <br>
+      <sub><b>Pokédex — mobile</b></sub>
     </td>
   </tr>
 </table>
@@ -351,20 +357,3 @@ Live and in use, but not finished:
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/manusolerj)
 
 </div>
-
-<style>
-    .rd-mobile-table {
-        width: 100%
-    }
-
-    .rd-mobile-table tr {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .rd-mobile-table tr td sub b {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        margin-top: 1rem
-    }
