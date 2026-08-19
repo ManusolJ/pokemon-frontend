@@ -10,42 +10,29 @@ const EXPIRES_AT_KEY = 'tokenExpiresAt';
 const DEFAULT_EXPIRY_BUFFER_MS = 30_000;
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
+const MS_PER_SECOND = 1_000;
+
 @Injectable({ providedIn: 'root' })
 export class TokenService {
   private readonly accessToken = signal<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY));
 
   readonly isAuthenticated = computed<boolean>(() => this.accessToken() !== null);
 
-  hasRole(role: string): boolean {
-    const token = this.accessToken();
-    if (token) {
-      try {
-        const payload = jwtDecode<JwtPayload>(token);
-        if (payload && payload.authorities.length !== 0) {
-          return payload.authorities.includes(role);
-        } else {
-          return false;
-        }
-      } catch {
-        return false;
+  constructor() {
+    window.addEventListener('storage', (event) => {
+      if (event.key === ACCESS_TOKEN_KEY || event.key === null) {
+        this.accessToken.set(localStorage.getItem(ACCESS_TOKEN_KEY));
       }
-    }
+    });
+  }
 
-    return false;
+  hasRole(role: string): boolean {
+    const payload = this.decode();
+    return payload ? payload.authorities.includes(role) : false;
   }
 
   getUsername(): string | null {
-    const token = this.accessToken();
-
-    if (token) {
-      try {
-        return jwtDecode(token).sub ?? null;
-      } catch {
-        return null;
-      }
-    }
-
-    return null;
+    return this.decode()?.sub ?? null;
   }
 
   getAccessToken(): string | null {
@@ -54,6 +41,10 @@ export class TokenService {
 
   getRefreshToken(): string | null {
     return localStorage.getItem(REFRESH_TOKEN_KEY);
+  }
+
+  hasRefreshToken(): boolean {
+    return this.getRefreshToken() !== null;
   }
 
   setTokens(response: TokenResponse): void {
@@ -75,7 +66,30 @@ export class TokenService {
   }
 
   willExpireSoon(bufferMs: number = DEFAULT_EXPIRY_BUFFER_MS): boolean {
-    const expiresAt = Number(localStorage.getItem(EXPIRES_AT_KEY) ?? '0');
-    return Date.now() + bufferMs >= expiresAt;
+    const expiresAt = this.expiresAt();
+    return expiresAt === null ? false : Date.now() + bufferMs >= expiresAt;
+  }
+
+  private expiresAt(): number | null {
+    const stored = Number(localStorage.getItem(EXPIRES_AT_KEY));
+    if (Number.isFinite(stored) && stored > 0) {
+      return stored;
+    }
+
+    const exp = this.decode()?.exp;
+    return typeof exp === 'number' ? exp * MS_PER_SECOND : null;
+  }
+
+  private decode(): JwtPayload | null {
+    const token = this.accessToken();
+    if (!token) {
+      return null;
+    }
+
+    try {
+      return jwtDecode<JwtPayload>(token);
+    } catch {
+      return null;
+    }
   }
 }
