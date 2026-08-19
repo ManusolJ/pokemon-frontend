@@ -51,3 +51,6 @@ Thumbs.db
 !.dev.vars.example
 .env*
 !.env.example
+
+# Internal working notes, not part of the published repo
+docs/internal
