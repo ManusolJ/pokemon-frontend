@@ -2,10 +2,13 @@ import { environment } from '@environments/environment';
 
 import { AuthService } from '@core/services/auth.service';
 import { TokenService } from '@core/services/token.service';
+import { TokenRefreshService } from '@core/services/token-refresh.service';
 
-import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 
 import { inject } from '@angular/core';
+
+import { Router } from '@angular/router';
 
 import {
   HttpRequest,
@@ -14,13 +17,11 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 
-const refreshTokenSubject = new BehaviorSubject<string | null>(null);
-
-let isRefreshing: boolean = false;
-
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
   const authService = inject(AuthService);
   const tokenService = inject(TokenService);
+  const refreshService = inject(TokenRefreshService);
 
   if (!req.url.startsWith(environment.apiUrl) || req.url.includes('/auth/')) {
     return next(req);
@@ -28,17 +29,22 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = tokenService.getAccessToken();
 
-  if (token && tokenService.willExpireSoon() && tokenService.getRefreshToken()) {
-    return handleTokenRefresh(req, next, authService);
+  if (!token) {
+    return next(req);
   }
 
-  const authedReq = token ? addToken(req, token) : req;
+  if (tokenService.willExpireSoon() && tokenService.hasRefreshToken()) {
+    return refreshAndRetry(req, next, refreshService, authService, router);
+  }
 
-  return next(authedReq).pipe(
+  return next(addToken(req, token)).pipe(
     catchError((error) => {
-      if (error instanceof HttpErrorResponse && error.status === 401 && token) {
-        return handleTokenRefresh(req, next, authService);
+      const unauthorized = error instanceof HttpErrorResponse && error.status === 401;
+
+      if (unauthorized && tokenService.hasRefreshToken()) {
+        return refreshAndRetry(req, next, refreshService, authService, router);
       }
+
       return throwError(() => error);
     }),
   );
@@ -52,31 +58,19 @@ function addToken(req: HttpRequest<unknown>, token: string) {
   });
 }
 
-function handleTokenRefresh(
+function refreshAndRetry(
   req: HttpRequest<unknown>,
   next: HttpHandlerFn,
+  refreshService: TokenRefreshService,
   authService: AuthService,
+  router: Router,
 ) {
-  if (!isRefreshing) {
-    isRefreshing = true;
-
-    return authService.refreshAccessToken().pipe(
-      switchMap((response) => {
-        isRefreshing = false;
-        refreshTokenSubject.next(response.accessToken);
-        return next(addToken(req, response.accessToken));
-      }),
-      catchError((error) => {
-        isRefreshing = false;
-        authService.logout().subscribe({ error: () => {} });
-        return throwError(() => error);
-      }),
-    );
-  }
-
-  return refreshTokenSubject.pipe(
-    filter((token): token is string => token !== null),
-    take(1),
-    switchMap((token) => next(addToken(req, token))),
+  return refreshService.refresh().pipe(
+    switchMap((accessToken) => next(addToken(req, accessToken))),
+    catchError((error) => {
+      authService.logout().subscribe({ error: () => {} });
+      router.navigate(['/auth/login']);
+      return throwError(() => error);
+    }),
   );
 }
