@@ -74,6 +74,11 @@ export class About {
     bio: `My name is Manuel Soler Juan. I'm a junior dev who likes making interesting projects. This team builder is my first big project`,
   };
 
+  protected readonly support = {
+    href: 'https://ko-fi.com/lorelei73269',
+    label: 'Support on Ko-fi',
+  };
+
   protected readonly developerLinks: readonly DeveloperLink[] = [
     {
       glyph: 'GH',
@@ -82,8 +87,8 @@ export class About {
     },
     {
       glyph: '@',
-      label: 'mansoljua@edu.alu.gva.es',
-      href: 'mailto:mansoljua@edu.alu.gva.es',
+      label: 'manusolerj@gmail.com',
+      href: 'mailto:manusolerj@gmail.com',
     },
     {
       glyph: 'in',

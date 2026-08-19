@@ -1,7 +1,9 @@
 <div class="mx-auto w-full lg:max-w-9/12 px-4 sm:px-6 lg:px-8">
   <p class="text-xs font-bold tracking-wider uppercase text-brand-red mt-5">About</p>
   <section class="border-brand-line border-b pb-16 flex flex-col items-center">
-    <h2 class="text-brand-text mt-4 text-3xl sm:text-4xl font-bold leading-tight tracking-tight lg:text-5xl text-center">
+    <h2
+      class="text-brand-text mt-4 text-3xl sm:text-4xl font-bold leading-tight tracking-tight lg:text-5xl text-center"
+    >
       Build Pokemon teams
     </h2>
     <p class="text-brand-muted mt-5 max-w-prose text-lg text-pretty text-center">
@@ -42,9 +44,7 @@
           </h3>
           <div class="flex flex-wrap gap-2">
             @for (item of group.items; track item.name) {
-              <span class="chip" [class.chip--placeholder]="item.name">
-                <i></i>{{ item.name }}
-              </span>
+              <span class="chip"> <i></i>{{ item.name }} </span>
             }
           </div>
         </div>
@@ -82,6 +82,35 @@
         Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak, and The Pokémon
         Company. This is a non-commercial fan project and is not affiliated with or endorsed by
         them. Game data sourced from PokéAPI.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-12">
+    <div class="mb-6 flex items-baseline gap-3">
+      <h2 class="text-brand-text text-lg font-bold tracking-tight">Keeping it running</h2>
+    </div>
+    <div
+      class="flex flex-col items-center gap-5 rounded-2xl border border-brand-line bg-brand-surface p-6 text-center sm:p-8"
+    >
+      <p class="text-brand-muted max-w-prose text-sm">
+        The server, the domain and the database are paid for out of pocket. If the builder is useful
+        to you and you would like to help cover those costs, you can chip in - entirely optional,
+        and nothing on the site is ever locked behind it.
+      </p>
+      <a
+        [href]="support.href"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="link-btn"
+        [attr.aria-label]="support.label + ' (opens in a new tab)'"
+      >
+        <span class="text-sm text-brand-dim">☕</span>
+        {{ support.label }}
+      </a>
+      <p class="text-brand-dim max-w-prose text-xs leading-relaxed">
+        Contributions go towards hosting this site and nothing else. They are not a purchase, they
+        buy no features, and they are unconnected to Nintendo, Game Freak and The Pokémon Company.
       </p>
     </div>
   </section>
