@@ -212,8 +212,20 @@ request - and with a queue of parallel requests, a stampede of them.
 > Refreshing ahead of expiry keeps the failure path for genuine authentication failures
 > only.
 
+Renewal is deduplicated through `TokenRefreshService`, which shares one in-flight call
+across every caller that asks while it is running. That matters more than it looks: the API
+rotates refresh tokens and treats a replay of a spent one as a stolen-token event, revoking
+the whole family. Two overlapping renewals would not waste a request, they would end the
+session. The shared call also survives a caller unsubscribing, so a cancelled navigation
+cannot leave renewal half-finished.
+
+Route guards go through the same service rather than redirecting on a nearly-expired token,
+so arriving at a protected route during the renewal window renews and continues instead of
+bouncing to the sign-in page.
+
 `errorInterceptor` normalises everything the API can return into a single shape, so
-components never branch on transport-level details.
+components never branch on transport-level details. It deliberately passes 401s through
+untouched, leaving them to the refresh path.
 
 ### The in-progress team survives a login
 
@@ -326,8 +338,9 @@ and automatic HTTPS certificates with no server to maintain.
 
 Live and in use, but not finished:
 
-- [ ] **Meaningful test coverage.** Vitest is configured; the highest-value targets are
-      `BaseApiService`, the interceptors and the team-builder state service.
+- [ ] **Meaningful test coverage.** Token renewal is covered; `BaseApiService`, the route
+      guards and the team-builder state service are the next targets.
+- [ ] **CI.** Build and test on push, matching the backend pipeline. Deploys are manual today.
 - [ ] **End-to-end tests** with Playwright.
 - [ ] **Team comparator** - pit two public teams against each other and analyse the
       matchup.
