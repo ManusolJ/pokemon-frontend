@@ -105,7 +105,12 @@ export class TeamBuilderStateService {
       activeIndex: this._activeIndex(),
       sourceTeamId: this._sourceTeamId(),
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Draft stays in memory for this session.
+    }
   }
 }
 
@@ -124,8 +129,14 @@ function loadState(): PersistedState | null {
     if (!raw) {
       return null;
     }
-    return JSON.parse(raw) as PersistedState;
+
+    const parsed = JSON.parse(raw) as PersistedState | null;
+    return hasUsableShape(parsed) ? parsed : null;
   } catch {
     return null;
   }
+}
+
+function hasUsableShape(state: PersistedState | null): state is PersistedState {
+  return state !== null && Array.isArray(state.members) && state.members.length === SLOT_COUNT;
 }
