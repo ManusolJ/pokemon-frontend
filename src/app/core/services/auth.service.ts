@@ -1,10 +1,10 @@
 import {
   LOGIN_ENDPOINT,
+  LOGOUT_ENDPOINT,
   REFRESH_ENDPOINT,
   REGISTER_ENDPOINT,
   PASSWORD_RESET_ENDPOINT,
   PASSWORD_RESET_REQUEST_ENDPOINT,
-  LOGOUT_ENDPOINT,
 } from '@shared/constants/api.constants';
 
 import { LoginRequest } from '@shared/interfaces/auth/login-request.interface';
@@ -16,7 +16,7 @@ import { PasswordResetConfirmation } from '@shared/interfaces/auth/password-rese
 import { TokenService } from './token.service';
 import { BaseApiService } from './base-api.service';
 
-import { Observable, tap } from 'rxjs';
+import { defer, Observable, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -35,9 +35,11 @@ export class AuthService extends BaseApiService {
   }
 
   logout(): Observable<void> {
-    const refreshToken = this.tokenService.getRefreshToken();
-    this.tokenService.clearTokens();
-    return this.post<void>(`${ENDPOINT}${LOGOUT_ENDPOINT}`, { refreshToken });
+    return defer(() => {
+      const refreshToken = this.tokenService.getRefreshToken();
+      this.tokenService.clearTokens();
+      return this.post<void>(`${ENDPOINT}${LOGOUT_ENDPOINT}`, { refreshToken });
+    });
   }
 
   register(request: RegisterRequest) {
@@ -47,9 +49,10 @@ export class AuthService extends BaseApiService {
   }
 
   refreshAccessToken(): Observable<TokenResponse> {
-    const refreshToken = this.tokenService.getRefreshToken();
-    return this.post<TokenResponse>(`${ENDPOINT}${REFRESH_ENDPOINT}`, { refreshToken }).pipe(
-      tap((response) => this.tokenService.setTokens(response)),
+    return defer(() =>
+      this.post<TokenResponse>(`${ENDPOINT}${REFRESH_ENDPOINT}`, {
+        refreshToken: this.tokenService.getRefreshToken(),
+      }).pipe(tap((response) => this.tokenService.setTokens(response))),
     );
   }
 
