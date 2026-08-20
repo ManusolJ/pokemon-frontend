@@ -31,25 +31,36 @@ export const ROUTES: Routes = [
   },
   {
     path: 'admin',
+    title: 'Administration',
     canActivate: [adminGuard],
     loadChildren: () =>
       import('@features/admin/routes/admin.routes').then((mod) => mod.ADMIN_ROUTES),
   },
   {
     path: 'profile',
+    title: 'Your Profile',
     canActivate: [authGuard],
     loadComponent: () => import('@features/profile/profile').then((mod) => mod.Profile),
   },
   {
     path: 'about',
+    title: 'About',
+    data: {
+      description:
+        'What PokéTeam Builder does, the stack it runs on, and who built it. A non-commercial fan project using data from PokéAPI.',
+    },
     loadComponent: () => import('@features/about/about').then((mod) => mod.About),
   },
   {
     path: 'contact',
+    title: 'Contact',
+    data: { description: 'Report a bug, suggest a feature, or get in touch about PokéTeam Builder.' },
     loadComponent: () => import('@features/contact/contact').then((mod) => mod.Contact),
   },
   {
     path: '**',
-    redirectTo: 'team-builder',
+    title: 'Page Not Found',
+    data: { noindex: true },
+    loadComponent: () => import('@features/not-found/not-found').then((mod) => mod.NotFound),
   },
 ];

@@ -1,3 +1,5 @@
+import { SeoStrategy } from '@core/seo/seo.strategy';
+
 import { jwtInterceptor } from '@core/interceptors/jwt.interceptor';
 import { errorInterceptor } from '@core/interceptors/error.interceptor';
 
@@ -9,7 +11,7 @@ import { ROUTES } from './app.routes';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
-import { provideRouter } from '@angular/router';
+import { provideRouter, TitleStrategy } from '@angular/router';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
@@ -55,6 +57,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     MessageService,
     provideRouter(ROUTES),
+    { provide: TitleStrategy, useClass: SeoStrategy },
     provideHttpClient(withInterceptors([jwtInterceptor, errorInterceptor])),
     provideBrowserGlobalErrorListeners(),
     providePrimeNG({
