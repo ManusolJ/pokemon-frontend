@@ -47,14 +47,16 @@ export const ROUTES: Routes = [
     title: 'About',
     data: {
       description:
-        'What PokéTeam Builder does, the stack it runs on, and who built it. A non-commercial fan project using data from PokéAPI.',
+        'What PokeTeam Builder does, the stack it runs on, and who built it. A non-commercial fan project using data from PokeAPI.',
     },
     loadComponent: () => import('@features/about/about').then((mod) => mod.About),
   },
   {
     path: 'contact',
     title: 'Contact',
-    data: { description: 'Report a bug, suggest a feature, or get in touch about PokéTeam Builder.' },
+    data: {
+      description: 'Report a bug, suggest a feature, or get in touch about PokeTeam Builder.',
+    },
     loadComponent: () => import('@features/contact/contact').then((mod) => mod.Contact),
   },
   {

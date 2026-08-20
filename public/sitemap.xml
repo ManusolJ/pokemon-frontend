@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Static routes only. The per-entity Pokédex pages are not listed because they are not
+  Static routes only. The per-entity Pokedex pages are not listed because they are not
   rendered server-side yet, so there would be nothing for a crawler to index at those URLs.
   They belong here once prerendering lands.
 -->

@@ -2,7 +2,9 @@
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-2.5">
       @for (s of stats; track s.key) {
-        <div class="grid grid-cols-[3rem_2.25rem_1fr_auto] sm:grid-cols-[3.5rem_2.5rem_1fr_auto] items-center gap-2 sm:gap-3">
+        <div
+          class="grid grid-cols-[3rem_2.25rem_1fr_auto] sm:grid-cols-[3.5rem_2.5rem_1fr_auto] items-center gap-2 sm:gap-3"
+        >
           <span
             class="row__label inline-flex items-center gap-1 text-xs font-bold text-brand-muted"
           >
@@ -98,7 +100,7 @@
     >
       <i class="pi pi-chart-bar"></i>
     </span>
-    <h2 class="text-sm font-bold text-brand-text">No Pokémon selected</h2>
+    <h2 class="text-sm font-bold text-brand-text">No Pokemon selected</h2>
     <p class="text-sm max-w-64 leading-6">Pick a slot to distribute EVs.</p>
   </div>
 }

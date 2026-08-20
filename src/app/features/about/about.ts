@@ -16,7 +16,7 @@ export class About {
     {
       title: 'Team Builder',
       description:
-        'Draft a squad of up to six Pokémon. Use analysis tools to inspect each aspect of the team.',
+        'Draft a squad of up to six Pokemon. Use analysis tools to inspect each aspect of the team.',
     },
     {
       title: 'Pokedex',

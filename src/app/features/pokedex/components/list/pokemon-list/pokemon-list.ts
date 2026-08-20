@@ -76,7 +76,7 @@ export class PokemonList implements OnInit {
   readonly pageSize = PAGE_SIZE;
 
   protected readonly fields = computed<FilterField[]>(() => [
-    { kind: 'search', key: 'name', label: 'Search', placeholder: 'Search Pokémon' },
+    { kind: 'search', key: 'name', label: 'Search', placeholder: 'Search Pokemon' },
     {
       kind: 'chips',
       key: 'typeIds',
@@ -147,8 +147,22 @@ export class PokemonList implements OnInit {
       min: 0,
       max: 255,
     },
-    { kind: 'range', label: 'Height (m)', minKey: 'minHeight', maxKey: 'maxHeight', min: 0, step: 0.1 },
-    { kind: 'range', label: 'Weight (kg)', minKey: 'minWeight', maxKey: 'maxWeight', min: 0, step: 0.1 },
+    {
+      kind: 'range',
+      label: 'Height (m)',
+      minKey: 'minHeight',
+      maxKey: 'maxHeight',
+      min: 0,
+      step: 0.1,
+    },
+    {
+      kind: 'range',
+      label: 'Weight (kg)',
+      minKey: 'minWeight',
+      maxKey: 'maxWeight',
+      min: 0,
+      step: 0.1,
+    },
     {
       kind: 'range',
       label: 'Gender rate',

@@ -13,10 +13,10 @@ export const POKEDEX_ROUTES: Routes = [
       },
       {
         path: 'pokemon',
-        title: 'Pokédex',
+        title: 'Pokedex',
         data: {
           description:
-            'Browse all 1,025 Pokémon. Filter by name, type, generation, evolution method or base stat range, and open any entry for its full competitive profile.',
+            'Browse all 1,025 Pokemon. Filter by name, type, generation, evolution method or base stat range, and open any entry for its full competitive profile.',
         },
         loadComponent: () =>
           import('@features/pokedex/components/list/pokemon-list/pokemon-list').then(
@@ -25,7 +25,7 @@ export const POKEDEX_ROUTES: Routes = [
       },
       {
         path: 'pokemon/:id',
-        title: 'Pokémon',
+        title: 'Pokemon',
         loadComponent: () =>
           import('@features/pokedex/components/detail/pokemon-detail/pokemon-detail').then(
             (mod) => mod.PokemonDetail,
@@ -36,7 +36,7 @@ export const POKEDEX_ROUTES: Routes = [
         title: 'Type Chart',
         data: {
           description:
-            'An interactive Pokémon type effectiveness chart covering all 18 types, including dual-type defensive match-ups.',
+            'An interactive Pokemon type effectiveness chart covering all 18 types, including dual-type defensive match-ups.',
         },
         loadComponent: () =>
           import('@features/pokedex/components/type-chart/type-chart').then((mod) => mod.TypeChart),
@@ -44,7 +44,7 @@ export const POKEDEX_ROUTES: Routes = [
       {
         path: 'natures',
         title: 'Natures',
-        data: { description: 'All 25 Pokémon natures and the stats each one raises and lowers.' },
+        data: { description: 'All 25 Pokemon natures and the stats each one raises and lowers.' },
         loadComponent: () =>
           import('@features/pokedex/components/list/nature-list/nature-list').then(
             (mod) => mod.NatureList,
@@ -53,7 +53,9 @@ export const POKEDEX_ROUTES: Routes = [
       {
         path: 'abilities',
         title: 'Abilities',
-        data: { description: 'Every Pokémon ability with its in-battle effect, searchable by name.' },
+        data: {
+          description: 'Every Pokemon ability with its in-battle effect, searchable by name.',
+        },
         loadComponent: () =>
           import('@features/pokedex/components/list/ability-list/ability-list').then(
             (mod) => mod.AbilityList,
@@ -62,7 +64,10 @@ export const POKEDEX_ROUTES: Routes = [
       {
         path: 'items',
         title: 'Items',
-        data: { description: 'Competitively relevant held items and berries, with their effects and categories.' },
+        data: {
+          description:
+            'Competitively relevant held items and berries, with their effects and categories.',
+        },
         loadComponent: () =>
           import('@features/pokedex/components/list/item-list/item-list').then(
             (mod) => mod.ItemList,
@@ -73,7 +78,7 @@ export const POKEDEX_ROUTES: Routes = [
         title: 'Moves',
         data: {
           description:
-            'All 919 Pokémon moves with type, category, power, accuracy and PP. Filter by type, category or power range.',
+            'All 919 Pokemon moves with type, category, power, accuracy and PP. Filter by type, category or power range.',
         },
         loadComponent: () =>
           import('@features/pokedex/components/list/move-list/move-list').then(

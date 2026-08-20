@@ -1,10 +1,10 @@
 <div align="center">
 
-# PokéTeam Builder - Frontend
+# PokeTeam Builder - Frontend
 
 **Angular 21 single-page application for [pokemon-team-builder.com](https://pokemon-team-builder.com)**
 
-A competitive team builder with a full reference Pokédex, a team analysis engine,
+A competitive team builder with a full reference Pokedex, a team analysis engine,
 community sharing and an administration panel.
 
 <br>
@@ -53,8 +53,8 @@ community sharing and an administration panel.
   </tr>
   <tr>
     <td width="50%" align="center">
-      <img src="docs/screenshots/pokedex.png" alt="Pokédex" width="100%"><br>
-      <sub><b>Pokédex</b></sub>
+      <img src="docs/screenshots/pokedex.png" alt="Pokedex" width="100%"><br>
+      <sub><b>Pokedex</b></sub>
     </td>
     <td width="50%" align="center">
       <img src="docs/screenshots/types.png" alt="Type-effectiveness matrix" width="100%"><br>
@@ -75,9 +75,9 @@ community sharing and an administration panel.
     <td align="center">
       <img width="440" height="1" alt="">
       <br>
-      <img src="docs/screenshots/pokedex-m.png" alt="Pokédex on mobile" width="240">
+      <img src="docs/screenshots/pokedex-m.png" alt="Pokedex on mobile" width="240">
       <br>
-      <sub><b>Pokédex — mobile</b></sub>
+      <sub><b>Pokedex — mobile</b></sub>
     </td>
   </tr>
 </table>
@@ -88,9 +88,9 @@ community sharing and an administration panel.
 
 | Area                        | What it does                                                                                                                                    |
 | :-------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Team builder**            | Assemble up to six Pokémon with ability, nature, held item, Tera type, four moves and a full EV spread, with derived stats recalculated live.   |
+| **Team builder**            | Assemble up to six Pokemon with ability, nature, held item, Tera type, four moves and a full EV spread, with derived stats recalculated live.   |
 | **Analysis view**           | Offensive and defensive type coverage across the whole team, role classification per member and aggregated team stats.                          |
-| **Pokédex**                 | 1,025 species, 919 moves, 311 abilities, 305 items and 25 natures, all paginated and filterable, plus an interactive type-effectiveness matrix. |
+| **Pokedex**                 | 1,025 species, 919 moves, 311 abilities, 305 items and 25 natures, all paginated and filterable, plus an interactive type-effectiveness matrix. |
 | **Teams**                   | Save private or public teams, browse the community catalogue, like other players' teams.                                                        |
 | **Accounts**                | Registration, login, password recovery and silent session renewal.                                                                              |
 | **Admin panel**             | User management, dataset synchronisation and log inspection, behind a role guard.                                                               |
@@ -300,7 +300,7 @@ Two values are configured per environment:
 | Field            | Purpose                            |
 | :--------------- | :--------------------------------- |
 | `apiUrl`         | Base URL of the REST API           |
-| `spritesBaseUrl` | Base URL for Pokémon sprite assets |
+| `spritesBaseUrl` | Base URL for Pokemon sprite assets |
 
 These live in the environment source files and are swapped at build time through Angular's
 file replacements. They are build-time constants, not runtime environment variables,
@@ -353,10 +353,10 @@ Live and in use, but not finished:
 ## Disclaimer
 
 > [!NOTE]
-> Pokémon and all related names are trademarks of Nintendo, Game Freak and The Pokémon
+> Pokemon and all related names are trademarks of Nintendo, Game Freak and The Pokemon
 > Company. This is a non-commercial fan project built for learning purposes and is not
 > affiliated with or endorsed by them. Game data comes from the community-maintained
-> [PokéAPI](https://pokeapi.co/).
+> [PokeAPI](https://pokeapi.co/).
 
 ---
 

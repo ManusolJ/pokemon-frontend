@@ -16,7 +16,7 @@ export const TEAM_BUILDER_ROUTES: Routes = [
         title: 'Team Builder',
         data: {
           description:
-            'Draft a team of up to six Pokémon with held items, natures, abilities, Tera types and full EV and IV spreads. No account needed to start.',
+            'Draft a team of up to six Pokemon with held items, natures, abilities, Tera types and full EV and IV spreads. No account needed to start.',
         },
         loadComponent: () =>
           import('@features/team-builder/components/builder-tab/builder-tab').then(

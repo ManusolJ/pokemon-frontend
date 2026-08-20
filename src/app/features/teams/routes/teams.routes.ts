@@ -17,7 +17,7 @@ export const TEAMS_ROUTES: Routes = [
         title: 'Community Teams',
         data: {
           description:
-            'Browse Pokémon teams shared by the community, see their full rosters and copy any of them into the builder.',
+            'Browse Pokemon teams shared by the community, see their full rosters and copy any of them into the builder.',
         },
         loadComponent: () =>
           import('@features/teams/components/lists/public-team-list/public-team-list').then(

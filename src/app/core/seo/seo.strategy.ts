@@ -4,12 +4,12 @@ import { Meta, Title } from '@angular/platform-browser';
 
 import { ActivatedRouteSnapshot, RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
-const SITE_NAME = 'PokéTeam Builder';
+const SITE_NAME = 'PokeTeam Builder';
 const SITE_ORIGIN = 'https://pokemon-team-builder.com';
 
-const DEFAULT_TITLE = `${SITE_NAME} - Competitive Team Builder & Pokédex`;
+const DEFAULT_TITLE = `${SITE_NAME} - Competitive Team Builder & Pokedex`;
 const DEFAULT_DESCRIPTION =
-  'Build competitive Pokémon teams with full EV and IV spreads, analyse type coverage and roles, and browse a complete Pokédex of 1,025 species and 919 moves.';
+  'Build competitive Pokemon teams with full EV and IV spreads, analyse type coverage and roles, and browse a complete Pokedex of 1,025 species and 919 moves.';
 
 @Injectable()
 export class SeoStrategy extends TitleStrategy {

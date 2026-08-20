@@ -20,7 +20,7 @@
     </span>
     <h2 class="text-base font-bold text-brand-text">No team to analyze</h2>
     <p class="text-sm max-w-80 leading-6">
-      Head back to the Builder and pick at least one Pokémon to see offense, defense, roles and team
+      Head back to the Builder and pick at least one Pokemon to see offense, defense, roles and team
       stats.
     </p>
   </div>
@@ -35,11 +35,7 @@
         Offensive coverage
       </span>
       <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
-        <app-offensive-coverage
-          [chart]="chart()"
-          [members]="members()"
-          [allTypes]="types()"
-        />
+        <app-offensive-coverage [chart]="chart()" [members]="members()" [allTypes]="types()" />
       </div>
     </section>
 
