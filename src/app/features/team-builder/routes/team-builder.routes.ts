@@ -13,6 +13,11 @@ export const TEAM_BUILDER_ROUTES: Routes = [
       },
       {
         path: 'builder',
+        title: 'Team Builder',
+        data: {
+          description:
+            'Draft a team of up to six Pokémon with held items, natures, abilities, Tera types and full EV and IV spreads. No account needed to start.',
+        },
         loadComponent: () =>
           import('@features/team-builder/components/builder-tab/builder-tab').then(
             (m) => m.BuilderTab,
@@ -20,6 +25,11 @@ export const TEAM_BUILDER_ROUTES: Routes = [
       },
       {
         path: 'analysis',
+        title: 'Team Analysis',
+        data: {
+          description:
+            'Check your team for offensive and defensive type coverage, role balance and combined base stats.',
+        },
         loadComponent: () =>
           import('@features/team-builder/components/analysis-tab/analysis-tab').then(
             (m) => m.AnalysisTab,

@@ -14,6 +14,11 @@ export const TEAMS_ROUTES: Routes = [
       },
       {
         path: 'shared-teams',
+        title: 'Community Teams',
+        data: {
+          description:
+            'Browse Pokémon teams shared by the community, see their full rosters and copy any of them into the builder.',
+        },
         loadComponent: () =>
           import('@features/teams/components/lists/public-team-list/public-team-list').then(
             (mod) => mod.PublicTeamList,
@@ -35,6 +40,7 @@ export const TEAMS_ROUTES: Routes = [
       // },
       {
         path: 'my-teams',
+        title: 'Your Teams',
         canActivate: [authGuard],
         loadComponent: () =>
           import('@features/teams/components/lists/private-team-list/private-team-list').then(
