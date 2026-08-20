@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Static routes only. The per-entity Pokedex pages are not listed because they are not
-  rendered server-side yet, so there would be nothing for a crawler to index at those URLs.
-  They belong here once prerendering lands.
--->
+
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://pokemon-team-builder.com/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://pokemon-team-builder.com/team-builder</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>

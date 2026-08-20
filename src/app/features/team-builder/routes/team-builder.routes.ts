@@ -13,8 +13,8 @@ export const TEAM_BUILDER_ROUTES: Routes = [
       },
       {
         path: 'builder',
-        title: 'Team Builder',
         data: {
+          canonical: '/',
           description:
             'Draft a team of up to six Pokemon with held items, natures, abilities, Tera types and full EV and IV spreads. No account needed to start.',
         },

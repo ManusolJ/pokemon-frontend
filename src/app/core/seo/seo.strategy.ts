@@ -19,19 +19,38 @@ export class SeoStrategy extends TitleStrategy {
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const routeTitle = this.buildTitle(snapshot);
     const pageTitle = routeTitle ? `${routeTitle} · ${SITE_NAME}` : DEFAULT_TITLE;
-    const description = this.resolveDescription(snapshot.root) ?? DEFAULT_DESCRIPTION;
+    const description =
+      this.resolveData<string>(snapshot.root, 'description') ?? DEFAULT_DESCRIPTION;
+
+    const canonicalOverride = this.resolveData<string>(snapshot.root, 'canonical');
+    const canonical = SITE_ORIGIN + (canonicalOverride ?? this.canonicalPath(snapshot.url));
 
     this.title.setTitle(pageTitle);
 
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({ property: 'og:title', content: pageTitle });
     this.meta.updateTag({ property: 'og:description', content: description });
-    this.meta.updateTag({ property: 'og:url', content: SITE_ORIGIN + snapshot.url });
+    this.meta.updateTag({ property: 'og:url', content: canonical });
     this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
     this.meta.updateTag({ name: 'twitter:description', content: description });
 
     this.updateRobots(this.isNoindex(snapshot.root));
-    this.updateCanonical(SITE_ORIGIN + this.canonicalPath(snapshot.url));
+    this.updateCanonical(canonical);
+  }
+
+  private resolveData<T>(route: ActivatedRouteSnapshot, key: string): T | null {
+    let current: ActivatedRouteSnapshot | null = route;
+    let found: T | null = null;
+
+    while (current) {
+      const candidate = current.data?.[key];
+      if (candidate !== undefined && candidate !== null) {
+        found = candidate as T;
+      }
+      current = current.firstChild;
+    }
+
+    return found;
   }
 
   private isNoindex(route: ActivatedRouteSnapshot): boolean {
@@ -54,21 +73,6 @@ export class SeoStrategy extends TitleStrategy {
     }
 
     this.meta.removeTag('name="robots"');
-  }
-
-  private resolveDescription(route: ActivatedRouteSnapshot): string | null {
-    let deepest: ActivatedRouteSnapshot | null = route;
-    let description: string | null = null;
-
-    while (deepest) {
-      const candidate = deepest.data?.['description'];
-      if (typeof candidate === 'string' && candidate.length > 0) {
-        description = candidate;
-      }
-      deepest = deepest.firstChild;
-    }
-
-    return description;
   }
 
   private canonicalPath(url: string): string {
