@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Nothing useful behind a login, and these pages have no crawlable content.
+Disallow: /admin
+Disallow: /auth
+Disallow: /profile
+
+Sitemap: https://pokemon-team-builder.com/sitemap.xml
