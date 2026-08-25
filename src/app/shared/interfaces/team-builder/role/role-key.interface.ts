@@ -1,11 +1,9 @@
 // TODO: Check SMOGON later for more roles and update this list accordingly.
 export type RoleKey =
   // Offense
-  | 'cleaner'
   | 'wallbreaker'
   | 'setup-sweeper'
   | 'mixed-sweeper'
-  | 'revenge-killer'
   | 'choice-scarfer'
   | 'special-sweeper'
   | 'physical-sweeper'
