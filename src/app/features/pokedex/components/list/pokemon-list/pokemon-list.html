@@ -3,6 +3,7 @@
   title="Pokedex"
   [total]="total()"
   [loading]="loading()"
+  [page]="page()"
   [pageSize]="pageSize"
   [totalPages]="totalPages()"
   (pageChange)="onPageChange($event)"
@@ -27,7 +28,7 @@
 
   <div grid class="poke-grid">
     @for (pokemon of items(); track pokemon.id) {
-      <app-pokemon-card [pokemon]="pokemon" (select)="onSelect($event)" />
+      <app-pokemon-card [pokemon]="pokemon" (selected)="onSelect($event)" />
     }
   </div>
 </app-list-shell>
