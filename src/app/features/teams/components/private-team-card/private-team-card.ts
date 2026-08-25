@@ -23,7 +23,7 @@ const UNPUBLISH_LABEL = 'Unpublish';
 export class PrivateTeamCard {
   readonly team = input.required<TeamSummary>();
 
-  readonly select = output<number>();
+  readonly selected = output<number>();
   readonly action = output<PrivateTeamCardActionEvent>();
 
   protected readonly slotCount = TEAM_SLOT_COUNT;
@@ -37,7 +37,7 @@ export class PrivateTeamCard {
   protected readonly editedLabel = computed(() => formatRelativeDate(this.team().updatedAt));
 
   protected onSelect(): void {
-    this.select.emit(this.team().id);
+    this.selected.emit(this.team().id);
   }
 
   protected emit(event: MouseEvent, kind: PrivateTeamCardAction): void {

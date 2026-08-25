@@ -18,7 +18,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 export class TeamCard {
   readonly team = input.required<TeamSummary>();
 
-  readonly select = output<number>();
+  readonly selected = output<number>();
   readonly likeToggle = output<TeamLikeToggleEvent>();
 
   protected readonly createdLabel = computed(() => formatRelativeDate(this.team().createdAt));
@@ -27,7 +27,7 @@ export class TeamCard {
   );
 
   protected onSelect(): void {
-    this.select.emit(this.team().id);
+    this.selected.emit(this.team().id);
   }
 
   protected onLikeToggle(liked: boolean): void {

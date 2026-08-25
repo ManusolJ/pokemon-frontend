@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { TeamMoveSlot } from '@shared/interfaces/ui/team/team-move-slot.interface';
 import { MoveSummary } from '@shared/interfaces/pokemon/move/move-summary.interface';
@@ -56,7 +56,7 @@ export class TeamPokemonCard {
   private resolveSpriteUrl(): string {
     const { spriteDefault, spriteShiny } = this.member().pokemon;
     const path = this.member().shiny ? spriteShiny : spriteDefault;
-    return `${environment.spritesBaseUrl}${path}`;
+    return spriteUrl(path);
   }
 
   private buildMoveSlots(): readonly TeamMoveSlot[] {
