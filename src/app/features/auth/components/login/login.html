@@ -13,12 +13,10 @@
       />
       @if (identifier.touched && identifier.hasError('required')) {
         <span class="field-error">This field is required.</span>
-      } @else if (
-        identifier.touched && (identifier.hasError('minlength') || identifier.hasError('maxlength'))
-      ) {
-        <span class="field-error">
-          Must be between {{ min_username_length }} and {{ max_username_length }} characters.
-        </span>
+      } @else if (identifier.touched && identifier.hasError('minlength')) {
+        <span class="field-error">Must be at least {{ minIdentifierLength }} characters.</span>
+      } @else if (identifier.touched && identifier.hasError('maxlength')) {
+        <span class="field-error">Must be at most {{ maxIdentifierLength }} characters.</span>
       }
     </div>
 
@@ -45,7 +43,7 @@
       @if (password.touched && password.hasError('required')) {
         <span class="field-error">This field is required.</span>
       } @else if (password.touched && password.hasError('minlength')) {
-        <span class="field-error">Must be at least {{ min_password_length }} characters.</span>
+        <span class="field-error">Must be at least {{ minPasswordLength }} characters.</span>
       }
     </div>
 
