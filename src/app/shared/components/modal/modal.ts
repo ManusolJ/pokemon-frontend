@@ -1,15 +1,9 @@
-import {
-  input,
-  output,
-  computed,
-  Component,
-  HostListener,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   imports: [],
   selector: 'app-modal',
+  host: { '(document:keydown.escape)': 'onEscape()' },
   styleUrl: './modal.css',
   templateUrl: './modal.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,13 +15,16 @@ export class Modal {
 
   readonly closed = output<void>();
 
-  @HostListener('document:keydown.escape')
   protected onEscape(): void {
-    if (this.open() && this.dismissable()) this.closed.emit();
+    if (this.open() && this.dismissable()) {
+      this.closed.emit();
+    }
   }
 
-  protected onBackdropClick(): void {
-    if (this.dismissable()) this.closed.emit();
+  protected onBackdropClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget && this.dismissable()) {
+      this.closed.emit();
+    }
   }
 
   protected emitClose(): void {

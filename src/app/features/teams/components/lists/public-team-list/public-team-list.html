@@ -2,9 +2,11 @@
   [total]="total()"
   title="Community teams"
   [hideSidebar]="true"
+  [page]="page()"
   [pageSize]="pageSize"
   [loading]="loading()"
   [totalPages]="totalPages()"
+  (pageChange)="onPageChange($event)"
 >
   <div toolbar class="flex flex-wrap items-center gap-2.5">
     <label
@@ -40,7 +42,7 @@
     @for (team of teams(); track team.id) {
       <app-team-card
         [team]="team"
-        (select)="onSelect($event)"
+        (selected)="onSelect($event)"
         (likeToggle)="onLikeToggle($event)"
       />
     }

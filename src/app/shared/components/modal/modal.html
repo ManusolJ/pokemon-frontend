@@ -1,7 +1,7 @@
 @if (open()) {
   <div
     class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 lg:p-7 bg-black/60 backdrop-blur-xs"
-    (click)="onBackdropClick()"
+    (click)="onBackdropClick($event)"
     role="presentation"
   >
     <div
@@ -9,7 +9,6 @@
       aria-modal="true"
       class="flex flex-col max-h-full h-full sm:h-auto w-full max-w-full sm:max-w-9/10 lg:max-w-8/10 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-none sm:rounded-2xl shadow-2xl"
       [attr.aria-label]="title()"
-      (click)="$event.stopPropagation()"
     >
       <div class="flex items-center justify-between gap-4 pt-4 px-5 pb-3">
         <h2 class="font-bold tracking-tight text-brand-text">{{ title() }}</h2>

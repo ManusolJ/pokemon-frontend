@@ -4,8 +4,10 @@
   [total]="total()"
   [hideSidebar]="true"
   [loading]="loading()"
+  [page]="page()"
   [pageSize]="pageSize"
   [totalPages]="totalPages()"
+  (pageChange)="onPageChange($event)"
 >
   <div toolbar class="flex flex-wrap items-center gap-2.5">
     <label
@@ -61,7 +63,7 @@
     @for (team of items(); track team.id) {
       <app-private-team-card
         [team]="team"
-        (select)="onSelect($event)"
+        (selected)="onSelect($event)"
         (action)="onAction($event)"
       />
     }

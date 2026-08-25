@@ -11,6 +11,8 @@ import { ListShell } from '@shared/components/list-shell/list-shell';
 
 import { toggleTeamLike } from '@shared/utils/team.util';
 
+import { debouncedText } from '@shared/utils/debounced-text.util';
+
 import { TeamCard } from '@features/teams/components/team-card/team-card';
 
 import { map, tap } from 'rxjs';
@@ -38,8 +40,6 @@ const SORT_OPTIONS: ReadonlyArray<TeamSortOption<PublicSortField>> = [
   { id: 'name-asc', label: 'A → Z', field: 'name', direction: 'ASC' },
 ];
 
-const SEARCH_DEBOUNCE_MS = 300;
-
 @Component({
   imports: [ListShell, TeamCard],
   selector: 'app-public-team-list',
@@ -59,8 +59,9 @@ export class PublicTeamList {
 
   protected readonly total = signal(0);
   protected readonly page = signal(0);
-  protected readonly query = signal('');
-  private readonly debouncedQuery = signal('');
+  private readonly searchText = debouncedText(() => this.page.set(0));
+  protected readonly query = this.searchText.live;
+  private readonly debouncedQuery = this.searchText.settled;
   private readonly pendingLikeIds = signal<ReadonlySet<number>>(new Set());
 
   protected readonly likeDisabled = computed(() => !this.authService.isAuthenticated());
@@ -71,8 +72,6 @@ export class PublicTeamList {
   );
 
   protected readonly totalPages = computed(() => Math.ceil(this.total() / PAGE_SIZE));
-
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
   private readonly teamResource = rxResource({
     params: () => ({ page: this.page(), query: this.debouncedQuery(), sort: this.currentSort() }),
@@ -99,12 +98,7 @@ export class PublicTeamList {
   protected readonly loading = computed<boolean>(() => this.teamResource.isLoading());
 
   protected onSearch(value: string): void {
-    this.query.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedQuery.set(value);
-      this.page.set(0);
-    }, SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected onPageChange(pageIndex: number): void {

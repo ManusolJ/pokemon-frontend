@@ -1,9 +1,4 @@
-import {
-  TEAMS_MY_PATH,
-  TEAMS_SHARED_PATH,
-  TEAM_BUILDER_PATH,
-  TEAMS_SEARCH_DEBOUNCE_MS,
-} from '@shared/constants/teams.constants';
+import { TEAMS_MY_PATH, TEAM_BUILDER_PATH } from '@shared/constants/teams.constants';
 
 import {
   VisibilityTab,
@@ -17,6 +12,10 @@ import { TeamHydrationService } from '@core/services/team-hydration.service';
 import { TeamBuilderStateService } from '@core/services/team-builder-state.service';
 
 import { ListShell } from '@shared/components/list-shell/list-shell';
+
+import { copyToClipboard, publicTeamUrl } from '@shared/utils/share.util';
+
+import { debouncedText } from '@shared/utils/debounced-text.util';
 
 import { PrivateTeamCard } from '@features/teams/components/private-team-card/private-team-card';
 
@@ -73,8 +72,9 @@ export class PrivateTeamList {
 
   protected readonly total = signal(0);
   protected readonly page = signal(0);
-  protected readonly searchInput = signal('');
-  private readonly debouncedQuery = signal('');
+  private readonly searchText = debouncedText(() => this.page.set(0));
+  protected readonly searchInput = this.searchText.live;
+  private readonly debouncedQuery = this.searchText.settled;
 
   protected readonly sortId = signal<string>(DEFAULT_SORT_ID);
   protected readonly activeTab = signal<VisibilityTabId>(DEFAULT_TAB_ID);
@@ -83,8 +83,6 @@ export class PrivateTeamList {
   );
 
   protected readonly totalPages = computed(() => Math.ceil(this.total() / PAGE_SIZE));
-
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
 
   private readonly teamResource = rxResource({
     params: () => ({
@@ -117,12 +115,7 @@ export class PrivateTeamList {
   protected readonly loading = computed(() => this.teamResource.isLoading());
 
   protected onSearchInput(value: string): void {
-    this.searchInput.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedQuery.set(value);
-      this.page.set(0);
-    }, TEAMS_SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected onPageChange(pageIndex: number): void {
@@ -204,8 +197,7 @@ export class PrivateTeamList {
     if (!team || !team.isPublic) {
       return;
     }
-    const url = `${window.location.origin}${TEAMS_SHARED_PATH}/${id}`;
-    void navigator.clipboard?.writeText(url);
+    void copyToClipboard(publicTeamUrl(id));
   }
 
   private delete(id: number): void {
