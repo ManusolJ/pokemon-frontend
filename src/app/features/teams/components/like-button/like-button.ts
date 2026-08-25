@@ -24,7 +24,7 @@ export class LikeButton {
   readonly teamId = input.required<number>();
   protected readonly isAuthenticated = this.authService.isAuthenticated;
 
-  readonly toggle = output<boolean>();
+  readonly toggled = output<boolean>();
 
   protected readonly formattedCount = computed(() => {
     const value = this.count();
@@ -44,6 +44,6 @@ export class LikeButton {
       });
       return;
     }
-    this.toggle.emit(!this.liked());
+    this.toggled.emit(!this.liked());
   }
 }
