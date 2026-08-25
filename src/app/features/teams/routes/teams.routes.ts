@@ -31,13 +31,6 @@ export const TEAMS_ROUTES: Routes = [
             (mod) => mod.PublicTeamDetail,
           ),
       },
-      // {
-      //   path: 'shared-teams/:slug',
-      //   loadComponent: () =>
-      //     import('@features/teams/components/detail/public-team-detail/public-team-detail').then(
-      //       (mod) => mod.PublicTeamDetail,
-      //     ),
-      // },
       {
         path: 'my-teams',
         title: 'Your Teams',
