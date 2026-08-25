@@ -8,6 +8,10 @@ import { NatureFilter } from '@shared/interfaces/pokemon/nature/nature-filter.in
 
 import { NatureService } from '@core/services/nature.service';
 
+import { TitleCasePipe } from '@angular/common';
+
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
+
 import { ListShell } from '@shared/components/list-shell/list-shell';
 import { FilterSidebar } from '@shared/components/filter-sidebar/filter-sidebar';
 
@@ -32,9 +36,8 @@ const STATS: FilterOption[] = [
   { label: 'Speed', value: 'speed' },
 ];
 
-//TODO: Remove underscore from natures with two words.
 @Component({
-  imports: [ListShell, FilterSidebar],
+  imports: [ListShell, FilterSidebar, NameNormalizerPipe, TitleCasePipe],
   selector: 'app-nature-list',
   styleUrl: './nature-list.css',
   templateUrl: './nature-list.html',
