@@ -1,3 +1,5 @@
+import { MAX_EMAIL_LENGTH } from '@shared/constants/auth.constants';
+
 import { Step } from '@shared/interfaces/ui/generic/send-state.interface';
 import { PasswordResetRequest } from '@shared/interfaces/auth/password-reset-request.interface';
 
@@ -9,7 +11,9 @@ import { RouterLink } from '@angular/router';
 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   imports: [AuthCard, ReactiveFormsModule, RouterLink],
@@ -19,13 +23,16 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResetPasswordRequest {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
 
   protected readonly step = signal<Step>('idle');
 
+  protected readonly maxEmailLength = MAX_EMAIL_LENGTH;
+
   protected readonly form = this.formBuilder.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(MAX_EMAIL_LENGTH)]],
   });
 
   protected get email() {
@@ -44,9 +51,12 @@ export class ResetPasswordRequest {
       email: this.email.value ?? '',
     };
 
-    this.authService.requestPasswordReset(resetRequest).subscribe({
-      next: () => this.step.set('done'),
-      error: () => this.step.set('idle'),
-    });
+    this.authService
+      .requestPasswordReset(resetRequest)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.step.set('done'),
+        error: () => this.step.set('idle'),
+      });
   }
 }

@@ -1,13 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH } from '@shared/constants/auth.constants';
+
+import { Step } from '@shared/interfaces/ui/generic/send-state.interface';
+import { PasswordResetConfirmation } from '@shared/interfaces/auth/password-reset-confirmation.interface';
+
+import { passwordMatchValidator } from '@shared/validators/password.validator';
 
 import { AuthService } from '@core/services/auth.service';
+
 import { AuthCard } from '@features/auth/components/auth-card/auth-card';
-import { MIN_PASSWORD_LENGTH } from '@shared/constants/auth.constants';
-import { PasswordResetConfirmation } from '@shared/interfaces/auth/password-reset-confirmation.interface';
-import { Step } from '@shared/interfaces/ui/generic/send-state.interface';
-import { passwordMatchValidator } from '@shared/validators/password.validator';
+
+import { ActivatedRoute, RouterLink } from '@angular/router';
+
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   imports: [AuthCard, RouterLink, ReactiveFormsModule],
@@ -18,6 +26,7 @@ import { passwordMatchValidator } from '@shared/validators/password.validator';
 })
 export class ResetPasswordConfirmation {
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
 
@@ -25,11 +34,19 @@ export class ResetPasswordConfirmation {
 
   protected readonly step = signal<Step>('idle');
 
-  protected readonly min_password_length = MIN_PASSWORD_LENGTH;
+  protected readonly minPasswordLength = MIN_PASSWORD_LENGTH;
+  protected readonly maxPasswordLength = MAX_PASSWORD_LENGTH;
 
   protected readonly form = this.formBuilder.group(
     {
-      newPassword: ['', [Validators.required, Validators.minLength(MIN_PASSWORD_LENGTH)]],
+      newPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(MIN_PASSWORD_LENGTH),
+          Validators.maxLength(MAX_PASSWORD_LENGTH),
+        ],
+      ],
       confirmPassword: ['', Validators.required],
     },
     { validators: passwordMatchValidator('newPassword', 'confirmPassword') },
@@ -55,9 +72,12 @@ export class ResetPasswordConfirmation {
       newPassword: this.newPassword.value ?? '',
     };
 
-    this.authService.resetPassword(resetConfirmation).subscribe({
-      next: () => this.step.set('done'),
-      error: () => this.step.set('idle'),
-    });
+    this.authService
+      .resetPassword(resetConfirmation)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.step.set('done'),
+        error: () => this.step.set('idle'),
+      });
   }
 }
