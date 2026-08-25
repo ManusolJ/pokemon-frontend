@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { RoleKey } from '@shared/interfaces/team-builder/role/role-key.interface';
 import { RoleGroup } from '@shared/interfaces/team-builder/role/role-group.interface';
@@ -26,7 +26,7 @@ export class RoleSpread {
 
   protected spriteFor(member: TeamMember): string {
     const path = member.shiny ? member.spriteShiny : member.spriteDefault;
-    return `${environment.spritesBaseUrl}${path}`;
+    return spriteUrl(path);
   }
 
   private bucketByRole(): readonly RoleGroup[] {
