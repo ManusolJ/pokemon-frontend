@@ -1,8 +1,8 @@
 import { LEVEL_MAX } from '@shared/constants/stat.constants';
+import { MAX_TEAM_NAME_LENGTH } from '@shared/constants/teams.constants';
 
 import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
-import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { TeamCreate } from '@shared/interfaces/pokemon/team/team-create.interface';
 import { TeamUpdate } from '@shared/interfaces/pokemon/team/team-update.interface';
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
@@ -30,7 +30,7 @@ import { PokemonPicker } from '@features/team-builder/modals/pokemon-picker/poke
 
 import { emptyEvs, maxIvs } from '@shared/utils/stats.util';
 
-import { Observable, map, of, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { TeamRead } from '@shared/interfaces/pokemon/team/team-read.interface';
 
@@ -78,29 +78,13 @@ export class BuilderTab {
   protected readonly naturePickerOpen = signal(false);
   protected readonly abilityPickerOpen = signal(false);
 
+  protected readonly maxTeamNameLength = MAX_TEAM_NAME_LENGTH;
+
   protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);
 
   private readonly typesResource = rxResource({
-    stream: () => {
-      return this.typeService.getTypeCountWithFilter({}).pipe(
-        switchMap((count) =>
-          count === 0
-            ? of<readonly TypeRead[]>([])
-            : this.typeService
-                .getTypePageWithFilter(
-                  {},
-                  {
-                    page: 0,
-                    size: count,
-                    sort: 'name',
-                    direction: 'ASC',
-                  },
-                )
-                .pipe(map((page) => page.content)),
-        ),
-      );
-    },
+    stream: () => this.typeService.getAllTypes(),
     defaultValue: [],
   });
 
@@ -142,26 +126,48 @@ export class BuilderTab {
     () => this.state.activeMember()?.ability?.id ?? null,
   );
 
-  protected readonly canSave = computed(() => {
-    if (this.saving()) {
-      return false;
-    }
-
+  /**
+   * The one description of what the API will accept, so the button state and the hint beside it
+   * can never disagree. Mirrors TeamCreateDto and TeamPokemonCreateDto: a non-blank name of at
+   * most MAX_TEAM_NAME_LENGTH, one to six members, each with an ability and at least one move.
+   */
+  protected readonly saveBlocker = computed<string | null>(() => {
     if (!this.isAuthenticated()) {
-      return false;
+      return 'Log in to save this team.';
     }
 
-    if (this.state.teamName().trim().length === 0) {
-      return false;
+    const name = this.state.teamName().trim();
+
+    if (name.length === 0) {
+      return 'Give the team a name before saving.';
+    }
+
+    if (name.length > MAX_TEAM_NAME_LENGTH) {
+      return `The team name must be at most ${MAX_TEAM_NAME_LENGTH} characters.`;
     }
 
     const filled = this.state.members().filter((m): m is TeamMember => m !== null);
 
     if (filled.length === 0) {
-      return false;
+      return 'Add at least one Pokemon before saving.';
     }
-    return filled.every((m) => m.ability !== null);
+
+    const withoutAbility = filled.find((m) => m.ability === null);
+
+    if (withoutAbility) {
+      return `${displayName(withoutAbility)} needs an ability.`;
+    }
+
+    const withoutMove = filled.find((m) => m.moves.every((move) => move === null));
+
+    if (withoutMove) {
+      return `${displayName(withoutMove)} needs at least one move.`;
+    }
+
+    return null;
   });
+
+  protected readonly canSave = computed(() => !this.saving() && this.saveBlocker() === null);
 
   protected onSlotAdd(teamSlot: number): void {
     this.pokemonPickerSlot.set(teamSlot);
@@ -303,9 +309,6 @@ export class BuilderTab {
       return;
     }
 
-    this.saving.set(true);
-    this.saveError.set(null);
-
     const payload: TeamCreate = {
       name: this.state.teamName().trim(),
       isPublic: !this.state.isPrivate(),
@@ -314,6 +317,9 @@ export class BuilderTab {
         .filter((m): m is TeamMember => m !== null)
         .map((m) => this.toBackendPokemon(m)),
     };
+
+    this.saving.set(true);
+    this.saveError.set(null);
 
     const sourceId = this.state.sourceTeamId();
     const request: Observable<TeamRead> =
@@ -364,4 +370,8 @@ export class BuilderTab {
         .map((move) => move.id),
     };
   }
+}
+
+function displayName(member: TeamMember): string {
+  return member.nickname || member.name.replace(/-/g, ' ');
 }
