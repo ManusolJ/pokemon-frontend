@@ -5,7 +5,15 @@ import {
   FilterOption,
 } from '@shared/interfaces/ui/filter/filter-field.interface';
 
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 
 const EMIT_DEBOUNCE_MS = 300;
 
@@ -29,6 +37,10 @@ export class FilterSidebar {
 
   private emitTimer: ReturnType<typeof setTimeout> | undefined;
 
+  constructor() {
+    inject(DestroyRef).onDestroy(() => clearTimeout(this.emitTimer));
+  }
+
   protected activeCount(): number {
     return Object.values(this.state()).filter(isApplied).length;
   }
@@ -45,7 +57,7 @@ export class FilterSidebar {
     if (field.multi) {
       return Array.isArray(current) && current.includes(option.value);
     }
-    return current == option.value;
+    return String(current) === String(option.value);
   }
 
   protected toggleChip(field: FilterField, option: FilterOption): void {
