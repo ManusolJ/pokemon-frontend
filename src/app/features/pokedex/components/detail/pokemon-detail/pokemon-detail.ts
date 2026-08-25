@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { MoveEmbed } from '@shared/interfaces/pokemon/move/move-embed.interface';
@@ -333,6 +333,6 @@ export class PokemonDetail {
   }
 
   protected getImgUrl(url: string): string {
-    return `${environment.spritesBaseUrl}${url}`;
+    return spriteUrl(url);
   }
 }

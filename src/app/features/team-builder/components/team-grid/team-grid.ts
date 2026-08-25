@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { TeamMember } from '@shared/interfaces/team-builder/member/team-member.interface';
@@ -31,9 +31,7 @@ export class TeamGrid {
   }
 
   protected typesOf(member: TeamMember): TypeRead[] {
-    return [member.primaryType, member.secondaryType].filter(
-      (type): type is TypeRead => !!type,
-    );
+    return [member.primaryType, member.secondaryType].filter((type): type is TypeRead => !!type);
   }
 
   protected displayNameFor(member: TeamMember): string {
@@ -50,6 +48,6 @@ export class TeamGrid {
   }
 
   protected getImgUrl(url: string): string {
-    return `${environment.spritesBaseUrl}${url}`;
+    return spriteUrl(url);
   }
 }
