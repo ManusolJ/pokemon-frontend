@@ -66,11 +66,11 @@ function refreshAndRetry(
   router: Router,
 ) {
   return refreshService.refresh().pipe(
-    switchMap((accessToken) => next(addToken(req, accessToken))),
     catchError((error) => {
       authService.logout().subscribe({ error: () => {} });
       router.navigate(['/auth/login']);
       return throwError(() => error);
     }),
+    switchMap((accessToken) => next(addToken(req, accessToken))),
   );
 }
