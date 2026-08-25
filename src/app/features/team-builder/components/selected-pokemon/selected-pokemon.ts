@@ -1,6 +1,7 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { LEVEL_MAX, LEVEL_MIN } from '@shared/constants/stat.constants';
+import { MAX_NICKNAME_LENGTH } from '@shared/constants/teams.constants';
 
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
@@ -52,6 +53,7 @@ export class SelectedPokemon {
   readonly memberChange = output<TeamMember>();
 
   protected readonly levelMin = LEVEL_MIN;
+  protected readonly maxNicknameLength = MAX_NICKNAME_LENGTH;
   protected readonly levelMax = LEVEL_MAX;
 
   protected readonly accent = computed(() => getTypeColor(this.member()?.primaryType.name));
@@ -154,7 +156,7 @@ export class SelectedPokemon {
   }
 
   protected getImgUrl(url: string): string {
-    return `${environment.spritesBaseUrl}${url}`;
+    return spriteUrl(url);
   }
 
   private patchMember(patch: Partial<TeamMember>): void {

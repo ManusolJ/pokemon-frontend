@@ -58,7 +58,7 @@
             [value]="member.nickname"
             [placeholder]="member.species.name | titlecase"
             (input)="onNickname(nickInput.value)"
-            maxlength="20"
+            [attr.maxlength]="maxNicknameLength"
             class="w-full px-3 py-2.25 bg-brand-raised border border-solid border-brand-line rounded-lg text-brand-text text-sm font-semibold outline-0 transition-colors focus:border-brand-red/60"
           />
         </label>
@@ -102,10 +102,11 @@
       </div>
 
       <div class="flex flex-col gap-3">
-        <label class="flex flex-col gap-1.5">
-          <span class="basics__label">Ability</span>
+        <div class="flex flex-col gap-1.5">
+          <span class="basics__label" id="picker-label-ability">Ability</span>
           <button
             type="button"
+            [attr.aria-labelledby]="'picker-label-ability'"
             (click)="openAbilityPicker.emit()"
             [class.is-filled]="!!member.ability"
             class="picker-row flex items-center gap-2 w-full px-3 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg text-left text-brand-text cursor-pointer transition-colors"
@@ -119,12 +120,13 @@
             }
             <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
           </button>
-        </label>
+        </div>
 
-        <label class="flex flex-col gap-1.5">
-          <span class="basics__label">Nature</span>
+        <div class="flex flex-col gap-1.5">
+          <span class="basics__label" id="picker-label-nature">Nature</span>
           <button
             type="button"
+            [attr.aria-labelledby]="'picker-label-nature'"
             (click)="openNaturePicker.emit()"
             [class.is-filled]="!!member.nature"
             class="picker-row flex items-center gap-2 w-full px-3 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg text-left text-brand-text cursor-pointer transition-colors"
@@ -143,12 +145,13 @@
             }
             <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
           </button>
-        </label>
+        </div>
 
-        <label class="flex flex-col gap-1.5">
-          <span class="basics__label">Held item</span>
+        <div class="flex flex-col gap-1.5">
+          <span class="basics__label" id="picker-label-held-item">Held item</span>
           <button
             type="button"
+            [attr.aria-labelledby]="'picker-label-held-item'"
             (click)="openItemPicker.emit()"
             [disabled]="isMega()"
             [class.is-filled]="!!member.item"
@@ -172,7 +175,7 @@
             }
             <span class="text-sm text-brand-dim ml-0.5" aria-hidden="true">&#x203A;</span>
           </button>
-        </label>
+        </div>
 
         <app-searchable-select
           label="Tera type"
