@@ -1,3 +1,5 @@
+import { MAX_EMAIL_LENGTH } from '@shared/constants/auth.constants';
+
 import { ContactRequest } from '@shared/interfaces/misc/contact-request.interface';
 
 import { ContactService } from '@core/services/contact.service';
@@ -5,7 +7,8 @@ import { ContactService } from '@core/services/contact.service';
 import { finalize } from 'rxjs';
 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const NAME_MIN_LENGTH = 2;
 const NAME_MAX_LENGTH = 60;
@@ -21,6 +24,7 @@ const MESSAGE_MAX_LENGTH = 2000;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Contact {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
   private readonly contactService = inject(ContactService);
 
@@ -42,7 +46,7 @@ export class Contact {
         Validators.maxLength(NAME_MAX_LENGTH),
       ],
     ],
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(MAX_EMAIL_LENGTH)]],
     subject: ['', [Validators.required, Validators.maxLength(SUBJECT_MAX_LENGTH)]],
     message: [
       '',
@@ -83,7 +87,10 @@ export class Contact {
 
     this.contactService
       .sendMessage(request)
-      .pipe(finalize(() => this.isLoading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         next: () => this.isSent.set(true),
         error: () => this.hasError.set(true),
