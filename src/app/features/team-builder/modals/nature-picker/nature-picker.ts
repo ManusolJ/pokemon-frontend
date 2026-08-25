@@ -1,4 +1,6 @@
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
+
+import { debouncedText } from '@shared/utils/debounced-text.util';
 import { SearchableOption } from '@shared/interfaces/ui/generic/searchable-option.interface';
 
 import { NatureService } from '@core/services/nature.service';
@@ -25,7 +27,6 @@ import {
 } from '@angular/core';
 
 const PAGE_SIZE = 30;
-const SEARCH_DEBOUNCE_MS = 300;
 
 const STAT_OPTIONS: readonly SearchableOption[] = [
   { label: 'Attack', value: 'attack' },
@@ -66,12 +67,12 @@ export class NaturePicker {
   protected readonly currentPage = signal(0);
   protected readonly totalRecords = signal(0);
 
-  protected readonly query = signal('');
+  private readonly searchText = debouncedText(() => this.currentPage.set(0));
+  protected readonly query = this.searchText.live;
   protected readonly increasedStat = signal<string | null>(null);
   protected readonly decreasedStat = signal<string | null>(null);
 
-  private readonly debouncedQuery = signal('');
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly debouncedQuery = this.searchText.settled;
 
   private readonly naturesResource = rxResource({
     params: () => ({
@@ -120,12 +121,7 @@ export class NaturePicker {
   }
 
   protected onSearch(value: string): void {
-    this.query.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedQuery.set(value);
-      this.currentPage.set(0);
-    }, SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected toggleIncreased(value: SearchableOption['value']): void {
@@ -169,9 +165,7 @@ export class NaturePicker {
   }
 
   private resetFilters(): void {
-    clearTimeout(this.searchDebounceTimer);
-    this.query.set('');
-    this.debouncedQuery.set('');
+    this.searchText.reset();
     this.increasedStat.set(null);
     this.decreasedStat.set(null);
     this.currentPage.set(0);

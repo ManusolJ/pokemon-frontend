@@ -1,4 +1,6 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
+
+import { debouncedText } from '@shared/utils/debounced-text.util';
 
 import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
 
@@ -28,7 +30,6 @@ import {
 } from '@angular/core';
 
 const PAGE_SIZE = 30;
-const SEARCH_DEBOUNCE_MS = 300;
 
 @Component({
   imports: [Modal, NameNormalizerPipe, TitleCasePipe, PaginatorModule, SkeletonModule],
@@ -49,12 +50,12 @@ export class ItemPicker {
   protected readonly pageSize = PAGE_SIZE;
   protected readonly skeletons = computed<readonly void[]>(() => Array.from({ length: PAGE_SIZE }));
 
-  protected readonly query = signal('');
+  private readonly searchText = debouncedText(() => this.currentPage.set(0));
+  protected readonly query = this.searchText.live;
   protected readonly currentPage = signal(0);
   protected readonly totalRecords = signal(0);
 
-  private readonly debouncedQuery = signal('');
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly debouncedQuery = this.searchText.settled;
 
   private readonly itemsResource = rxResource({
     params: () => ({
@@ -92,12 +93,7 @@ export class ItemPicker {
   }
 
   protected onSearch(value: string): void {
-    this.query.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedQuery.set(value);
-      this.currentPage.set(0);
-    }, SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected onPageChange(state: PaginatorState): void {
@@ -121,13 +117,11 @@ export class ItemPicker {
   }
 
   protected getImgUrl(url: string): string {
-    return `${environment.spritesBaseUrl}${url}`;
+    return spriteUrl(url);
   }
 
   private resetFilters(): void {
-    clearTimeout(this.searchDebounceTimer);
-    this.query.set('');
-    this.debouncedQuery.set('');
+    this.searchText.reset();
     this.currentPage.set(0);
   }
 }

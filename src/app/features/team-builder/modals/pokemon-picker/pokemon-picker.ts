@@ -1,4 +1,6 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
+
+import { debouncedText } from '@shared/utils/debounced-text.util';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { PokemonRead } from '@shared/interfaces/pokemon/pokemon/pokemon-read.interface';
@@ -25,14 +27,14 @@ import {
   inject,
   computed,
   Component,
+  DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
 
-import { map, of, switchMap, tap } from 'rxjs';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { map, of, tap } from 'rxjs';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const PAGE_SIZE = 27;
-const SEARCH_DEBOUNCE_MS = 300;
 
 @Component({
   imports: [Modal, TypeBadge, NameNormalizerPipe, PaginatorModule, SkeletonModule],
@@ -42,6 +44,7 @@ const SEARCH_DEBOUNCE_MS = 300;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonPicker {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly typeService = inject(TypeService);
   private readonly pokemonService = inject(PokemonService);
 
@@ -56,28 +59,14 @@ export class PokemonPicker {
   protected readonly currentPage = signal(0);
   protected readonly totalRecords = signal(0);
 
-  protected readonly query = signal('');
+  private readonly searchText = debouncedText(() => this.currentPage.set(0));
+  protected readonly query = this.searchText.live;
   protected readonly typeId = signal<number | null>(null);
 
-  private readonly debouncedQuery = signal('');
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly debouncedQuery = this.searchText.settled;
 
   private readonly typesResource = rxResource({
-    stream: () =>
-      this.typeService
-        .getTypeCountWithFilter({})
-        .pipe(
-          switchMap((count) =>
-            count === 0
-              ? of<readonly TypeRead[]>([])
-              : this.typeService
-                  .getTypePageWithFilter(
-                    {},
-                    { page: 0, size: count, sort: 'name', direction: 'ASC' },
-                  )
-                  .pipe(map((page) => page.content)),
-          ),
-        ),
+    stream: () => this.typeService.getAllTypes(),
     defaultValue: [],
   });
 
@@ -134,20 +123,13 @@ export class PokemonPicker {
   }
 
   private resetFilters(): void {
-    this.query.set('');
+    this.searchText.reset();
     this.typeId.set(null);
     this.currentPage.set(0);
-    this.debouncedQuery.set('');
-    clearTimeout(this.searchDebounceTimer);
   }
 
   protected onSearch(value: string): void {
-    this.query.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedQuery.set(value);
-      this.currentPage.set(0);
-    }, SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected toggleType(id: number): void {
@@ -168,12 +150,16 @@ export class PokemonPicker {
   }
 
   protected onPick(pick: PokemonSummary): void {
-    this.pokemonService.getOnePokemon({ id: pick.id }).subscribe({
-      next: (result) => this.picked.emit(result),
-    });
+    this.pokemonService
+      .getOnePokemon({ id: pick.id })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => this.picked.emit(result),
+        error: () => {},
+      });
   }
 
   protected getImgUrl(url: string): string {
-    return `${environment.spritesBaseUrl}${url}`;
+    return spriteUrl(url);
   }
 }

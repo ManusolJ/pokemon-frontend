@@ -1,5 +1,6 @@
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
-import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
+
+import { debouncedText } from '@shared/utils/debounced-text.util';
 import { CategoryMeta } from '@shared/interfaces/team-builder/move/category-meta.interface';
 import { MoveCategoryKey } from '@shared/interfaces/ui/move-detail/move-category-key.interface';
 
@@ -14,7 +15,7 @@ import { getTypeColor } from '@shared/utils/get-type-color.util';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
-import { map, of, switchMap, tap } from 'rxjs';
+import { map, of, tap } from 'rxjs';
 
 import { rxResource } from '@angular/core/rxjs-interop';
 import {
@@ -32,7 +33,6 @@ type MoveSort = 'default' | 'power' | 'name';
 type MoveCategoryFilter = 'all' | MoveCategoryKey;
 
 const PAGE_SIZE = 12;
-const SEARCH_DEBOUNCE_MS = 300;
 const DEFAULT_CATEGORY_KEY: MoveCategoryKey = 'status';
 
 const CATEGORY_META: Record<MoveCategoryKey, CategoryMeta> = {
@@ -79,7 +79,8 @@ export class MovePicker {
   protected readonly categoryOptions = CATEGORY_OPTIONS;
   protected readonly skeletons = computed<readonly void[]>(() => Array.from({ length: PAGE_SIZE }));
 
-  protected readonly query = signal('');
+  private readonly searchText = debouncedText(() => this.currentPage.set(0));
+  protected readonly query = this.searchText.live;
   protected readonly typeId = signal<number | null>(null);
 
   protected readonly sort = signal<MoveSort>('default');
@@ -88,25 +89,10 @@ export class MovePicker {
   protected readonly currentPage = signal(0);
   protected readonly totalRecords = signal(0);
 
-  private readonly debouncedQuery = signal('');
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly debouncedQuery = this.searchText.settled;
 
   private readonly typesResource = rxResource({
-    stream: () =>
-      this.typeService
-        .getTypeCountWithFilter({})
-        .pipe(
-          switchMap((count) =>
-            count === 0
-              ? of<readonly TypeRead[]>([])
-              : this.typeService
-                  .getTypePageWithFilter(
-                    {},
-                    { page: 0, size: count, sort: 'name', direction: 'ASC' },
-                  )
-                  .pipe(map((page) => page.content)),
-          ),
-        ),
+    stream: () => this.typeService.getAllTypes(),
     defaultValue: [],
   });
 
@@ -169,12 +155,7 @@ export class MovePicker {
   }
 
   protected onSearch(value: string): void {
-    this.query.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedQuery.set(value);
-      this.currentPage.set(0);
-    }, SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected toggleType(id: number): void {
@@ -227,12 +208,10 @@ export class MovePicker {
   }
 
   private resetFilters(): void {
-    clearTimeout(this.searchDebounceTimer);
-    this.query.set('');
+    this.searchText.reset();
     this.typeId.set(null);
     this.currentPage.set(0);
     this.category.set('all');
     this.sort.set('default');
-    this.debouncedQuery.set('');
   }
 }
