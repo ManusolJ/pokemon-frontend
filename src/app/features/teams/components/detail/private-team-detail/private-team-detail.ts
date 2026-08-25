@@ -1,6 +1,5 @@
 import {
   TEAMS_MY_PATH,
-  TEAMS_SHARED_PATH,
   TEAM_BUILDER_PATH,
   COPIED_FEEDBACK_MS,
 } from '@shared/constants/teams.constants';
@@ -10,6 +9,8 @@ import { TeamHydrationService } from '@core/services/team-hydration.service';
 import { TeamBuilderStateService } from '@core/services/team-builder-state.service';
 
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
+
+import { copyToClipboard, publicTeamUrl } from '@shared/utils/share.util';
 
 import {
   NEUTRAL_ACCENT,
@@ -66,6 +67,10 @@ export class PrivateTeamDetail {
   protected readonly shareCopied = signal(false);
 
   private shareFeedbackTimer: ReturnType<typeof setTimeout> | undefined;
+
+  constructor() {
+    this.destroyRef.onDestroy(() => clearTimeout(this.shareFeedbackTimer));
+  }
 
   private readonly teamId = toSignal(
     this.route.paramMap.pipe(map((params) => Number(params.get('id')))),
@@ -152,8 +157,11 @@ export class PrivateTeamDetail {
     if (!team || !team.isPublic) {
       return;
     }
-    const url = `${window.location.origin}${TEAMS_SHARED_PATH}/${team.id}`;
-    void navigator.clipboard?.writeText(url).then(() => this.flashShareCopied());
+    void copyToClipboard(publicTeamUrl(team.id)).then((copied) => {
+      if (copied) {
+        this.flashShareCopied();
+      }
+    });
   }
 
   protected delete(): void {
@@ -164,7 +172,7 @@ export class PrivateTeamDetail {
     this.teamService
       .deleteTeam(team.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({ next: () => this.router.navigate([TEAMS_MY_PATH]) });
+      .subscribe({ next: () => this.router.navigate([TEAMS_MY_PATH]), error: () => {} });
   }
 
   protected back(): void {

@@ -14,6 +14,8 @@ import { TeamBuilderStateService } from '@core/services/team-builder-state.servi
 
 import { TypeBadge } from '@shared/components/type-badge/type-badge';
 
+import { copyToClipboard, publicTeamUrl } from '@shared/utils/share.util';
+
 import { LikeButton } from '@features/teams/components/like-button/like-button';
 import { TeamPokemonCard } from '@features/teams/components/team-pokemon-card/team-pokemon-card';
 
@@ -68,6 +70,10 @@ export class PublicTeamDetail {
   protected readonly shareCopied = signal(false);
 
   private shareFeedbackTimer: ReturnType<typeof setTimeout> | undefined;
+
+  constructor() {
+    this.destroyRef.onDestroy(() => clearTimeout(this.shareFeedbackTimer));
+  }
 
   private readonly teamId = toSignal(
     this.route.paramMap.pipe(map((params) => Number(params.get('id')))),
@@ -152,8 +158,11 @@ export class PublicTeamDetail {
     if (!team) {
       return;
     }
-    const url = `${window.location.origin}${TEAMS_SHARED_PATH}/${team.id}`;
-    void navigator.clipboard?.writeText(url).then(() => this.flashShareCopied());
+    void copyToClipboard(publicTeamUrl(team.id)).then((copied) => {
+      if (copied) {
+        this.flashShareCopied();
+      }
+    });
   }
 
   protected back(): void {
