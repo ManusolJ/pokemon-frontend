@@ -1,4 +1,4 @@
-import { ContactRequest } from '@shared/interfaces/pokemon/contact/contact-request.interface';
+import { ContactRequest } from '@shared/interfaces/misc/contact-request.interface';
 
 import { BaseApiService } from '@core/services/base-api.service';
 
@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'contact';
+const ENDPOINT = 'contact';
 
 @Injectable({ providedIn: 'root' })
 export class ContactService extends BaseApiService {

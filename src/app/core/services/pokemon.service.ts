@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'pokemon/';
+const ENDPOINT = 'pokemon/';
 
 @Injectable({ providedIn: 'root' })
 export class PokemonService extends BaseApiService {

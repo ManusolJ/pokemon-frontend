@@ -20,7 +20,7 @@ import { defer, Observable, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'auth/';
+const ENDPOINT = 'auth/';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseApiService {

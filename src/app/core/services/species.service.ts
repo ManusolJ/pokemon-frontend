@@ -20,7 +20,7 @@ import { computed, Injectable } from '@angular/core';
 
 import { rxResource } from '@angular/core/rxjs-interop';
 
-const ENDPOINT: string = 'species/';
+const ENDPOINT = 'species/';
 
 @Injectable({ providedIn: 'root' })
 export class SpeciesService extends BaseApiService {

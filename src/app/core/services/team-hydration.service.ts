@@ -15,8 +15,8 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { TEAM_SLOT_COUNT } from '@shared/utils/team.util';
+import { MAX_MOVES_PER_MEMBER } from '@shared/constants/teams.constants';
 
-const TEAM_MOVE_SLOT_COUNT = 4;
 const FALLBACK_ARTWORK_SHINY = '';
 
 @Injectable({ providedIn: 'root' })
@@ -112,10 +112,10 @@ export class TeamHydrationService {
     sources: readonly TeamPokemonMoveEmbed[],
     hydrated: readonly MoveRead[],
   ): ReadonlyArray<MoveRead | null> {
-    const slots: Array<MoveRead | null> = Array.from({ length: TEAM_MOVE_SLOT_COUNT }, () => null);
+    const slots: Array<MoveRead | null> = Array.from({ length: MAX_MOVES_PER_MEMBER }, () => null);
     sources.forEach((slot, index) => {
       const position = slot.slotPosition - 1;
-      if (position < 0 || position >= TEAM_MOVE_SLOT_COUNT) {
+      if (position < 0 || position >= MAX_MOVES_PER_MEMBER) {
         return;
       }
       slots[position] = hydrated[index] ?? null;

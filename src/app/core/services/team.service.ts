@@ -23,7 +23,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'teams/';
+const ENDPOINT = 'teams/';
 
 @Injectable({ providedIn: 'root' })
 export class TeamService extends BaseApiService {

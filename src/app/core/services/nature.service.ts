@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'natures/';
+const ENDPOINT = 'natures/';
 
 @Injectable({ providedIn: 'root' })
 export class NatureService extends BaseApiService {

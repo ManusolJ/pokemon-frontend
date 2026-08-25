@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'abilities/';
+const ENDPOINT = 'abilities/';
 
 @Injectable({ providedIn: 'root' })
 export class AbilityService extends BaseApiService {
@@ -34,11 +34,7 @@ export class AbilityService extends BaseApiService {
     filter: AbilityFilter,
     pageable?: Pageable,
   ): Observable<Page<AbilitySummary>> {
-    return this.postPaged<Page<AbilitySummary>>(
-      `${ENDPOINT}${SUMMARY_ENDPOINT}`,
-      filter,
-      pageable,
-    );
+    return this.postPaged<Page<AbilitySummary>>(`${ENDPOINT}${SUMMARY_ENDPOINT}`, filter, pageable);
   }
 
   getAbilityPageWithFilter(
