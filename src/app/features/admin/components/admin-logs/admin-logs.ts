@@ -17,15 +17,15 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 
+import { endOfLocalDayIso, startOfLocalDayIso } from '@shared/utils/format-date.util';
+
+import { debouncedText } from '@shared/utils/debounced-text.util';
+
 const PAGE_SIZE = 10;
 const EMPTY_PLACEHOLDER = '—';
-const SEARCH_DEBOUNCE_MS = 300;
 
 const SECONDS_IN_MINUTE = 60;
 const MILLISECONDS_IN_SECOND = 1000;
-
-const START_OF_DAY_SUFFIX = 'T00:00:00.000Z';
-const END_OF_DAY_SUFFIX = 'T23:59:59.999Z';
 
 const LOG_KIND_SEED = 'SEED' as const;
 const LOG_KIND_AUDIT = 'AUDIT' as const;
@@ -88,28 +88,28 @@ export class AdminLogs {
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
 
-  protected readonly search = signal('');
+  private readonly searchText = debouncedText(() => this.page.set(0));
+  protected readonly search = this.searchText.live;
   protected readonly fromDate = signal('');
   protected readonly toDate = signal('');
   protected readonly seedStatus = signal<SeedStatusFilter>(SEED_STATUS_ALL);
 
-  private readonly debouncedSearch = signal('');
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly debouncedSearch = this.searchText.settled;
 
   private readonly currentSeedFilter = computed<SeedLogFilter>(() => {
     const status = this.seedStatus();
     return {
       triggeredBy: this.debouncedSearch().trim() || undefined,
       status: status === SEED_STATUS_ALL ? undefined : status,
-      dateFrom: toStartOfDayInstant(this.fromDate()),
-      dateTo: toEndOfDayInstant(this.toDate()),
+      dateFrom: startOfLocalDayIso(this.fromDate()),
+      dateTo: endOfLocalDayIso(this.toDate()),
     };
   });
 
   private readonly currentAuditFilter = computed<AuditLogFilter>(() => ({
     username: this.debouncedSearch().trim() || undefined,
-    dateFrom: toStartOfDayInstant(this.fromDate()),
-    dateTo: toEndOfDayInstant(this.toDate()),
+    dateFrom: startOfLocalDayIso(this.fromDate()),
+    dateTo: endOfLocalDayIso(this.toDate()),
   }));
 
   private readonly seedLogsResource = rxResource({
@@ -206,12 +206,7 @@ export class AdminLogs {
   }
 
   protected onSearchInput(value: string): void {
-    this.search.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedSearch.set(value);
-      this.page.set(0);
-    }, SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected setSeedStatus(value: SeedStatusFilter): void {
@@ -230,9 +225,7 @@ export class AdminLogs {
   }
 
   protected clearFilters(): void {
-    clearTimeout(this.searchDebounceTimer);
-    this.search.set('');
-    this.debouncedSearch.set('');
+    this.searchText.reset();
     this.fromDate.set('');
     this.toDate.set('');
     this.seedStatus.set(SEED_STATUS_ALL);
@@ -284,12 +277,4 @@ export class AdminLogs {
   protected statusClass(status: string): string {
     return `status-tag status-tag--${status.toLowerCase()}`;
   }
-}
-
-function toStartOfDayInstant(isoDate: string): string | undefined {
-  return isoDate ? `${isoDate}${START_OF_DAY_SUFFIX}` : undefined;
-}
-
-function toEndOfDayInstant(isoDate: string): string | undefined {
-  return isoDate ? `${isoDate}${END_OF_DAY_SUFFIX}` : undefined;
 }
