@@ -15,14 +15,43 @@ import { TypeEffectivenessFilter } from '@shared/interfaces/pokemon/type/type-ef
 
 import { BaseApiService } from './base-api.service';
 
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of, shareReplay, switchMap, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-const ENDPOINT: string = 'types/';
+const ENDPOINT = 'types/';
+
+const TYPE_LIST_REPLAY_BUFFER_SIZE = 1;
 
 @Injectable({ providedIn: 'root' })
 export class TypeService extends BaseApiService {
+  private allTypes: Observable<readonly TypeRead[]> | null = null;
+
+  getAllTypes(): Observable<readonly TypeRead[]> {
+    this.allTypes ??= this.fetchAllTypes().pipe(
+      catchError((error: unknown) => {
+        this.allTypes = null;
+        return throwError(() => error);
+      }),
+      shareReplay({ bufferSize: TYPE_LIST_REPLAY_BUFFER_SIZE, refCount: false }),
+    );
+
+    return this.allTypes;
+  }
+
+  private fetchAllTypes(): Observable<readonly TypeRead[]> {
+    return this.getTypeCountWithFilter({}).pipe(
+      switchMap((count) =>
+        count === 0
+          ? of<readonly TypeRead[]>([])
+          : this.getTypePageWithFilter(
+              {},
+              { page: 0, size: count, sort: 'name', direction: 'ASC' },
+            ).pipe(map((page) => page.content)),
+      ),
+    );
+  }
+
   getOneType(filter: TypeFilter): Observable<TypeRead> {
     return this.post<TypeRead>(`${ENDPOINT}${ID_ENDPOINT}`, filter);
   }

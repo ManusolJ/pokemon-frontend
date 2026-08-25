@@ -6,7 +6,7 @@ import { EffectivenessChartLoad } from '@shared/interfaces/team-builder/analysis
 
 import { TypeService } from './type.service';
 
-import { map, Observable, shareReplay } from 'rxjs';
+import { catchError, map, Observable, shareReplay, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -16,14 +16,20 @@ const CHART_REPLAY_BUFFER_SIZE = 1;
 export class TypeEffectivenessService {
   private readonly typeService = inject(TypeService);
 
-  private readonly chart: Observable<EffectivenessChartLoad> = this.typeService
-    .getTypeEffectivenessPageWithFilter({}, { page: 0, size: EFFECTIVENESS_MATRIX_PAGE_SIZE })
-    .pipe(
-      map((response) => this.toChartLoad(response.content)),
-      shareReplay({ bufferSize: CHART_REPLAY_BUFFER_SIZE, refCount: false }),
-    );
+  private chart: Observable<EffectivenessChartLoad> | null = null;
 
   loadChart(): Observable<EffectivenessChartLoad> {
+    this.chart ??= this.typeService
+      .getTypeEffectivenessPageWithFilter({}, { page: 0, size: EFFECTIVENESS_MATRIX_PAGE_SIZE })
+      .pipe(
+        map((response) => this.toChartLoad(response.content)),
+        catchError((error: unknown) => {
+          this.chart = null;
+          return throwError(() => error);
+        }),
+        shareReplay({ bufferSize: CHART_REPLAY_BUFFER_SIZE, refCount: false }),
+      );
+
     return this.chart;
   }
 

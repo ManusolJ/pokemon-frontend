@@ -1,7 +1,19 @@
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 
-import { finalize, map, Observable, shareReplay, throwError } from 'rxjs';
+import {
+  map,
+  tap,
+  EMPTY,
+  defer,
+  concat,
+  finalize,
+  catchError,
+  Observable,
+  throwError,
+  shareReplay,
+  ignoreElements,
+} from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -19,10 +31,34 @@ export class TokenRefreshService {
 
     this.inFlight ??= this.authService.refreshAccessToken().pipe(
       map((response) => response.accessToken),
-      finalize(() => (this.inFlight = null)),
+      tap({
+        complete: () => this.release(),
+        error: () => this.release(),
+      }),
+      finalize(() => this.release()),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     return this.inFlight;
+  }
+
+  renewAfterInFlight(): Observable<string> {
+    const pending = this.inFlight;
+
+    if (!pending) {
+      return this.refresh();
+    }
+
+    return concat(
+      pending.pipe(
+        ignoreElements(),
+        catchError(() => EMPTY),
+      ),
+      defer(() => this.refresh()),
+    );
+  }
+
+  private release(): void {
+    this.inFlight = null;
   }
 }
