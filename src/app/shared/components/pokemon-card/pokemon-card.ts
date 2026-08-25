@@ -1,3 +1,5 @@
+import { spriteUrl } from '@shared/utils/sprite-url.util';
+
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { SpeciesSummary } from '@shared/interfaces/pokemon/pokemon/species-summary.interface';
 
@@ -6,7 +8,6 @@ import { TypeBadge } from '@shared/components/type-badge/type-badge';
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { environment } from '@environments/environment';
 
 @Component({
   imports: [TypeBadge],
@@ -17,7 +18,7 @@ import { environment } from '@environments/environment';
 })
 export class PokemonCard {
   readonly pokemon = input.required<SpeciesSummary>();
-  readonly select = output<number>();
+  readonly selected = output<number>();
 
   protected readonly types = computed<TypeRead[]>(() => {
     if (this.pokemon()) {
@@ -28,7 +29,7 @@ export class PokemonCard {
 
   readonly spriteUrl = computed(() => {
     const sprite = this.pokemon().spriteDefault;
-    return sprite ? `${environment.spritesBaseUrl}${sprite}` : null;
+    return spriteUrl(sprite) || null;
   });
 
   protected readonly accent = computed(() => {
