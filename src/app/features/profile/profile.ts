@@ -5,7 +5,7 @@ import {
   MIN_PASSWORD_LENGTH,
   MIN_USERNAME_LENGTH,
 } from '@shared/constants/auth.constants';
-import { ADMIN_ROLE } from '@shared/constants/api.constants';
+import { ADMIN_ROLE } from '@shared/constants/auth.constants';
 
 import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
 import { UserUpdate } from '@shared/interfaces/pokemon/user/user-update.interface';
@@ -20,6 +20,7 @@ import { Modal } from '@shared/components/modal/modal';
 
 import { AuthService } from '@core/services/auth.service';
 import { UserService } from '@core/services/user.service';
+import { TokenRefreshService } from '@core/services/token-refresh.service';
 
 import { Router } from '@angular/router';
 
@@ -57,6 +58,7 @@ export class Profile {
   private readonly formBuilder = inject(FormBuilder);
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
+  private readonly refreshService = inject(TokenRefreshService);
 
   protected readonly emailStatus = signal<FormSubmissionStatus>('idle');
   protected readonly usernameStatus = signal<FormSubmissionStatus>('idle');
@@ -202,6 +204,7 @@ export class Profile {
           this.deleteOpen.set(false);
           this.logoutAndGoHome();
         },
+        error: () => {},
       });
   }
 
@@ -212,7 +215,9 @@ export class Profile {
   ): void {
     const update = this.userService
       .userSelfUpdate(request)
-      .pipe(switchMap((updated) => this.authService.refreshAccessToken().pipe(map(() => updated))));
+      .pipe(
+        switchMap((updated) => this.refreshService.renewAfterInFlight().pipe(map(() => updated))),
+      );
 
     this.runSave(form, status, update, (updated) => {
       this.userResource.set(updated);
