@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { TeamSpriteSlot } from '@shared/interfaces/ui/team/team-sprite-slot.interface';
 
@@ -37,6 +37,6 @@ export class TeamSpriteRow {
     if (!relativeUrl) {
       return null;
     }
-    return `${environment.spritesBaseUrl}${relativeUrl}`;
+    return spriteUrl(relativeUrl);
   }
 }
