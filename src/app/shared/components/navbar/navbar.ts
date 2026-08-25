@@ -1,4 +1,4 @@
-import { ROLE_ADMIN } from '@shared/constants/auth.constants';
+import { AUTHORITY_ADMIN } from '@shared/constants/auth.constants';
 
 import { NavItem } from '@shared/interfaces/ui/generic/nav-item.interface';
 
@@ -34,7 +34,7 @@ export class Navbar {
   private readonly tokenService = inject(TokenService);
 
   protected readonly isAuthenticated = this.authService.isAuthenticated;
-  protected readonly isAdmin = computed(() => this.tokenService.hasRole(ROLE_ADMIN));
+  protected readonly isAdmin = computed(() => this.tokenService.hasRole(AUTHORITY_ADMIN));
 
   protected readonly menuOpen = signal(false);
 

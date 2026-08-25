@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { SearchableOption } from '@shared/interfaces/ui/generic/searchable-option.interface';
 
@@ -12,13 +12,16 @@ import {
   computed,
   Component,
   ElementRef,
-  HostListener,
   ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   imports: [NameNormalizerPipe],
   selector: 'app-searchable-select',
+  host: {
+    '(document:mousedown)': 'onDocumentClick($event)',
+    '(document:keydown.escape)': 'onEscape()',
+  },
   styleUrl: './searchable-select.css',
   templateUrl: './searchable-select.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -85,15 +88,15 @@ export class SearchableSelect {
     this.close();
   }
 
-  @HostListener('document:mousedown', ['$event'])
   protected onDocumentClick(event: MouseEvent): void {
     if (!this.open()) {
       return;
     }
-    if (!this.hostRef.nativeElement.contains(event.target as Node)) this.close();
+    if (!this.hostRef.nativeElement.contains(event.target as Node)) {
+      this.close();
+    }
   }
 
-  @HostListener('document:keydown.escape')
   protected onEscape(): void {
     if (this.open()) {
       this.close();
@@ -101,6 +104,6 @@ export class SearchableSelect {
   }
 
   protected getImgUrl(url: string): string {
-    return `${environment.spritesBaseUrl}${url}`;
+    return spriteUrl(url);
   }
 }

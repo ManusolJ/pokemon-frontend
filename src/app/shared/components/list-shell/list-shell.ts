@@ -15,13 +15,12 @@ export class ListShell {
   readonly title = input.required<string>();
   readonly total = input.required<number>();
   readonly totalPages = input.required<number>();
-
-  readonly page = signal(0);
-  readonly pageChange = output<number>();
-
-  pageSize = input.required<number>();
-
+  readonly pageSize = input.required<number>();
   readonly hideSidebar = input<boolean>(false);
+
+  readonly page = input.required<number>();
+
+  readonly pageChange = output<number>();
 
   protected readonly sidebarOpen = signal(false);
 
@@ -31,14 +30,13 @@ export class ListShell {
 
   protected readonly isEmpty = computed(() => !this.loading() && this.total() === 0);
 
+  protected readonly firstRecordIndex = computed(() => this.page() * this.pageSize());
+
   protected toggleSidebar(): void {
     this.sidebarOpen.update((v) => !v);
   }
 
   protected onPageChange(event: PaginatorState): void {
-    this.page.set(event.page ?? 0);
-    this.pageChange.emit(this.page());
+    this.pageChange.emit(event.page ?? 0);
   }
-
-  protected readonly firstRecordIndex = computed(() => this.page() * this.pageSize());
 }
