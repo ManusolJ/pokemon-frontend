@@ -36,7 +36,7 @@ export class About {
     {
       title: 'Save & Share Teams',
       description:
-        'Save up to 10 teams in your account and share public teams with a link for others to copy.',
+        'Save your teams to your account and share any public team with a link for others to copy.',
     },
     {
       title: 'Accounts',
@@ -92,13 +92,8 @@ export class About {
     },
     {
       glyph: 'in',
-      label: 'linkedin.com/in/manuel-soler-juan',
+      label: 'linkedin.com/in/manusolerj',
       href: 'https://www.linkedin.com/in/manusolerj',
     },
-    // {
-    //   glyph: 'web',
-    //   label: 'site.dev',
-    //   href: 'https://site.dev',
-    // },
   ];
 }
