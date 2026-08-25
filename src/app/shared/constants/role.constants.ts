@@ -108,17 +108,14 @@ export const CHOICE_SPECS_ITEMS: ReadonlySet<string> = new Set(['choice-specs'])
 export const HP_BULKY_THRESHOLD = 90;
 export const SPEED_FAST_THRESHOLD = 95;
 export const DEFENSE_BULKY_THRESHOLD = 95;
-export const SPEED_REVENGE_THRESHOLD = 110;
 export const ATTACK_STRONG_THRESHOLD = 100;
 export const ATTACK_WALLBREAKER_THRESHOLD = 130;
 
-// FIX: Fucking IDE IS acting up
 export const ROLE_LABELS: Readonly<Record<RoleKey, string>> = {
   tank: 'Tank',
   pivot: 'Pivot',
   phazer: 'Phazer',
   cleric: 'Cleric',
-  cleaner: 'Cleaner',
   trapper: 'Trapper',
   versatile: 'Versatile',
   'mixed-wall': 'Mixed Wall',
@@ -131,19 +128,15 @@ export const ROLE_LABELS: Readonly<Record<RoleKey, string>> = {
   'physical-wall': 'Physical Wall',
   'hazard-setter': 'Hazard Setter',
   'hazard-control': 'Hazard Control',
-  'revenge-killer': 'Revenge Killer',
   'choice-scarfer': 'Choice Scarfer',
   'screens-setter': 'Screens Setter',
   'special-sweeper': 'Special Sweeper',
   'physical-sweeper': 'Physical Sweeper',
 };
 
-// FIX: Fucking IDE IS acting up
 export const ROLE_TONES: Readonly<Record<RoleKey, RoleTone>> = {
   'special-sweeper': 'special',
   'physical-sweeper': 'physical',
-  cleaner: 'speed',
-  'revenge-killer': 'speed',
   'choice-scarfer': 'speed',
   tank: 'defense',
   'mixed-wall': 'defense',
