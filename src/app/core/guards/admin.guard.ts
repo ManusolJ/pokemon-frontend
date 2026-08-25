@@ -1,4 +1,4 @@
-import { ROLE_ADMIN } from '@shared/constants/auth.constants';
+import { AUTHORITY_ADMIN } from '@shared/constants/auth.constants';
 
 import { TokenService } from '@core/services/token.service';
 import { TokenRefreshService } from '@core/services/token-refresh.service';
@@ -19,7 +19,8 @@ export const adminGuard: CanActivateFn = (_route, state) => {
       queryParams: { redirectTo: state.url },
     });
 
-  const roleCheck = () => (tokenService.hasRole(ROLE_ADMIN) ? true : router.createUrlTree(['/']));
+  const roleCheck = () =>
+    tokenService.hasRole(AUTHORITY_ADMIN) ? true : router.createUrlTree(['/']);
 
   if (!tokenService.isAuthenticated()) {
     return loginRedirect();
