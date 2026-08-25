@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
 import { ItemFilter } from '@shared/interfaces/pokemon/item/item-filter.interface';
@@ -55,7 +55,7 @@ export class ItemList implements OnInit {
   }
 
   protected getItemSpriteUrl(item: ItemRead) {
-    return item.spriteUrl ? `${environment.spritesBaseUrl}${item.spriteUrl}` : '';
+    return spriteUrl(item.spriteUrl);
   }
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
