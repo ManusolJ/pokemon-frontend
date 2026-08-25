@@ -1,4 +1,4 @@
-import { ADMIN_ROLE, USER_ROLE } from '@shared/constants/api.constants';
+import { ADMIN_ROLE, USER_ROLE } from '@shared/constants/auth.constants';
 
 import { ConfirmCopy } from '@shared/interfaces/admin/confirm-copy.interface';
 import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
@@ -6,6 +6,14 @@ import { UserFilter } from '@shared/interfaces/pokemon/user/user-filter.interfac
 import { ConfirmKind, ConfirmRequest } from '@shared/interfaces/admin/confirm-request.interface';
 
 import { UserService } from '@core/services/user.service';
+
+import {
+  endOfLocalDayIso,
+  formatJoinDate,
+  startOfLocalDayIso,
+} from '@shared/utils/format-date.util';
+
+import { debouncedText } from '@shared/utils/debounced-text.util';
 
 import { Modal } from '@shared/components/modal/modal';
 
@@ -30,11 +38,6 @@ import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const PAGE_SIZE = 9;
 const INITIALS_LENGTH = 2;
-const SEARCH_DEBOUNCE_MS = 300;
-const EMPTY_DATE_PLACEHOLDER = '—';
-
-const END_OF_DAY_SUFFIX = 'T23:59:59.999Z';
-const START_OF_DAY_SUFFIX = 'T00:00:00.000Z';
 
 const ROLE_FILTER_ALL = 'ALL' as const;
 const STATUS_FILTER_ALL = 'ALL' as const;
@@ -48,11 +51,6 @@ type StatusFilter =
   | typeof STATUS_FILTER_DISABLED;
 
 const EMPTY_CONFIRM_COPY: ConfirmCopy = { title: '', body: '', button: '', danger: false };
-const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-};
 
 @Component({
   imports: [Modal, PaginatorModule, FormsModule],
@@ -78,14 +76,14 @@ export class UserList {
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
 
-  protected readonly search = signal('');
+  private readonly searchText = debouncedText(() => this.page.set(0));
+  protected readonly search = this.searchText.live;
   protected readonly toDate = signal('');
   protected readonly fromDate = signal('');
   protected readonly selectedRole = signal<RoleFilter>(ROLE_FILTER_ALL);
   protected readonly selectedStatus = signal<StatusFilter>(STATUS_FILTER_ALL);
 
-  private readonly debouncedSearch = signal('');
-  private searchDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private readonly debouncedSearch = this.searchText.settled;
 
   private readonly selectedIds = signal<ReadonlySet<number>>(new Set());
   protected readonly selectedCount = computed(() => this.selectedIds().size);
@@ -100,8 +98,8 @@ export class UserList {
       username: this.debouncedSearch().trim() || undefined,
       role: role === ROLE_FILTER_ALL ? undefined : role,
       enabled: status === STATUS_FILTER_ALL ? undefined : status === STATUS_FILTER_ACTIVE,
-      createdAfter: toStartOfDayInstant(this.fromDate()),
-      createdBefore: toEndOfDayInstant(this.toDate()),
+      createdAfter: startOfLocalDayIso(this.fromDate()),
+      createdBefore: endOfLocalDayIso(this.toDate()),
     };
   });
 
@@ -160,12 +158,7 @@ export class UserList {
   });
 
   protected onSearchInput(value: string): void {
-    this.search.set(value);
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
-      this.debouncedSearch.set(value);
-      this.page.set(0);
-    }, SEARCH_DEBOUNCE_MS);
+    this.searchText.set(value);
   }
 
   protected setRole(value: RoleFilter): void {
@@ -277,6 +270,7 @@ export class UserList {
           this.confirmRequest.set(null);
           this.usersResource.reload();
         },
+        error: () => {},
       });
   }
 
@@ -285,9 +279,7 @@ export class UserList {
   }
 
   protected clearFilters(): void {
-    clearTimeout(this.searchDebounceTimer);
-    this.search.set('');
-    this.debouncedSearch.set('');
+    this.searchText.reset();
     this.fromDate.set('');
     this.toDate.set('');
     this.selectedRole.set(ROLE_FILTER_ALL);
@@ -300,11 +292,7 @@ export class UserList {
   }
 
   protected formatDate(iso: string): string {
-    const date = new Date(iso);
-    if (Number.isNaN(date.getTime())) {
-      return EMPTY_DATE_PLACEHOLDER;
-    }
-    return date.toLocaleDateString(undefined, DATE_FORMAT_OPTIONS);
+    return formatJoinDate(iso, 'short');
   }
 
   protected isAdminRole(role: string): boolean {
@@ -382,12 +370,4 @@ function formatConfirmTarget(request: ConfirmRequest): string {
   }
   const count = request.batchIds?.length ?? 0;
   return `${count} user${count === 1 ? '' : 's'}`;
-}
-
-function toStartOfDayInstant(isoDate: string): string | undefined {
-  return isoDate ? `${isoDate}${START_OF_DAY_SUFFIX}` : undefined;
-}
-
-function toEndOfDayInstant(isoDate: string): string | undefined {
-  return isoDate ? `${isoDate}${END_OF_DAY_SUFFIX}` : undefined;
 }

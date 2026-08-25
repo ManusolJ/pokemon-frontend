@@ -1,4 +1,4 @@
-import { ADMIN_ROLE, USER_ROLE } from '@shared/constants/api.constants';
+import { ADMIN_ROLE, USER_ROLE } from '@shared/constants/auth.constants';
 import { MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH } from '@shared/constants/auth.constants';
 
 import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
@@ -39,8 +39,8 @@ const PLACEHOLDER_INITIALS = '??';
 export class UserEdit {
   protected readonly roleAdmin = ADMIN_ROLE;
   protected readonly roleUser = USER_ROLE;
-  protected readonly min_username_length = MIN_USERNAME_LENGTH;
-  protected readonly max_username_length = MAX_USERNAME_LENGTH;
+  protected readonly minUsernameLength = MIN_USERNAME_LENGTH;
+  protected readonly maxUsernameLength = MAX_USERNAME_LENGTH;
 
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
