@@ -12,6 +12,12 @@ const SHORT_DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   day: 'numeric',
 };
 
+const DATE_TIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
+  ...SHORT_DATE_FORMAT_OPTIONS,
+  hour: '2-digit',
+  minute: '2-digit',
+};
+
 const SECONDS_PER_MINUTE = 60;
 const SECONDS_PER_HOUR = 3600;
 const SECONDS_PER_DAY = 86_400;
@@ -74,4 +80,37 @@ function parseIso(iso: string | undefined): Date | null {
   }
   const date = new Date(iso);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+export function formatDateTime(iso: string | null | undefined): string {
+  const date = parseIso(iso ?? undefined);
+  return date ? date.toLocaleString(undefined, DATE_TIME_FORMAT_OPTIONS) : EMPTY_DATE_PLACEHOLDER;
+}
+
+export function startOfLocalDayIso(isoDate: string): string | undefined {
+  return localDayIso(isoDate, 0, 0, 0, 0);
+}
+
+export function endOfLocalDayIso(isoDate: string): string | undefined {
+  return localDayIso(isoDate, 23, 59, 59, 999);
+}
+
+function localDayIso(
+  isoDate: string,
+  hours: number,
+  minutes: number,
+  seconds: number,
+  ms: number,
+): string | undefined {
+  if (!isoDate) {
+    return undefined;
+  }
+
+  const [year, month, day] = isoDate.split('-').map(Number);
+
+  if (!year || !month || !day) {
+    return undefined;
+  }
+
+  return new Date(year, month - 1, day, hours, minutes, seconds, ms).toISOString();
 }

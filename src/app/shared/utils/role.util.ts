@@ -18,7 +18,6 @@ import {
   SUICIDE_FINISHER_MOVES,
   ATTACK_STRONG_THRESHOLD,
   DEFENSE_BULKY_THRESHOLD,
-  SPEED_REVENGE_THRESHOLD,
   ATTACK_WALLBREAKER_THRESHOLD,
 } from '@shared/constants/role.constants';
 
@@ -37,7 +36,7 @@ export function classifyRole(member: TeamMember): RoleInfo {
 }
 
 function buildContext(member: TeamMember): ClassificationContext {
-  const moves = CollectMoves(member);
+  const moves = collectMoves(member);
   const shape = describeStatShape(member);
   return {
     shape,
@@ -175,7 +174,6 @@ function describeStatShape(member: TeamMember): StatShape {
   return {
     isBulky: hp >= HP_BULKY_THRESHOLD,
     isFast: speed >= SPEED_FAST_THRESHOLD,
-    isVeryFast: speed >= SPEED_REVENGE_THRESHOLD,
     hasPhysicalOffense: attack >= ATTACK_STRONG_THRESHOLD,
     hasPhysicalDefense: defense >= DEFENSE_BULKY_THRESHOLD,
     hasSpecialOffense: specialAttack >= ATTACK_STRONG_THRESHOLD,
@@ -185,7 +183,7 @@ function describeStatShape(member: TeamMember): StatShape {
   };
 }
 
-function CollectMoves(member: TeamMember): ReadonlySet<string> {
+function collectMoves(member: TeamMember): ReadonlySet<string> {
   const moves = new Set<string>();
   for (const move of member.moves) {
     if (move) {
