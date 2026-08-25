@@ -17,7 +17,7 @@
         username.touched && (username.hasError('minlength') || username.hasError('maxlength'))
       ) {
         <span class="field-error">
-          Must be between {{ min_username_length }} and {{ max_username_length }} characters.
+          Must be between {{ minUsernameLength }} and {{ maxUsernameLength }} characters.
         </span>
       }
     </div>
@@ -37,6 +37,8 @@
         <span class="field-error">This field is required.</span>
       } @else if (email.touched && email.hasError('email')) {
         <span class="field-error">Enter a valid email address.</span>
+      } @else if (email.touched && email.hasError('maxlength')) {
+        <span class="field-error">Must be at most {{ maxEmailLength }} characters.</span>
       }
     </div>
 
@@ -54,7 +56,9 @@
       @if (password.touched && password.hasError('required')) {
         <span class="field-error">This field is required.</span>
       } @else if (password.touched && password.hasError('minlength')) {
-        <span class="field-error">Must be at least {{ min_password_length }} characters.</span>
+        <span class="field-error">Must be at least {{ minPasswordLength }} characters.</span>
+      } @else if (password.touched && password.hasError('maxlength')) {
+        <span class="field-error">Must be at most {{ maxPasswordLength }} characters.</span>
       }
     </div>
 
