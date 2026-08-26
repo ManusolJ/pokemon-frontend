@@ -180,10 +180,17 @@
             }
           </span>
 
-          <span class="status" [class.status--off]="!user.enabled">
+          <span
+            class="status"
+            [class.status--off]="!user.enabled"
+            [class.status--deleted]="isDeleted(user)"
+            [attr.title]="isDeleted(user) ? deletedLabel(user) : null"
+          >
             <span class="status__dot"></span>
             @if (user.enabled) {
               Active
+            } @else if (isDeleted(user)) {
+              Deactivated
             } @else {
               Disabled
             }

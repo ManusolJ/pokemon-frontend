@@ -98,6 +98,7 @@ export class UserList {
       username: this.debouncedSearch().trim() || undefined,
       role: role === ROLE_FILTER_ALL ? undefined : role,
       enabled: status === STATUS_FILTER_ALL ? undefined : status === STATUS_FILTER_ACTIVE,
+      includeDeleted: status !== STATUS_FILTER_ACTIVE,
       createdAfter: startOfLocalDayIso(this.fromDate()),
       createdBefore: endOfLocalDayIso(this.toDate()),
     };
@@ -293,6 +294,15 @@ export class UserList {
 
   protected formatDate(iso: string): string {
     return formatJoinDate(iso, 'short');
+  }
+
+  /** Tombstoned: deactivated from this screen, as opposed to merely disabled via the edit form. */
+  protected isDeleted(user: UserRead): boolean {
+    return user.deletedAt !== null;
+  }
+
+  protected deletedLabel(user: UserRead): string {
+    return user.deletedAt ? `Deactivated ${formatJoinDate(user.deletedAt, 'short')}` : '';
   }
 
   protected isAdminRole(role: string): boolean {

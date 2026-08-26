@@ -5,6 +5,7 @@ export interface UserFilter {
   email?: string;
   role?: string;
   enabled?: boolean;
+  includeDeleted?: boolean;
   createdAfter?: string;
   createdBefore?: string;
 }

@@ -366,6 +366,15 @@
   box-shadow: none;
 }
 
+.status--deleted {
+  color: var(--color-brand-red);
+}
+
+.status--deleted .status__dot {
+  background-color: var(--color-brand-red);
+  box-shadow: none;
+}
+
 .icon-btn {
   display: inline-flex;
   align-items: center;

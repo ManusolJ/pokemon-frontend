@@ -5,4 +5,5 @@ export interface UserRead {
   role: string;
   enabled: boolean;
   createdAt: string;
+  deletedAt: string | null;
 }
