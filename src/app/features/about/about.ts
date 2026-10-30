@@ -75,7 +75,7 @@ export class About {
   };
 
   protected readonly support = {
-    href: 'https://ko-fi.com/lorelei73269',
+    href: 'https://ko-fi.com/manusolj',
     label: 'Support on Ko-fi',
   };
 
