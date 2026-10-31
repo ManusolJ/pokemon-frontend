@@ -17,6 +17,7 @@ export class TokenService {
   private readonly accessToken = signal<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY));
 
   readonly isAuthenticated = computed<boolean>(() => this.accessToken() !== null);
+  readonly username = computed<string | null>(() => this.decode()?.username ?? null);
 
   constructor() {
     window.addEventListener('storage', (event) => {
@@ -29,10 +30,6 @@ export class TokenService {
   hasRole(role: string): boolean {
     const payload = this.decode();
     return payload ? payload.authorities.includes(role) : false;
-  }
-
-  getUsername(): string | null {
-    return this.decode()?.sub ?? null;
   }
 
   getAccessToken(): string | null {

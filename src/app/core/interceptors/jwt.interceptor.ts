@@ -66,11 +66,17 @@ function refreshAndRetry(
   router: Router,
 ) {
   return refreshService.refresh().pipe(
-    catchError((error) => {
-      authService.logout().subscribe({ error: () => {} });
-      router.navigate(['/auth/login']);
+    catchError((error: unknown) => {
+      if (!isTransient(error)) {
+        authService.signOut();
+        void router.navigate(['/auth/login'], { queryParams: { redirectTo: router.url } });
+      }
       return throwError(() => error);
     }),
     switchMap((accessToken) => next(addToken(req, accessToken))),
   );
+}
+
+function isTransient(error: unknown): boolean {
+  return error instanceof HttpErrorResponse && (error.status === 0 || error.status >= 500);
 }

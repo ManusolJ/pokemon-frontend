@@ -1,3 +1,5 @@
+import { silentErrors } from '@core/http/http-context';
+
 import { ContactRequest } from '@shared/interfaces/misc/contact-request.interface';
 
 import { BaseApiService } from '@core/services/base-api.service';
@@ -11,6 +13,6 @@ const ENDPOINT = 'contact';
 @Injectable({ providedIn: 'root' })
 export class ContactService extends BaseApiService {
   sendMessage(request: ContactRequest): Observable<void> {
-    return this.post<void>(`${ENDPOINT}`, request);
+    return this.post<void>(`${ENDPOINT}`, request, undefined, silentErrors());
   }
 }

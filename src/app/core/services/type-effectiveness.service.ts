@@ -6,7 +6,9 @@ import { EffectivenessChartLoad } from '@shared/interfaces/team-builder/analysis
 
 import { TypeService } from './type.service';
 
-import { catchError, map, Observable, shareReplay, throwError } from 'rxjs';
+import { Page } from '@shared/interfaces/api/page.interface';
+
+import { EMPTY, catchError, expand, map, Observable, reduce, shareReplay, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -19,18 +21,32 @@ export class TypeEffectivenessService {
   private chart: Observable<EffectivenessChartLoad> | null = null;
 
   loadChart(): Observable<EffectivenessChartLoad> {
-    this.chart ??= this.typeService
-      .getTypeEffectivenessPageWithFilter({}, { page: 0, size: EFFECTIVENESS_MATRIX_PAGE_SIZE })
-      .pipe(
-        map((response) => this.toChartLoad(response.content)),
-        catchError((error: unknown) => {
-          this.chart = null;
-          return throwError(() => error);
-        }),
-        shareReplay({ bufferSize: CHART_REPLAY_BUFFER_SIZE, refCount: false }),
-      );
+    this.chart ??= this.pageOf(0).pipe(
+      expand((page) =>
+        page.page.number + 1 < page.page.totalPages ? this.pageOf(page.page.number + 1) : EMPTY,
+      ),
+      reduce((rows, page) => rows.concat(page.content), [] as TypeEffectivenessRead[]),
+      map((rows) => this.toChartLoad(rows)),
+      catchError((error: unknown) => {
+        this.chart = null;
+        return throwError(() => error);
+      }),
+      shareReplay({ bufferSize: CHART_REPLAY_BUFFER_SIZE, refCount: false }),
+    );
 
     return this.chart;
+  }
+
+  private pageOf(page: number): Observable<Page<TypeEffectivenessRead>> {
+    return this.typeService.getTypeEffectivenessPageWithFilter(
+      {},
+      {
+        page,
+        size: EFFECTIVENESS_MATRIX_PAGE_SIZE,
+        sort: 'attackingType.id',
+        thenSort: ['defendingType.id'],
+      },
+    );
   }
 
   private toChartLoad(rows: readonly TypeEffectivenessRead[]): EffectivenessChartLoad {

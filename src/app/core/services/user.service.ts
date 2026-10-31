@@ -13,6 +13,8 @@ import {
   ADMIN_BATCH_REACTIVATION_ENDPOINT,
 } from '@shared/constants/api.constants';
 
+import { silentErrors } from '@core/http/http-context';
+
 import { Page } from '@shared/interfaces/api/page.interface';
 import { Pageable } from '@shared/interfaces/api/pageable.interface';
 
@@ -22,6 +24,7 @@ import { UserFilter } from '@shared/interfaces/pokemon/user/user-filter.interfac
 import { UserSummary } from '@shared/interfaces/pokemon/user/user-summary.interface';
 import { PasswordChange } from '@shared/interfaces/pokemon/user/password-change.interface';
 import { AdminUserUpdate } from '@shared/interfaces/pokemon/user/admin-user-update.interface';
+import { BatchUserActionResult } from '@shared/interfaces/admin/batch-user-action-result.interface';
 
 import { BaseApiService } from './base-api.service';
 
@@ -38,11 +41,21 @@ export class UserService extends BaseApiService {
   }
 
   userSelfUpdate(updateRequest: UserUpdate): Observable<UserRead> {
-    return this.put<UserRead>(`${ENDPOINT}${USER_SELF_ENDPOINT}`, updateRequest);
+    return this.put<UserRead>(
+      `${ENDPOINT}${USER_SELF_ENDPOINT}`,
+      updateRequest,
+      undefined,
+      silentErrors(),
+    );
   }
 
   userSelfPasswordChange(change: PasswordChange): Observable<void> {
-    return this.post<void>(`${ENDPOINT}${USER_SELF_PASSWORD_ENDPOINT}`, change);
+    return this.post<void>(
+      `${ENDPOINT}${USER_SELF_PASSWORD_ENDPOINT}`,
+      change,
+      undefined,
+      silentErrors(),
+    );
   }
 
   userSelfDeactivation(): Observable<void> {
@@ -73,7 +86,12 @@ export class UserService extends BaseApiService {
   }
 
   adminUserUpdate(id: number, updateRequest: AdminUserUpdate): Observable<UserRead> {
-    return this.put<UserRead>(`${ENDPOINT}${ADMIN_ENDPOINT}${id}`, updateRequest);
+    return this.put<UserRead>(
+      `${ENDPOINT}${ADMIN_ENDPOINT}${id}`,
+      updateRequest,
+      undefined,
+      silentErrors(),
+    );
   }
 
   adminUserDeactivation(id: number): Observable<void> {
@@ -91,15 +109,19 @@ export class UserService extends BaseApiService {
     return this.delete<void>(`${ENDPOINT}${ADMIN_ENDPOINT}${id}/${ADMIN_HARD_DELETE_ENDPOINT}`);
   }
 
-  adminUserBatchDelete(ids: number[]): Observable<void> {
-    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_HARD_DELETE_ENDPOINT}`, { ids });
+  adminUserBatchDelete(ids: number[]): Observable<BatchUserActionResult> {
+    return this.post<BatchUserActionResult>(`${ENDPOINT}${ADMIN_BATCH_HARD_DELETE_ENDPOINT}`, {
+      ids,
+    });
   }
 
-  adminUserBatchDeactivation(ids: number[]): Observable<void> {
-    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_DISABLE_ENDPOINT}`, { ids });
+  adminUserBatchDeactivation(ids: number[]): Observable<BatchUserActionResult> {
+    return this.post<BatchUserActionResult>(`${ENDPOINT}${ADMIN_BATCH_DISABLE_ENDPOINT}`, { ids });
   }
 
-  adminUserBatchReactivation(ids: number[]): Observable<void> {
-    return this.post<void>(`${ENDPOINT}${ADMIN_BATCH_REACTIVATION_ENDPOINT}`, { ids });
+  adminUserBatchReactivation(ids: number[]): Observable<BatchUserActionResult> {
+    return this.post<BatchUserActionResult>(`${ENDPOINT}${ADMIN_BATCH_REACTIVATION_ENDPOINT}`, {
+      ids,
+    });
   }
 }

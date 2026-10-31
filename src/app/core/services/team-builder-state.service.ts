@@ -52,6 +52,16 @@ export class TeamBuilderStateService {
     this.persist();
   }
 
+  setPrivate(isPrivate: boolean): void {
+    this._isPrivate.set(isPrivate);
+    this.persist();
+  }
+
+  markSaved(teamId: number): void {
+    this._sourceTeamId.set(teamId);
+    this.persist();
+  }
+
   setActiveIndex(index: number | null): void {
     this._activeIndex.set(index);
     this.persist();

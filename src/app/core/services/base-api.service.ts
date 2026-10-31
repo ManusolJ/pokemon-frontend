@@ -5,7 +5,7 @@ import { Pageable } from '@shared/interfaces/api/pageable.interface';
 import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 
 const API_URL: string = environment.apiUrl;
 
@@ -13,34 +13,39 @@ const API_URL: string = environment.apiUrl;
 export class BaseApiService {
   protected readonly http = inject(HttpClient);
 
-  protected get<T>(endpoint: string, params?: HttpParams): Observable<T> {
-    return this.http.get<T>(this.url(endpoint), {
-      params,
-    });
+  protected get<T>(endpoint: string, params?: HttpParams, context?: HttpContext): Observable<T> {
+    return this.http.get<T>(this.url(endpoint), { params, context });
   }
 
-  protected post<T>(endpoint: string, body: unknown, params?: HttpParams): Observable<T> {
-    return this.http.post<T>(this.url(endpoint), body, {
-      params,
-    });
+  protected post<T>(
+    endpoint: string,
+    body: unknown,
+    params?: HttpParams,
+    context?: HttpContext,
+  ): Observable<T> {
+    return this.http.post<T>(this.url(endpoint), body, { params, context });
   }
 
-  protected put<T>(endpoint: string, body: unknown, params?: HttpParams): Observable<T> {
-    return this.http.put<T>(this.url(endpoint), body, {
-      params,
-    });
+  protected put<T>(
+    endpoint: string,
+    body: unknown,
+    params?: HttpParams,
+    context?: HttpContext,
+  ): Observable<T> {
+    return this.http.put<T>(this.url(endpoint), body, { params, context });
   }
 
-  protected patch<T>(endpoint: string, body: unknown, params?: HttpParams): Observable<T> {
-    return this.http.patch<T>(this.url(endpoint), body, {
-      params,
-    });
+  protected patch<T>(
+    endpoint: string,
+    body: unknown,
+    params?: HttpParams,
+    context?: HttpContext,
+  ): Observable<T> {
+    return this.http.patch<T>(this.url(endpoint), body, { params, context });
   }
 
-  protected delete<T>(endpoint: string, params?: HttpParams): Observable<T> {
-    return this.http.delete<T>(this.url(endpoint), {
-      params,
-    });
+  protected delete<T>(endpoint: string, params?: HttpParams, context?: HttpContext): Observable<T> {
+    return this.http.delete<T>(this.url(endpoint), { params, context });
   }
 
   protected getPaged<T>(endpoint: string, pageable?: Pageable): Observable<T> {
@@ -58,8 +63,11 @@ export class BaseApiService {
 
     let params = new HttpParams().set('page', pageable.page).set('size', pageable.size);
 
-    if (pageable.sort) {
-      params = params.set('sort', `${pageable.sort},${pageable.direction ?? 'ASC'}`);
+    const direction = pageable.direction ?? 'ASC';
+    for (const field of [pageable.sort, ...(pageable.thenSort ?? [])]) {
+      if (field) {
+        params = params.append('sort', `${field},${direction}`);
+      }
     }
 
     return params;

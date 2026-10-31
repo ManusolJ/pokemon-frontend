@@ -12,6 +12,8 @@ import { AuditLogRead } from '@shared/interfaces/pokemon/admin/audit-log-read.in
 import { SeedLogFilter } from '@shared/interfaces/pokemon/admin/seed-log-filter.interface';
 import { AuditLogFilter } from '@shared/interfaces/pokemon/admin/audit-log-filter.interface';
 
+import { silentErrors } from '@core/http/http-context';
+
 import { BaseApiService } from './base-api.service';
 
 import { Observable } from 'rxjs';
@@ -23,7 +25,7 @@ const ENDPOINT = 'admin/';
 @Injectable({ providedIn: 'root' })
 export class AdminService extends BaseApiService {
   seed(): Observable<SeedLogRead> {
-    return this.post<SeedLogRead>(`${ENDPOINT}${SEED_ENDPOINT}`, null);
+    return this.post<SeedLogRead>(`${ENDPOINT}${SEED_ENDPOINT}`, null, undefined, silentErrors());
   }
 
   getSeedLogPageWithFilter(

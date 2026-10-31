@@ -1,3 +1,5 @@
+import { silentErrors } from '@core/http/http-context';
+
 import {
   ADMIN_ENDPOINT,
   TEAM_LIKE_ENDPOINT,
@@ -42,6 +44,14 @@ export class TeamService extends BaseApiService {
     );
   }
 
+  getSharedTeam(slug: string): Observable<TeamRead> {
+    return this.get<TeamRead>(`${ENDPOINT}shared/${encodeURIComponent(slug)}`);
+  }
+
+  rotateShareLink(id: number): Observable<TeamRead> {
+    return this.post<TeamRead>(`${ENDPOINT}${id}/share-link/rotate`, null);
+  }
+
   getOneSelfTeam(filter: TeamFilter): Observable<TeamRead> {
     return this.post<TeamRead>(`${ENDPOINT}${TEAM_SELF_ENDPOINT}`, filter);
   }
@@ -57,12 +67,14 @@ export class TeamService extends BaseApiService {
     );
   }
 
+  /** Silent: the builder shows save errors inline, next to the Save button. */
   createTeam(teamCreationRequest: TeamCreate): Observable<TeamRead> {
-    return this.post<TeamRead>(`${ENDPOINT}`, teamCreationRequest);
+    return this.post<TeamRead>(`${ENDPOINT}`, teamCreationRequest, undefined, silentErrors());
   }
 
+  /** Silent: the builder shows save errors inline, next to the Save button. */
   updateTeam(id: number, teamUpdateRequest: TeamUpdate): Observable<TeamRead> {
-    return this.put<TeamRead>(`${ENDPOINT}${id}`, teamUpdateRequest);
+    return this.put<TeamRead>(`${ENDPOINT}${id}`, teamUpdateRequest, undefined, silentErrors());
   }
 
   patchTeam(id: number, teamPatchRequest: TeamPatch): Observable<TeamRead> {
