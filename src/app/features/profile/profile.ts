@@ -8,19 +8,18 @@ import {
 import { ADMIN_ROLE } from '@shared/constants/auth.constants';
 
 import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
-import { UserUpdate } from '@shared/interfaces/pokemon/user/user-update.interface';
 import { PasswordChange } from '@shared/interfaces/pokemon/user/password-change.interface';
 import { FormSubmissionStatus } from '@shared/interfaces/ui/form/form-submission-status.interface';
 
-import { passwordMatchValidator } from '@shared/validators/password.validator';
+import { maxUtf8Bytes, passwordMatchValidator } from '@shared/validators/password.validator';
 
 import { formatJoinDate } from '@shared/utils/format-date.util';
+import { describeHttpError } from '@shared/utils/http-error.util';
 
 import { Modal } from '@shared/components/modal/modal';
 
 import { AuthService } from '@core/services/auth.service';
 import { UserService } from '@core/services/user.service';
-import { TokenRefreshService } from '@core/services/token-refresh.service';
 
 import { Router } from '@angular/router';
 
@@ -30,12 +29,13 @@ import {
   computed,
   Component,
   DestroyRef,
-  WritableSignal,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { finalize, map, Observable, switchMap, tap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { finalize, tap } from 'rxjs';
 
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
@@ -43,7 +43,7 @@ import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-int
   imports: [ReactiveFormsModule, Modal],
   selector: 'app-profile',
   templateUrl: './profile.html',
-  styleUrls: ['./profile.css', '../auth/styles/auth-form.css'],
+  styleUrl: './profile.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Profile {
@@ -58,16 +58,17 @@ export class Profile {
   private readonly formBuilder = inject(FormBuilder);
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
-  private readonly refreshService = inject(TokenRefreshService);
 
-  protected readonly emailStatus = signal<FormSubmissionStatus>('idle');
-  protected readonly usernameStatus = signal<FormSubmissionStatus>('idle');
+  protected readonly accountStatus = signal<FormSubmissionStatus>('idle');
+  protected readonly accountError = signal<string | null>(null);
   protected readonly passwordStatus = signal<FormSubmissionStatus>('idle');
+  protected readonly passwordError = signal<string | null>(null);
 
   protected readonly deleteOpen = signal(false);
   protected readonly deletePending = signal(false);
+  protected readonly deleteError = signal<string | null>(null);
 
-  protected readonly usernameForm = this.formBuilder.nonNullable.group({
+  protected readonly accountForm = this.formBuilder.nonNullable.group({
     username: [
       '',
       [
@@ -76,21 +77,20 @@ export class Profile {
         Validators.maxLength(MAX_USERNAME_LENGTH),
       ],
     ],
-  });
-
-  protected readonly emailForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email, Validators.maxLength(MAX_EMAIL_LENGTH)]],
+    currentPassword: ['', [Validators.required, maxUtf8Bytes(MAX_PASSWORD_LENGTH)]],
   });
 
   protected readonly passwordForm = this.formBuilder.nonNullable.group(
     {
-      currentPassword: ['', [Validators.required]],
+      currentPassword: ['', [Validators.required, maxUtf8Bytes(MAX_PASSWORD_LENGTH)]],
       newPassword: [
         '',
         [
           Validators.required,
           Validators.minLength(MIN_PASSWORD_LENGTH),
           Validators.maxLength(MAX_PASSWORD_LENGTH),
+          maxUtf8Bytes(MAX_PASSWORD_LENGTH),
         ],
       ],
       confirmPassword: ['', [Validators.required]],
@@ -99,10 +99,13 @@ export class Profile {
   );
 
   protected get username() {
-    return this.usernameForm.controls.username;
+    return this.accountForm.controls.username;
   }
   protected get email() {
-    return this.emailForm.controls.email;
+    return this.accountForm.controls.email;
+  }
+  protected get accountPassword() {
+    return this.accountForm.controls.currentPassword;
   }
   protected get currentPassword() {
     return this.passwordForm.controls.currentPassword;
@@ -115,7 +118,7 @@ export class Profile {
   }
 
   private readonly userResource = rxResource<UserRead | null, void>({
-    stream: () => this.userService.getUserSelf().pipe(tap((loaded) => this.applyToForms(loaded))),
+    stream: () => this.userService.getUserSelf().pipe(tap((loaded) => this.applyToForm(loaded))),
     defaultValue: null,
   });
 
@@ -126,64 +129,104 @@ export class Profile {
   protected readonly isAdmin = computed(() => this.user()?.role === ADMIN_ROLE);
   protected readonly memberSince = computed(() => formatJoinDate(this.user()?.createdAt));
 
-  private readonly emailInputValue = toSignal(this.email.valueChanges, { initialValue: '' });
-  private readonly usernameInputValue = toSignal(this.username.valueChanges, { initialValue: '' });
-
-  protected readonly usernameDirty = computed(() => {
-    const loaded = this.user();
-    return loaded !== null && this.usernameInputValue() !== loaded.username;
+  private readonly accountValues = toSignal(this.accountForm.valueChanges, {
+    initialValue: this.accountForm.getRawValue(),
   });
 
-  protected readonly emailDirty = computed(() => {
+  protected readonly accountDirty = computed(() => {
     const loaded = this.user();
-    return loaded !== null && this.emailInputValue() !== loaded.email;
+    const values = this.accountValues();
+    return (
+      loaded !== null &&
+      ((values.username !== undefined && values.username !== loaded.username) ||
+        (values.email !== undefined && values.email.trim().toLowerCase() !== loaded.email))
+    );
   });
 
-  protected onSubmitUsername(): void {
-    const loaded = this.user();
-    if (!loaded || !this.usernameDirty()) {
-      return;
-    }
-    this.submitUserUpdate(this.usernameForm, this.usernameStatus, {
-      newUsername: this.username.value,
-      newEmail: loaded.email,
-    });
+  protected showError(control: AbstractControl): boolean {
+    return control.invalid && control.touched;
   }
 
-  protected onSubmitEmail(): void {
-    const loaded = this.user();
-    if (!loaded || !this.emailDirty()) {
-      return;
-    }
-    this.submitUserUpdate(this.emailForm, this.emailStatus, {
-      newUsername: loaded.username,
-      newEmail: this.email.value,
-    });
-  }
-
-  protected onSubmitPassword(): void {
-    const { currentPassword, newPassword } = this.passwordForm.getRawValue();
-    const request: PasswordChange = { currentPassword, newPassword };
-    this.runSave(
-      this.passwordForm,
-      this.passwordStatus,
-      this.userService.userSelfPasswordChange(request),
-      () => this.passwordForm.reset(),
+  protected confirmInvalid(): boolean {
+    return (
+      this.confirmPassword.touched &&
+      (this.confirmPassword.hasError('required') || this.passwordForm.hasError('passwordMismatch'))
     );
   }
 
-  protected openDelete(): void {
-    if (this.isAdmin()) {
+  protected resetAccountForm(): void {
+    const loaded = this.user();
+    if (loaded) {
+      this.applyToForm(loaded);
+    }
+    this.accountError.set(null);
+  }
+
+  protected onSubmitAccount(): void {
+    const loaded = this.user();
+    this.accountError.set(null);
+
+    if (!loaded || !this.accountDirty() || this.accountStatus() === 'saving') {
       return;
     }
-    this.deleteOpen.set(true);
+    if (this.accountForm.invalid) {
+      this.accountForm.markAllAsTouched();
+      return;
+    }
+
+    const { username, email, currentPassword } = this.accountForm.getRawValue();
+    this.accountStatus.set('saving');
+
+    this.userService
+      .userSelfUpdate({ currentPassword, newUsername: username.trim(), newEmail: email.trim() })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.signOutAfterCredentialChange(),
+        error: (error: unknown) => {
+          this.accountStatus.set('error');
+          this.reportSaveError(error, this.accountPassword, this.accountError);
+        },
+      });
+  }
+
+  protected onSubmitPassword(): void {
+    this.passwordError.set(null);
+
+    if (this.passwordStatus() === 'saving') {
+      return;
+    }
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    const { currentPassword, newPassword } = this.passwordForm.getRawValue();
+    const request: PasswordChange = { currentPassword, newPassword };
+    this.passwordStatus.set('saving');
+
+    this.userService
+      .userSelfPasswordChange(request)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.signOutAfterCredentialChange(),
+        error: (error: unknown) => {
+          this.passwordStatus.set('error');
+          this.reportSaveError(error, this.currentPassword, this.passwordError);
+        },
+      });
+  }
+
+  protected openDelete(): void {
+    if (!this.isAdmin()) {
+      this.deleteError.set(null);
+      this.deleteOpen.set(true);
+    }
   }
 
   protected closeDelete(): void {
-    if (this.deletePending()) {
-      return;
+    if (!this.deletePending()) {
+      this.deleteOpen.set(false);
     }
-    this.deleteOpen.set(false);
   }
 
   protected confirmDelete(): void {
@@ -192,6 +235,7 @@ export class Profile {
     }
 
     this.deletePending.set(true);
+    this.deleteError.set(null);
 
     this.userService
       .userSelfDeactivation()
@@ -202,58 +246,39 @@ export class Profile {
       .subscribe({
         next: () => {
           this.deleteOpen.set(false);
-          this.logoutAndGoHome();
+          this.authService.signOut();
+          void this.router.navigate(['/']);
         },
-        error: () => {},
+        error: (error: unknown) => this.deleteError.set(describeHttpError(error)),
       });
   }
 
-  private submitUserUpdate(
-    form: FormGroup,
-    status: WritableSignal<FormSubmissionStatus>,
-    request: UserUpdate,
-  ): void {
-    const update = this.userService
-      .userSelfUpdate(request)
-      .pipe(
-        switchMap((updated) => this.refreshService.renewAfterInFlight().pipe(map(() => updated))),
-      );
-
-    this.runSave(form, status, update, (updated) => {
-      this.userResource.set(updated);
-      this.applyToForms(updated);
-    });
+  private signOutAfterCredentialChange(): void {
+    this.authService.signOut();
+    void this.router.navigate(['/auth/login'], { queryParams: { notice: 'credentials-changed' } });
   }
 
-  private runSave<T>(
-    form: FormGroup,
-    status: WritableSignal<FormSubmissionStatus>,
-    request: Observable<T>,
-    onSuccess: (result: T) => void,
+  private reportSaveError(
+    error: unknown,
+    passwordControl: AbstractControl,
+    formError: { set(value: string | null): void },
   ): void {
-    if (form.invalid || status() === 'saving') {
-      form.markAllAsTouched();
+    const message = describeHttpError(error);
+
+    if (
+      error instanceof HttpErrorResponse &&
+      error.status === 400 &&
+      /current password/i.test(message)
+    ) {
+      passwordControl.setErrors({ wrongPassword: true });
+      passwordControl.markAsTouched();
       return;
     }
 
-    status.set('saving');
-
-    request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (result) => {
-        onSuccess(result);
-        status.set('saved');
-      },
-      error: () => status.set('error'),
-    });
+    formError.set(message);
   }
 
-  private logoutAndGoHome(): void {
-    this.authService.logout().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-    this.router.navigate(['/']);
-  }
-
-  private applyToForms(user: UserRead): void {
-    this.usernameForm.reset({ username: user.username });
-    this.emailForm.reset({ email: user.email });
+  private applyToForm(user: UserRead): void {
+    this.accountForm.reset({ username: user.username, email: user.email, currentPassword: '' });
   }
 }
