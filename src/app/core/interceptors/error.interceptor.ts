@@ -1,3 +1,5 @@
+import { SILENT_ERRORS } from '@core/http/http-context';
+
 import { ErrorResponse } from '@shared/interfaces/misc/error-response.interface';
 
 import { MessageService } from 'primeng/api';
@@ -17,6 +19,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      if (req.context.get(SILENT_ERRORS)) {
+        return throwError(() => error);
+      }
+
       if (error.status === HttpStatusCode.Unauthorized && !req.url.includes('/auth/')) {
         return throwError(() => error);
       }
