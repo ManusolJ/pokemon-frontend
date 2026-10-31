@@ -1,6 +1,8 @@
 import { AdminService } from '@core/services/admin.service';
 
 import { SeedLogRead } from '@shared/interfaces/pokemon/admin/seed-log-read.interface';
+import { formatDateTime } from '@shared/utils/format-date.util';
+import { describeHttpError } from '@shared/utils/http-error.util';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -17,14 +19,6 @@ type TriggerStatus = 'idle' | 'arming' | 'ready' | 'running' | 'done' | 'error';
 
 const COUNTDOWN_TOTAL_SECONDS = 5;
 const COUNTDOWN_TICK_MS = 1000;
-const EMPTY_DATE_PLACEHOLDER = '—';
-const DATETIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-};
 
 @Component({
   imports: [],
@@ -40,6 +34,7 @@ export class AdminSeed implements OnDestroy {
   protected readonly countdown = signal(0);
   protected readonly status = signal<TriggerStatus>('idle');
   protected readonly seedLog = signal<SeedLogRead | null>(null);
+  protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly buttonLabel = computed(() => {
     switch (this.status()) {
@@ -78,16 +73,7 @@ export class AdminSeed implements OnDestroy {
     }
   }
 
-  protected formatDateTime(iso: string | null | undefined): string {
-    if (!iso) {
-      return EMPTY_DATE_PLACEHOLDER;
-    }
-    const date = new Date(iso);
-    if (Number.isNaN(date.getTime())) {
-      return EMPTY_DATE_PLACEHOLDER;
-    }
-    return date.toLocaleString(undefined, DATETIME_FORMAT_OPTIONS);
-  }
+  protected readonly formatDateTime = formatDateTime;
 
   private arm(): void {
     this.status.set('arming');
@@ -107,6 +93,7 @@ export class AdminSeed implements OnDestroy {
 
   private run(): void {
     this.status.set('running');
+    this.errorMessage.set(null);
     this.adminService
       .seed()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -115,7 +102,12 @@ export class AdminSeed implements OnDestroy {
           this.seedLog.set(log);
           this.status.set('done');
         },
-        error: () => this.status.set('error'),
+        error: (error: unknown) => {
+          this.errorMessage.set(
+            describeHttpError(error, 'Could not start the seed job. Please try again.'),
+          );
+          this.status.set('error');
+        },
       });
   }
 

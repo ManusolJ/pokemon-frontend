@@ -1,102 +1,110 @@
-<section class="py-10">
-  <header class="text-center">
-    <h1 class="text-brand-text text-2xl font-bold tracking-tight">Database Seed</h1>
-    <p class="text-brand-muted mt-1 text-sm">Populate or refresh Pokemon data from PokeAPI.</p>
+<section class="flex flex-col gap-6 py-6">
+  <header>
+    <h1 class="page-title">Database seed</h1>
+    <p class="mt-1 text-sm text-muted">Populate or refresh Pokémon data from PokéAPI.</p>
   </header>
 
-  <div class="danger">
-    <div class="danger__head">
-      <i class="pi pi-exclamation-triangle"></i>
-      <h2>Danger Zone — Seed Process</h2>
-    </div>
-    <p class="danger__lead">
-      Triggering the seed will download and replace all Pokemon data (species, moves, abilities,
-      items, types, natures) from PokeAPI. This operation:
+  <div class="danger card p-5 sm:p-6">
+    <h2 class="flex items-center gap-2 text-base font-bold text-danger">
+      <i class="pi pi-exclamation-triangle" aria-hidden="true"></i> Danger zone: seed process
+    </h2>
+    <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+      Triggering the seed downloads and replaces all Pokémon data (species, moves, abilities, items,
+      types, natures) from PokéAPI. This operation:
     </p>
-    <ul class="danger__bullets">
-      <li><i class="pi pi-clock"></i> May take several minutes to complete</li>
-      <li><i class="pi pi-database"></i> Replaces all existing seeded entries</li>
-      <li><i class="pi pi-ban"></i> Cannot be cancelled once started</li>
+    <ul class="mt-3 flex flex-col gap-2 text-sm text-content">
+      <li class="flex items-center gap-2">
+        <i class="pi pi-clock text-sm text-muted" aria-hidden="true"></i> May take several minutes
+        to complete
+      </li>
+      <li class="flex items-center gap-2">
+        <i class="pi pi-database text-sm text-muted" aria-hidden="true"></i> Replaces all existing
+        seeded entries
+      </li>
+      <li class="flex items-center gap-2">
+        <i class="pi pi-ban text-sm text-muted" aria-hidden="true"></i> Cannot be cancelled once
+        started
+      </li>
     </ul>
 
-    <div class="danger__footer">
-      <div class="danger__copy">
+    <div
+      class="divider mt-5 flex flex-col items-start gap-4 pt-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p class="text-sm text-muted" aria-live="polite">
         @switch (status()) {
           @case ('arming') {
-            <span>
-              Read the warning above before proceeding
-              <strong class="text-brand-red"> ({{ countdown() }}s)</strong>
-            </span>
+            Read the warning above before proceeding
+            <strong class="tabular text-content">({{ countdown() }}s)</strong>
           }
           @case ('ready') {
-            <span class="text-brand-red font-semibold">Confirmed. Start the seed.</span>
+            <span class="font-semibold text-content">Confirmed. Start the seed.</span>
           }
           @case ('running') {
-            <span>Seed running. Check the Logs tab for progress.</span>
+            Seed running. Check the Logs tab for progress.
           }
           @case ('done') {
-            <span class="text-brand-text font-semibold">
-              <i class="pi pi-check"></i> Seed job started successfully.
+            <span class="inline-flex items-center gap-1.5 font-semibold text-success">
+              <i class="pi pi-check" aria-hidden="true"></i> Seed job started successfully.
             </span>
           }
           @default {
-            <span>Read the warning above before proceeding</span>
+            Read the warning above before proceeding.
           }
         }
-      </div>
+      </p>
       <button
         type="button"
-        class="danger__btn"
-        [class.danger__btn--arming]="status() === 'arming'"
-        [class.danger__btn--ready]="status() === 'ready'"
+        class="btn min-w-40"
+        [class.btn-danger]="status() !== 'ready'"
+        [class.btn-danger-solid]="status() === 'ready'"
         (click)="onTriggerClick()"
         [disabled]="buttonDisabled()"
+        [attr.aria-busy]="status() === 'running'"
       >
         @if (status() === 'running') {
-          <i class="pi pi-spin pi-spinner"></i>
+          <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
         }
         {{ buttonLabel() }}
       </button>
     </div>
 
     @if (status() === 'error') {
-      <p class="danger__error">Could not start the seed job. Please try again.</p>
+      <p class="alert alert-danger mt-4" role="alert">
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>{{ errorMessage() }}
+      </p>
     }
   </div>
 
   @if (seedLog(); as log) {
-    <div class="border-brand-line bg-brand-surface mt-6 rounded-2xl border p-6">
-      <div class="mb-4 flex items-center gap-2">
-        <i class="pi pi-list-check text-brand-red"></i>
-        <h2 class="text-brand-text text-base font-bold">Seed log #{{ log.id }}</h2>
-      </div>
+    <div class="card p-5 sm:p-6">
+      <h2 class="section-title mb-4">Seed log #{{ log.id }}</h2>
 
       <dl class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-        <div class="seed-log__row">
+        <div class="meta-row">
           <dt>Status</dt>
           <dd>
-            <span class="seed-log__status">{{ log.status }}</span>
+            <span class="badge badge-info">{{ log.status }}</span>
           </dd>
         </div>
-        <div class="seed-log__row">
+        <div class="meta-row">
           <dt>Triggered by</dt>
           <dd>{{ log.triggeredBy }}</dd>
         </div>
-        <div class="seed-log__row">
+        <div class="meta-row">
           <dt>Started</dt>
           <dd>{{ formatDateTime(log.startedAt) }}</dd>
         </div>
-        <div class="seed-log__row">
+        <div class="meta-row">
           <dt>Completed</dt>
           <dd>{{ formatDateTime(log.completedAt) }}</dd>
         </div>
-        <div class="seed-log__row">
+        <div class="meta-row">
           <dt>Entries added</dt>
-          <dd class="font-mono tabular-nums">{{ log.entriesAdded.toLocaleString() }}</dd>
+          <dd class="tabular">{{ log.entriesAdded.toLocaleString() }}</dd>
         </div>
-        <div class="seed-log__row">
+        <div class="meta-row">
           <dt>Errors</dt>
-          <dd class="font-mono tabular-nums">{{ log.errors.toLocaleString() }}</dd>
+          <dd class="tabular">{{ log.errors.toLocaleString() }}</dd>
         </div>
       </dl>
     </div>
