@@ -1,0 +1,64 @@
+<nav class="pager" aria-label="Pagination">
+  <p class="tabular text-sm text-muted">
+    {{ first() }}–{{ last() }} <span class="text-subtle">of</span> {{ total() }}
+  </p>
+
+  <ul class="flex items-center gap-1">
+    <li>
+      @if (page() > 0) {
+        <a
+          class="pager__link"
+          [routerLink]="[]"
+          [queryParams]="params(page() - 1)"
+          queryParamsHandling="merge"
+          rel="prev"
+          aria-label="Previous page"
+        >
+          <i class="pi pi-angle-left" aria-hidden="true"></i>
+        </a>
+      } @else {
+        <span class="pager__link is-disabled" aria-hidden="true"
+          ><i class="pi pi-angle-left"></i
+        ></span>
+      }
+    </li>
+
+    @for (entry of entries(); track entry.kind === 'page' ? entry.index : entry.key) {
+      <li>
+        @if (entry.kind === 'page') {
+          <a
+            class="pager__link tabular"
+            [routerLink]="[]"
+            [queryParams]="params(entry.index)"
+            queryParamsHandling="merge"
+            [attr.aria-current]="entry.index === page() ? 'page' : null"
+            [attr.aria-label]="'Page ' + (entry.index + 1)"
+          >
+            {{ entry.index + 1 }}
+          </a>
+        } @else {
+          <span class="pager__gap" aria-hidden="true">…</span>
+        }
+      </li>
+    }
+
+    <li>
+      @if (page() < totalPages() - 1) {
+        <a
+          class="pager__link"
+          [routerLink]="[]"
+          [queryParams]="params(page() + 1)"
+          queryParamsHandling="merge"
+          rel="next"
+          aria-label="Next page"
+        >
+          <i class="pi pi-angle-right" aria-hidden="true"></i>
+        </a>
+      } @else {
+        <span class="pager__link is-disabled" aria-hidden="true"
+          ><i class="pi pi-angle-right"></i
+        ></span>
+      }
+    </li>
+  </ul>
+</nav>
