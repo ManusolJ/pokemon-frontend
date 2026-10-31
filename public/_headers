@@ -16,3 +16,7 @@
 
 /index.html
   Cache-Control: no-cache
+
+/theme-init.js
+  ! Cache-Control
+  Cache-Control: no-cache
