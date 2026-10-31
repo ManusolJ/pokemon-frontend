@@ -7,7 +7,7 @@ import { getTypeColor } from './get-type-color.util';
 import { LikableTeam } from '@shared/interfaces/teams/likeable-team.interface';
 
 export const TEAM_SLOT_COUNT = 6;
-export const NEUTRAL_ACCENT = '#9aa1ad';
+export const NEUTRAL_ACCENT = 'var(--color-muted)';
 
 export function teamSlotsFilled(team: TeamSummary | TeamRead): number {
   if ('pokemon' in team) {

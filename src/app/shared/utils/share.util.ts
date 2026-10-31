@@ -1,7 +1,7 @@
-import { TEAMS_SHARED_PATH } from '@shared/constants/teams.constants';
+import { TEAMS_SHARE_PATH } from '@shared/constants/teams.constants';
 
-export function publicTeamUrl(teamId: number): string {
-  return `${window.location.origin}${TEAMS_SHARED_PATH}/${teamId}`;
+export function shareLinkUrl(slug: string): string {
+  return `${window.location.origin}${TEAMS_SHARE_PATH}/${slug}`;
 }
 
 export async function copyToClipboard(text: string): Promise<boolean> {

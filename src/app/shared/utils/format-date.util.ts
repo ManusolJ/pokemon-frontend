@@ -1,9 +1,11 @@
 const EMPTY_DATE_PLACEHOLDER = '—';
 
+export const UI_LOCALE = 'en-GB';
+
 const LONG_DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
   month: 'long',
   day: 'numeric',
+  year: 'numeric',
 };
 
 const SHORT_DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
@@ -39,7 +41,7 @@ const RELATIVE_UNITS: readonly RelativeUnit[] = [
   { unit: 'minute', secondsPer: SECONDS_PER_MINUTE },
 ];
 
-const RELATIVE_TIME_FORMATTER = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+const RELATIVE_TIME_FORMATTER = new Intl.RelativeTimeFormat(UI_LOCALE, { numeric: 'auto' });
 const JUST_NOW_LABEL = 'just now';
 const MILLISECONDS_PER_SECOND = 1000;
 
@@ -49,7 +51,7 @@ export function formatJoinDate(iso: string | undefined, style: 'long' | 'short' 
     return EMPTY_DATE_PLACEHOLDER;
   }
   const options = style === 'short' ? SHORT_DATE_FORMAT_OPTIONS : LONG_DATE_FORMAT_OPTIONS;
-  return date.toLocaleDateString(undefined, options);
+  return date.toLocaleDateString(UI_LOCALE, options);
 }
 
 export function formatRelativeDate(iso: string | undefined): string {
@@ -84,7 +86,7 @@ function parseIso(iso: string | undefined): Date | null {
 
 export function formatDateTime(iso: string | null | undefined): string {
   const date = parseIso(iso ?? undefined);
-  return date ? date.toLocaleString(undefined, DATE_TIME_FORMAT_OPTIONS) : EMPTY_DATE_PLACEHOLDER;
+  return date ? date.toLocaleString(UI_LOCALE, DATE_TIME_FORMAT_OPTIONS) : EMPTY_DATE_PLACEHOLDER;
 }
 
 export function startOfLocalDayIso(isoDate: string): string | undefined {

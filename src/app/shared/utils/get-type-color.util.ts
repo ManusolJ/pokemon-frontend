@@ -2,7 +2,7 @@ import { PokemonType } from '@shared/enums/pokemon-types.enum';
 
 import { TYPE_COLORS } from '@shared/constants/type-colors.constants';
 
-const FALLBACK_COLOR = '#9CA3AF';
+const FALLBACK_COLOR = 'var(--color-muted)';
 
 export function getTypeColor(type: string | null | undefined): string {
   if (type) {
