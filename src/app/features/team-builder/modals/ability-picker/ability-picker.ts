@@ -12,14 +12,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { forkJoin, map, of } from 'rxjs';
 
 import { rxResource } from '@angular/core/rxjs-interop';
-import {
-  input,
-  inject,
-  output,
-  computed,
-  Component,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { input, inject, output, computed, Component, ChangeDetectionStrategy } from '@angular/core';
 
 interface AbilityEntry {
   readonly read: AbilityRead;
@@ -62,7 +55,9 @@ export class AbilityPicker {
     defaultValue: [],
   });
 
-  protected readonly entries = computed<readonly AbilityEntry[]>(() => this.entriesResource.value());
+  protected readonly entries = computed<readonly AbilityEntry[]>(() =>
+    this.entriesResource.value(),
+  );
   protected readonly loading = computed(() => this.entriesResource.isLoading());
 
   protected readonly skeletons = computed<readonly void[]>(() =>

@@ -109,7 +109,6 @@ export class PublicTeamList {
     this.page.set(0);
   }
 
-
   protected isLikePending(id: number): boolean {
     return this.pendingLikeIds().has(id);
   }
