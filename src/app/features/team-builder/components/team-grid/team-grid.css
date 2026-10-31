@@ -1,72 +1,190 @@
 :host {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 0.875rem;
-}
-
-.team-grid__title,
-.slot__name,
-.slot__add-label {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-}
-
-.team-grid__count,
-.slot__num {
-  font-family: 'Space Mono', monospace;
+  gap: 0.625rem;
+  min-height: 0;
 }
 
 .slot {
+  container-type: size;
   transition:
-    transform 160ms ease,
-    box-shadow 160ms ease,
-    border-color 160ms ease;
+    box-shadow 150ms ease-out,
+    border-color 150ms ease-out;
+}
+
+.slot__body {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 0.5rem 0.5rem 0.5rem 0.375rem;
+}
+
+.slot__art {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: clamp(3rem, min(55cqh, 35cqw), 5rem);
+  height: clamp(3rem, min(55cqh, 35cqw), 5rem);
+}
+
+.slot__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.slot__info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.slot__dex {
+  display: none;
+}
+
+.slot__name {
+  max-width: 100%;
+  padding-right: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.slot__types {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.slot__dots {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+}
+
+.slot__body--empty {
+  justify-content: center;
+}
+
+.slot__plus {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+@container (min-height: 6.5rem) {
+  .slot__types {
+    display: flex;
+  }
+
+  .slot__dots {
+    display: none;
+  }
+
+  .slot__plus {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+@container (min-height: 11.5rem) {
+  .slot__body {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    text-align: center;
+  }
+
+  .slot__art {
+    width: min(35cqh, 7rem);
+    height: min(35cqh, 7rem);
+  }
+
+  .slot__info {
+    flex: 0 0 auto;
+    align-items: center;
+    width: 100%;
+  }
+
+  .slot__dex {
+    display: block;
+  }
+
+  .slot__name {
+    padding-right: 0;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .slot__types {
+    justify-content: center;
+    margin-top: 0.375rem;
+  }
 }
 
 .slot--filled {
   background: linear-gradient(
     165deg,
-    color-mix(in srgb, var(--accent) 12%, transparent),
-    var(--color-brand-surface) 60%
+    color-mix(in oklab, var(--accent) 12%, transparent),
+    var(--color-surface) 60%
   );
 }
 
 .slot--filled:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  box-shadow: var(--shadow-md);
+}
+
+@media (hover: hover) {
+  .remove-btn {
+    opacity: 0;
+    transition: opacity 150ms ease-out;
+  }
+
+  .group:hover .remove-btn,
+  .group:focus-within .remove-btn {
+    opacity: 1;
+  }
 }
 
 .slot--filled.is-active {
-  border-color: color-mix(in srgb, var(--accent) 75%, transparent);
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent),
-    0 10px 26px color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 75%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 20%, transparent);
 }
 
 .slot__art img {
   image-rendering: pixelated;
-  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--accent) 40%, transparent));
-  transition:
-    filter 160ms ease,
-    transform 160ms ease;
+  filter: drop-shadow(0 4px 10px color-mix(in oklab, var(--accent) 40%, transparent));
 }
 
 .slot__art--shiny img {
-  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--accent) 40%, transparent))
-    drop-shadow(0 0 6px #f7d02c) saturate(1.15) hue-rotate(-8deg);
+  filter: drop-shadow(0 4px 10px color-mix(in oklab, var(--accent) 40%, transparent))
+    drop-shadow(0 0 6px var(--color-warning)) saturate(1.15) hue-rotate(-8deg);
 }
 
 .slot__sparkle {
-  color: #f7d02c;
-  text-shadow: 0 0 6px rgb(247 208 44 / 0.8);
+  position: absolute;
+  top: -0.125rem;
+  right: -0.125rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  pointer-events: none;
+  color: var(--color-warning);
+  text-shadow: 0 0 6px color-mix(in oklab, var(--color-warning) 80%, transparent);
 }
 
 .slot--empty:hover {
-  background: var(--color-brand-raised);
-  border-color: color-mix(in srgb, var(--color-brand-red) 45%, transparent);
-  color: var(--color-brand-red);
+  background: var(--color-fill);
+  border-color: color-mix(in oklab, var(--color-accent) 50%, transparent);
+  color: var(--color-content);
 }
 
 .slot--empty:hover .slot__plus {
-  background: color-mix(in srgb, var(--color-brand-red) 18%, transparent);
+  background: color-mix(in oklab, var(--color-accent) 18%, transparent);
 }

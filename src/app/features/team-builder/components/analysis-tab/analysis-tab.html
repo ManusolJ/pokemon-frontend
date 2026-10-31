@@ -7,7 +7,10 @@
   </div>
 } @else if (!hasTeam()) {
   <div class="page flex h-full flex-col items-center justify-center gap-3 py-8 text-center">
-    <span class="inline-flex size-12 items-center justify-center rounded-xl bg-fill text-subtle" aria-hidden="true">
+    <span
+      class="inline-flex size-12 items-center justify-center rounded-xl bg-fill text-subtle"
+      aria-hidden="true"
+    >
       <i class="pi pi-chart-pie text-2xl"></i>
     </span>
     <h2 class="section-title">No team to analyse yet</h2>
@@ -17,29 +20,48 @@
     <a routerLink="/team-builder/builder" class="btn btn-primary mt-1">Go to the builder</a>
   </div>
 } @else {
-  <div class="page grid grid-cols-1 gap-3 py-4 lg:h-full lg:grid-cols-2 lg:grid-rows-2 lg:overflow-hidden">
-    <section class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden" aria-labelledby="offense-heading">
+  <div
+    class="page grid grid-cols-1 gap-3 py-4 lg:h-full lg:grid-cols-2 lg:grid-rows-2 lg:overflow-hidden"
+  >
+    <section
+      class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden"
+      aria-labelledby="offense-heading"
+    >
       <h2 id="offense-heading" class="eyebrow shrink-0">Offensive coverage</h2>
       <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
         <app-offensive-coverage [chart]="chart()" [members]="members()" [allTypes]="types()" />
       </div>
     </section>
 
-    <section class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden" aria-labelledby="defense-heading">
+    <section
+      class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden"
+      aria-labelledby="defense-heading"
+    >
       <h2 id="defense-heading" class="eyebrow shrink-0">Defensive coverage</h2>
       <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
-        <app-defensive-coverage [chart]="chart()" [members]="members()" [allTypes]="types()" [loading]="loading()" />
+        <app-defensive-coverage
+          [chart]="chart()"
+          [members]="members()"
+          [allTypes]="types()"
+          [loading]="loading()"
+        />
       </div>
     </section>
 
-    <section class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden" aria-labelledby="roles-heading">
+    <section
+      class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden"
+      aria-labelledby="roles-heading"
+    >
       <h2 id="roles-heading" class="eyebrow shrink-0">Role spread</h2>
       <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
         <app-role-spread [members]="members()" />
       </div>
     </section>
 
-    <section class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden" aria-labelledby="stats-heading">
+    <section
+      class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden"
+      aria-labelledby="stats-heading"
+    >
       <h2 id="stats-heading" class="eyebrow shrink-0">Team stats</h2>
       <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
         <app-team-stats [members]="members()" />

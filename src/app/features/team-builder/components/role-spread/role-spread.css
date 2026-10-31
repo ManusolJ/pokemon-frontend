@@ -2,12 +2,12 @@
   height: 100%;
   display: block;
 
-  --tone-physical: #ff8a7c;
-  --tone-special: #8fd1ff;
-  --tone-mixed: #f8c170;
-  --tone-defense: #6fd894;
-  --tone-utility: #d3b0ff;
-  --tone-speed: #b69cff;
+  --tone-physical: var(--color-fx-negative);
+  --tone-special: var(--color-info);
+  --tone-mixed: var(--color-warning);
+  --tone-defense: var(--color-fx-positive);
+  --tone-utility: var(--color-violet);
+  --tone-speed: var(--color-teal);
 }
 
 .role-card[data-tone='physical'] {
@@ -34,12 +34,12 @@
   flex-direction: column;
   gap: 0.55rem;
   padding: 0.55rem 0.7rem 0.65rem;
-  border-radius: 0.625rem;
-  border: 1px solid color-mix(in srgb, var(--c) 22%, var(--color-brand-line));
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in oklab, var(--c) 22%, var(--color-line));
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--c) 7%, var(--color-brand-raised)),
-    var(--color-brand-raised)
+    color-mix(in oklab, var(--c) 7%, var(--color-raised)),
+    var(--color-raised)
   );
 }
 
@@ -53,12 +53,12 @@
 .role-card__count {
   margin-left: auto;
   padding: 0.1rem 0.45rem;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--c);
-  background: color-mix(in srgb, var(--c) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
-  border-radius: 999px;
+  background: color-mix(in oklab, var(--c) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--c) 32%, transparent);
+  border-radius: 9999px;
   line-height: 1.2;
 }
 
@@ -66,9 +66,9 @@
   display: inline-block;
   width: 0.5rem;
   height: 0.5rem;
-  border-radius: 999px;
+  border-radius: 9999px;
   background: var(--c);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--c) 22%, transparent);
 }
 
 .member-chip {
@@ -76,17 +76,17 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.2rem 0.75rem 0.2rem 0.25rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
-  background: color-mix(in srgb, var(--c) 6%, var(--color-brand-surface));
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--c) 32%, transparent);
+  background: color-mix(in oklab, var(--c) 6%, var(--color-surface));
   transition:
     border-color 120ms ease,
     background-color 120ms ease;
 }
 
 .member-chip:hover {
-  border-color: color-mix(in srgb, var(--c) 55%, transparent);
-  background: color-mix(in srgb, var(--c) 12%, var(--color-brand-surface));
+  border-color: color-mix(in oklab, var(--c) 55%, transparent);
+  background: color-mix(in oklab, var(--c) 12%, var(--color-surface));
 }
 
 .member-chip__art {
@@ -95,6 +95,6 @@
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--c) 18%, transparent);
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--c) 18%, transparent);
 }

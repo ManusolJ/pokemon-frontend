@@ -1,16 +1,14 @@
 @if (groups().length === 0) {
-  <div
-    class="flex h-full flex-col items-center justify-center gap-2.5 text-center text-brand-muted"
-  >
+  <div class="flex h-full flex-col items-center justify-center gap-2.5 text-center text-muted">
     <span
-      class="inline-flex items-center justify-center size-11 rounded-xl bg-white/4 border border-solid border-brand-line text-brand-dim"
+      class="inline-flex items-center justify-center size-11 rounded-xl bg-fill border border-solid border-line text-subtle"
       aria-hidden="true"
     >
       <i class="pi pi-users text-lg"></i>
     </span>
-    <p class="text-sm font-semibold text-brand-text">No team yet</p>
+    <p class="text-sm font-semibold text-content">No team yet</p>
     <p class="text-xs max-w-64 leading-5">
-      Add Pokemon and pick their moves to classify each one's role.
+      Add Pokémon and pick their moves to classify each one's role.
     </p>
   </div>
 } @else {
@@ -19,10 +17,10 @@
       <section class="role-card" [attr.data-tone]="group.role.tone">
         <header class="role-card__head">
           <span class="role-dot"></span>
-          <span class="text-[13px] font-bold text-brand-text whitespace-nowrap">
+          <span class="text-sm font-bold text-content whitespace-nowrap">
             {{ group.role.label }}
           </span>
-          <span class="role-card__count font-mono tabular-nums">
+          <span class="role-card__count tabular tabular-nums">
             {{ group.members.length }}
           </span>
         </header>
@@ -37,7 +35,7 @@
                   loading="lazy"
                 />
               </span>
-              <span class="text-[11.5px] font-bold capitalize text-brand-text leading-none">
+              <span class="text-xs font-bold capitalize text-content leading-none">
                 {{ displayName(member) }}
               </span>
             </span>

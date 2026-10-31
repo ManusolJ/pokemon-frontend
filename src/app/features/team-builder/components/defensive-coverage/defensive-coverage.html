@@ -1,7 +1,7 @@
 @if (loading()) {
   <div class="flex flex-col gap-1.5 h-full">
     @for (_ of [1, 2, 3, 4, 5, 6, 7]; track $index) {
-      <div class="h-7 w-full animate-pulse rounded-lg bg-brand-raised"></div>
+      <div class="h-7 w-full animate-pulse rounded-lg bg-raised"></div>
     }
   </div>
 } @else {
@@ -9,22 +9,22 @@
     <div class="flex items-baseline justify-between gap-3">
       <div class="flex items-baseline gap-2 leading-none">
         <span
-          class="font-mono text-3xl font-bold tabular-nums"
-          [class.text-brand-text]="weakTypeCount() === 0"
-          [class.text-[var(--fx-red)]]="weakTypeCount() > 0"
+          class="tabular text-3xl font-bold tabular-nums"
+          [class.text-content]="weakTypeCount() === 0"
+          [class.text-fx-negative]="weakTypeCount() > 0"
         >
           {{ weakTypeCount() }}
         </span>
-        <span class="text-xs uppercase tracking-wider text-brand-dim font-bold">
+        <span class="text-xs uppercase tracking-wider text-subtle font-bold">
           types threaten team
         </span>
       </div>
       @if (resistTypeCount() > 0) {
         <div class="flex items-baseline gap-1 leading-none">
-          <span class="font-mono text-base font-bold tabular-nums text-(--fx-green)">
+          <span class="tabular text-base font-bold tabular-nums text-(--fx-green)">
             {{ resistTypeCount() }}
           </span>
-          <span class="text-xs uppercase tracking-wider text-brand-dim font-bold"> resisted </span>
+          <span class="text-xs uppercase tracking-wider text-subtle font-bold"> resisted </span>
         </div>
       }
     </div>
@@ -48,10 +48,10 @@
           </span>
 
           <span
-            class="flex items-baseline justify-end gap-1.5 font-mono text-[11px] tabular-nums leading-none"
+            class="flex items-baseline justify-end gap-1.5 tabular text-xs tabular-nums leading-none"
           >
             @if (row.weak > 0) {
-              <b class="tone--weak text-[13px]">{{ row.weak }}</b>
+              <b class="tone--weak text-sm">{{ row.weak }}</b>
             }
             @if (row.resist > 0) {
               <b class="tone--resist">{{ row.resist }}</b>
@@ -60,7 +60,7 @@
               <b class="tone--immune">{{ row.immune }}</b>
             }
             @if (row.weak === 0 && row.resist === 0 && row.immune === 0) {
-              <span class="text-brand-dim">—</span>
+              <span class="text-subtle">—</span>
             }
           </span>
         </div>

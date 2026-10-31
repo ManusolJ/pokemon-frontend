@@ -1,3 +1,4 @@
+import { statLabel } from '@shared/utils/stat-label.util';
 import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { LEVEL_MAX, LEVEL_MIN } from '@shared/constants/stat.constants';
@@ -24,9 +25,9 @@ import { ChangeDetectionStrategy, Component, computed, effect, input, output } f
 const DEFAULT_CATEGORY_KEY: MoveCategoryKey = 'status';
 
 const CATEGORY_META: Record<MoveCategoryKey, CategoryMeta> = {
-  physical: { abbr: 'PHY', class: 'move-row__cat--phys' },
-  special: { abbr: 'SPC', class: 'move-row__cat--spec' },
   status: { abbr: 'STA', class: 'move-row__cat--stat' },
+  special: { abbr: 'SPC', class: 'move-row__cat--spec' },
+  physical: { abbr: 'PHY', class: 'move-row__cat--phys' },
 };
 
 const MEGA_NAME_SEGMENT = 'mega';
@@ -79,7 +80,7 @@ export class SelectedPokemon {
     }
     return nature.increasedStat === nature.decreasedStat
       ? 'Neutral'
-      : `+${nature.increasedStat} · −${nature.decreasedStat}`;
+      : `+${statLabel(nature.increasedStat)} · −${statLabel(nature.decreasedStat)}`;
   });
 
   protected readonly isMega = computed(() => {

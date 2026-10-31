@@ -2,32 +2,19 @@
   display: block;
 }
 
-.row__label,
-.spread__used-label,
-.spread__reset,
-.stepper--max {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-}
-
-.row__value,
-.row__stat,
-.spread__used {
-  font-family: 'Space Mono', monospace;
-}
-
 .row__stat--up {
-  color: #54c66f;
+  color: var(--color-fx-positive);
 }
 
 .row__stat--down {
-  color: #e0503f;
+  color: var(--color-fx-negative);
 }
 
 .row__bar-fill {
   background: linear-gradient(
     90deg,
-    color-mix(in srgb, var(--color-brand-red) 60%, transparent),
-    var(--color-brand-red)
+    color-mix(in oklab, var(--color-accent) 60%, transparent),
+    var(--color-accent)
   );
   transition: width 160ms ease;
 }
@@ -37,7 +24,7 @@
 }
 
 .row__value.is-active {
-  color: var(--color-brand-text);
+  color: var(--color-content);
 }
 
 .stepper {
@@ -48,30 +35,38 @@
 }
 
 .stepper:hover {
-  color: var(--color-brand-text);
-  border-color: color-mix(in srgb, var(--color-brand-red) 45%, transparent);
+  color: var(--color-content);
+  border-color: color-mix(in oklab, var(--color-accent) 45%, transparent);
 }
 
 .spread__used.is-over strong {
-  color: var(--color-brand-red);
-}
-
-.spread__reset {
-  transition:
-    color 120ms,
-    border-color 120ms;
-}
-
-.spread__reset:hover {
-  color: var(--color-brand-text);
-  border-color: color-mix(in srgb, var(--color-brand-red) 45%, transparent);
+  color: var(--color-accent);
 }
 
 .spread__budget-fill {
   background: linear-gradient(
     90deg,
-    color-mix(in srgb, var(--color-brand-red) 70%, transparent),
-    var(--color-brand-red)
+    color-mix(in oklab, var(--color-accent) 70%, transparent),
+    var(--color-accent)
   );
   transition: width 160ms ease;
+}
+
+@media (min-width: 64rem) and (max-height: 52rem) {
+  .rows {
+    gap: 0.25rem;
+  }
+
+  .stepper {
+    height: 1.5rem;
+  }
+
+  .stepper:not(.stepper--max) {
+    width: 1.5rem;
+  }
+
+  .spread__footer {
+    gap: 0.25rem;
+    padding-top: 0.5rem;
+  }
 }

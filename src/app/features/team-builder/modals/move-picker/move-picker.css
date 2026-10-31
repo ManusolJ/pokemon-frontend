@@ -2,24 +2,19 @@
   display: contents;
 }
 
-.seg-btn.is-active {
-  color: var(--color-brand-text);
-  background: rgb(255 255 255 / 0.07);
-}
-
 .filter-chip.is-active {
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--color-content);
+  background: color-mix(in oklab, var(--accent) 16%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
 }
 
 .move-row:hover:not(.is-disabled):not(.is-current) {
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  background: color-mix(in oklab, var(--accent) 9%, transparent);
 }
 
 .move-row.is-current {
-  background: color-mix(in srgb, var(--accent) 13%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
+  background: color-mix(in oklab, var(--accent) 13%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 36%, transparent);
 }
 
 .move-row.is-disabled {
@@ -28,19 +23,19 @@
 }
 
 .move__cat--phys {
-  color: #e0503f;
-  background: color-mix(in srgb, #e0503f 14%, transparent);
-  border: 1px solid color-mix(in srgb, #e0503f 34%, transparent);
+  color: var(--color-fx-negative);
+  background: color-mix(in oklab, var(--color-fx-negative) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-fx-negative) 34%, transparent);
 }
 
 .move__cat--spec {
-  color: #3f8efc;
-  background: color-mix(in srgb, #3f8efc 14%, transparent);
-  border: 1px solid color-mix(in srgb, #3f8efc 34%, transparent);
+  color: var(--color-info);
+  background: color-mix(in oklab, var(--color-info) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-info) 34%, transparent);
 }
 
 .move__cat--stat {
-  color: var(--color-brand-muted);
-  background: rgb(255 255 255 / 0.05);
-  border: 1px solid var(--color-brand-line);
+  color: var(--color-muted);
+  background: var(--color-fill);
+  border: 1px solid var(--color-line);
 }

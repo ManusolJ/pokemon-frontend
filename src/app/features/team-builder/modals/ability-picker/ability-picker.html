@@ -4,9 +4,9 @@
       <button
         type="button"
         (click)="clearAbility()"
-        class="flex items-center gap-2 w-full px-3 py-2.5 mb-1 bg-transparent border border-dashed border-brand-line rounded-lg text-brand-dim text-sm cursor-pointer transition-colors hover:text-brand-text hover:border-brand-red"
+        class="btn btn-ghost btn-block justify-start border-dashed border-line-strong mb-1"
       >
-        <i class="pi pi-times"></i>
+        <i class="pi pi-times text-xs" aria-hidden="true"></i>
         Clear ability
       </button>
     }
@@ -16,14 +16,14 @@
         <p-skeleton height="5.5rem"></p-skeleton>
       }
     } @else if (entries().length === 0) {
-      <p class="text-center text-brand-dim py-10 text-sm">No abilities available.</p>
+      <p class="text-center text-subtle py-10 text-sm">No abilities available.</p>
     } @else {
       @for (entry of entries(); track entry.read.id) {
         <button
           type="button"
           (click)="onPick(entry.read)"
           [class.is-current]="isCurrent(entry.read)"
-          class="ability-row flex flex-col gap-1.5 w-full px-3.5 py-3 rounded-lg bg-brand-raised border border-solid border-brand-line text-left text-brand-text cursor-pointer transition-colors"
+          class="ability-row flex flex-col gap-1.5 w-full px-3.5 py-3 rounded-lg bg-raised border border-line text-left text-content cursor-pointer transition-colors"
         >
           <span class="flex items-center gap-2">
             <span class="font-semibold text-sm">
@@ -31,13 +31,13 @@
             </span>
             @if (entry.isHidden) {
               <span
-                class="ability-row__hidden inline-flex items-center px-1.5 py-0.5 rounded text-[0.5625rem] font-bold tracking-wider uppercase"
+                class="ability-row__hidden inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold tracking-wider uppercase"
               >
                 Hidden
               </span>
             }
           </span>
-          <span class="text-[0.75rem] text-brand-muted leading-snug">
+          <span class="text-xs text-muted leading-snug">
             {{ entry.read.shortEffect || entry.read.flavorText || '—' }}
           </span>
         </button>
