@@ -25,14 +25,30 @@ const PokemonAura = definePreset(Aura, {
       200: '#fecaca',
       300: '#fca5a5',
       400: '#f87171',
-      500: '#ee5a5a',
-      600: '#e2474a',
-      700: '#b91c1c',
+      500: '#c8383b',
+      600: '#b02f32',
+      700: '#a92d30',
       800: '#991b1b',
       900: '#7f1d1d',
       950: '#450a0a',
     },
     colorScheme: {
+      light: {
+        surface: {
+          0: '#ffffff',
+          50: '#f7f7f6',
+          100: '#f1f2f4',
+          200: '#e4e6ea',
+          300: '#c9cdd4',
+          400: '#8a919d',
+          500: '#646b78',
+          600: '#545a66',
+          700: '#3a3f49',
+          800: '#272b33',
+          900: '#16181d',
+          950: '#0e1014',
+        },
+      },
       dark: {
         surface: {
           0: '#ffffff',
@@ -67,7 +83,7 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: '.dark',
           cssLayer: {
             name: 'primeng',
-            order: 'theme, base, primeng, utilities',
+            order: 'theme, base, primeng, components, utilities',
           },
         },
       },
