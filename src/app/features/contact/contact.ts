@@ -2,13 +2,15 @@ import { MAX_EMAIL_LENGTH } from '@shared/constants/auth.constants';
 
 import { ContactRequest } from '@shared/interfaces/misc/contact-request.interface';
 
+import { describeHttpError } from '@shared/utils/http-error.util';
+
 import { ContactService } from '@core/services/contact.service';
 
 import { finalize } from 'rxjs';
 
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 
 const NAME_MIN_LENGTH = 2;
 const NAME_MAX_LENGTH = 60;
@@ -19,7 +21,7 @@ const MESSAGE_MAX_LENGTH = 2000;
 @Component({
   imports: [ReactiveFormsModule],
   selector: 'app-contact',
-  styleUrls: ['./contact.css', '../auth/styles/auth-form.css'],
+  styleUrl: './contact.css',
   templateUrl: './contact.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -29,13 +31,14 @@ export class Contact {
   private readonly contactService = inject(ContactService);
 
   protected readonly isSent = signal(false);
-  protected readonly hasError = signal(false);
+  protected readonly submitError = signal<string | null>(null);
   protected readonly isLoading = signal(false);
 
   protected readonly nameMinLength = NAME_MIN_LENGTH;
   protected readonly nameMaxLength = NAME_MAX_LENGTH;
   protected readonly messageMinLength = MESSAGE_MIN_LENGTH;
   protected readonly messageMaxLength = MESSAGE_MAX_LENGTH;
+  protected readonly subjectMaxLength = SUBJECT_MAX_LENGTH;
 
   protected readonly form = this.formBuilder.nonNullable.group({
     name: [
@@ -74,6 +77,10 @@ export class Contact {
     return this.form.controls.message;
   }
 
+  protected showError(control: AbstractControl): boolean {
+    return control.invalid && control.touched;
+  }
+
   protected onSubmit(): void {
     if (this.form.invalid || this.isLoading()) {
       this.form.markAllAsTouched();
@@ -81,7 +88,7 @@ export class Contact {
     }
 
     this.isLoading.set(true);
-    this.hasError.set(false);
+    this.submitError.set(null);
 
     const request: ContactRequest = this.form.getRawValue();
 
@@ -93,13 +100,13 @@ export class Contact {
       )
       .subscribe({
         next: () => this.isSent.set(true),
-        error: () => this.hasError.set(true),
+        error: (error: unknown) => this.submitError.set(describeHttpError(error)),
       });
   }
 
   protected resetForm(): void {
     this.form.reset();
     this.isSent.set(false);
-    this.hasError.set(false);
+    this.submitError.set(null);
   }
 }
