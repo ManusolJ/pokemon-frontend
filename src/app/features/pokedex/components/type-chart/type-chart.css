@@ -1,54 +1,57 @@
 :host {
   display: block;
   height: 100%;
-
-  --fx-red: #ff8a7c;
-  --fx-gray: #aeb4be;
-  --fx-green: #6fd894;
-  --fx-red-hi: #ffb1a6;
-  --fx-green-hi: #9cefba;
 }
 
-.type-pill {
-  color: var(--tc);
-  background: color-mix(in srgb, var(--tc) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--tc) 34%, transparent);
+.slot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2rem;
+  padding-inline: 0.75rem;
+  border: 1px dashed var(--color-line-strong);
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--color-subtle);
 }
-.type-pill .dot {
+
+.slot.is-filled {
+  border-style: solid;
+  border-color: color-mix(in oklab, var(--tc) 55%, transparent);
+  color: var(--color-content);
+  background: color-mix(in oklab, var(--tc) 14%, transparent);
+}
+
+.slot__dot,
+.type-pill__dot,
+.col-head-btn__dot {
+  border-radius: 9999px;
   background: var(--tc);
 }
-.type-pill.is-active {
-  color: #0e1014;
-  background: var(--tc);
+
+.slot__dot,
+.type-pill__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.type-pill[aria-pressed='true'] {
   border-color: var(--tc);
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--tc) 40%, transparent);
-}
-.type-pill.is-active .dot {
-  background: #0e1014;
-}
-
-.stat--super {
-  color: var(--fx-green);
-}
-
-.stat--resist {
-  color: var(--fx-red);
-}
-
-.stat--immune {
-  color: var(--fx-gray);
+  background: color-mix(in oklab, var(--tc) 22%, transparent);
 }
 
 .tone--super {
-  color: var(--fx-green);
+  color: var(--color-fx-negative);
 }
 
 .tone--resist {
-  color: var(--fx-red);
+  color: var(--color-fx-positive);
 }
 
 .tone--immune {
-  color: var(--fx-gray);
+  color: var(--color-fx-immune);
 }
 
 .type-table {
@@ -62,68 +65,86 @@
 }
 
 .col-head {
-  width: 46px;
+  width: 3rem;
 }
-.col-head-btn .dot {
-  background: var(--tc);
+
+.col-head-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 3.5rem;
+  height: 3.25rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+}
+
+.col-head-btn:hover {
+  background: var(--color-fill);
+}
+
+.col-head-btn__dot {
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .col-head.is-defender .col-head-btn {
-  background: color-mix(in srgb, var(--tc) 22%, transparent);
-  border-color: color-mix(in srgb, var(--tc) 55%, transparent);
-}
-
-.col-head.is-defender .col-head-btn .dot {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tc) 25%, transparent);
+  color: var(--color-content);
+  background: color-mix(in oklab, var(--tc) 20%, transparent);
+  border-color: color-mix(in oklab, var(--tc) 55%, transparent);
 }
 
 .fx {
-  width: 46px;
-  height: 44px;
-  border-radius: 7px;
+  width: 3rem;
+  height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
   text-align: center;
   vertical-align: middle;
-  font-size: 13.5px;
+  font-size: 0.875rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  border: 1px solid transparent;
-  transition: opacity 0.15s ease;
+  transition: opacity 150ms ease-out;
 }
 
 .fx--neutral {
-  color: var(--color-brand-dim);
+  color: var(--color-subtle);
 }
 
 .fx--super {
-  color: var(--fx-green);
-  background: color-mix(in srgb, #5bcb7c 14%, transparent);
+  color: var(--color-fx-positive);
+  background: color-mix(in oklab, var(--color-fx-positive) 14%, transparent);
 }
 
 .fx--superhi {
-  color: var(--fx-green-hi);
-  background: color-mix(in srgb, #5bcb7c 26%, transparent);
-  border-color: color-mix(in srgb, #5bcb7c 45%, transparent);
+  color: var(--color-fx-positive);
+  background: color-mix(in oklab, var(--color-fx-positive) 26%, transparent);
+  border-color: color-mix(in oklab, var(--color-fx-positive) 45%, transparent);
 }
 
 .fx--half {
-  color: var(--fx-red);
-  background: color-mix(in srgb, #f0685c 13%, transparent);
+  color: var(--color-fx-negative);
+  background: color-mix(in oklab, var(--color-fx-negative) 13%, transparent);
 }
 
 .fx--quarter {
-  color: var(--fx-red-hi);
-  background: color-mix(in srgb, #f0685c 24%, transparent);
-  border-color: color-mix(in srgb, #f0685c 45%, transparent);
+  color: var(--color-fx-negative);
+  background: color-mix(in oklab, var(--color-fx-negative) 24%, transparent);
+  border-color: color-mix(in oklab, var(--color-fx-negative) 45%, transparent);
 }
 
 .fx--immune {
-  color: var(--fx-gray);
-  background: color-mix(in srgb, #646b78 20%, transparent);
-  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-fx-immune);
+  background: var(--color-fill-strong);
+  border-color: var(--color-line-strong);
 }
 
 td.is-defender {
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1.5px var(--color-line-strong);
 }
 
 td.dimmed {
@@ -131,16 +152,16 @@ td.dimmed {
 }
 
 .sum-cell {
-  width: 70px;
-  height: 44px;
-  border-radius: 7px;
+  width: 4.5rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.375rem;
   text-align: center;
   vertical-align: middle;
-  font-size: 14.5px;
+  font-size: 0.875rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  border: 1px solid var(--color-brand-line);
-  background: var(--color-brand-raised);
+  background: var(--color-raised);
 }
 
 .sum-cell.fx--half,
@@ -148,19 +169,28 @@ td.dimmed {
 .sum-cell.fx--superhi,
 .sum-cell.fx--quarter,
 .sum-cell.fx--immune {
-  border-color: color-mix(in srgb, currentColor 35%, transparent);
+  border-color: color-mix(in oklab, currentColor 35%, transparent);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-muted);
 }
 
 .legend-item .fx {
-  width: 28px;
-  height: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12.5px;
+  width: 1.75rem;
+  height: 1.625rem;
+  font-size: 0.75rem;
 }
 
 .legend-item .fx--neutral {
-  background: var(--color-brand-raised);
-  border-color: var(--color-brand-line);
+  background: var(--color-raised);
+  border-color: var(--color-line);
 }

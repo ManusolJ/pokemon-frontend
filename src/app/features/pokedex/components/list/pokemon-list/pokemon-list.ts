@@ -68,7 +68,7 @@ export class PokemonList implements OnInit {
   protected readonly sorts: readonly { field: SpeciesSortField; label: string }[] = [
     { field: 'name', label: 'Name' },
     { field: 'sortOrder', label: 'Family' },
-    { field: 'nationalDexNumber', label: 'Dex º' },
+    { field: 'nationalDexNumber', label: 'Dex no.' },
   ];
 
   private readonly typeOptions = signal<FilterOption[]>([]);
@@ -76,7 +76,7 @@ export class PokemonList implements OnInit {
   readonly pageSize = PAGE_SIZE;
 
   protected readonly fields = computed<FilterField[]>(() => [
-    { kind: 'search', key: 'name', label: 'Search', placeholder: 'Search Pokemon' },
+    { kind: 'search', key: 'name', label: 'Search', placeholder: 'Search Pokémon' },
     {
       kind: 'chips',
       key: 'typeIds',
@@ -207,7 +207,7 @@ export class PokemonList implements OnInit {
 
   /**
    * Backend stores weight in hectograms (1 kg = 10 hg) and height in decimeters
-   * (1 m = 10 dm). The UI takes kg / m, so convert here before sending.
+   * (1 m = 10 dm).
    */
   private toBackendUnits(filter: PokemonFilter): PokemonFilter {
     const KG_TO_HG = 10;

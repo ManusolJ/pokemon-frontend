@@ -24,9 +24,9 @@ const NO_VALUE = '—';
 const DEFAULT_CATEGORY: MoveCategoryKey = 'status';
 
 const CATEGORY_STYLES: Record<MoveCategoryKey, CategoryStyle> = {
-  status: { color: '#9aa1ad', glyph: '◇' },
-  special: { color: '#3f8efc', glyph: '◆' },
-  physical: { color: '#e0503f', glyph: '●' },
+  status: { color: 'var(--color-muted)', glyph: '◇' },
+  special: { color: 'var(--color-info)', glyph: '◆' },
+  physical: { color: 'var(--color-fx-negative)', glyph: '●' },
 };
 
 @Component({
@@ -57,13 +57,6 @@ export class MoveDetail {
   protected readonly move = computed<MoveRead | null>(() => this.moveResource.value() ?? null);
 
   protected readonly accent = computed(() => getTypeColor(this.move()?.type.name));
-
-  protected tileAccentColor(tile: MoveStatTile): string | null {
-    if (!tile.accent || tile.faded) {
-      return null;
-    }
-    return this.accent();
-  }
 
   protected readonly categoryStyle = computed<CategoryStyle>(() => {
     const rawCategory = this.move()?.category?.toLowerCase() as MoveCategoryKey | undefined;

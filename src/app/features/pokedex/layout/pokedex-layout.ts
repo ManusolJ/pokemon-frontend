@@ -15,7 +15,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 export class PokedexLayout {
   protected readonly tabs: NavItem[] = [
-    { label: 'Pokemon', path: 'pokemon' },
+    { label: 'Pokémon', path: 'pokemon' },
     { label: 'Moves', path: 'moves' },
     { label: 'Type Chart', path: 'type-chart' },
     { label: 'Natures', path: 'natures' },

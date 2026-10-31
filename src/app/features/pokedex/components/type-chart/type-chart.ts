@@ -25,11 +25,11 @@ import { getTypeColor } from '@shared/utils/get-type-color.util';
 import {
   inject,
   signal,
+  OnInit,
   computed,
   Component,
   DestroyRef,
   ChangeDetectionStrategy,
-  OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -46,12 +46,6 @@ const DEFAULT_MULTIPLIER_META = MULTIPLIER_META[String(NEUTRAL_MULTIPLIER)];
 
 const MAX_DEFENDERS = 2;
 const TYPE_COUNT = Object.keys(PokemonType).length;
-
-const TYPE_BORDER_ALPHA_SUFFIX = '80';
-const TYPE_BACKGROUND_MIX_PERCENT = 12;
-const EMPTY_SLOT_BORDER = 'var(--color-brand-line)';
-const EMPTY_SLOT_BACKGROUND = 'transparent';
-const EMPTY_SLOT_COLOR = 'var(--color-brand-dim)';
 
 @Component({
   imports: [TypeBadge],
@@ -112,38 +106,6 @@ export class TypeChart implements OnInit {
       classes.push('dimmed');
     }
     return classes.join(' ');
-  }
-
-  protected getHeaderClasses(defender: PokemonType): string {
-    return this.isDefender(defender) ? 'col-head is-defender' : 'col-head';
-  }
-
-  protected slotBorderColor(slot: PokemonType | null): string {
-    if (!slot) {
-      return EMPTY_SLOT_BORDER;
-    }
-    return `${getTypeColor(slot)}${TYPE_BORDER_ALPHA_SUFFIX}`;
-  }
-
-  protected slotBackground(slot: PokemonType | null): string {
-    if (!slot) {
-      return EMPTY_SLOT_BACKGROUND;
-    }
-    return `color-mix(in srgb, ${getTypeColor(slot)} ${TYPE_BACKGROUND_MIX_PERCENT}%, transparent)`;
-  }
-
-  protected slotColor(slot: PokemonType | null): string {
-    if (!slot) {
-      return EMPTY_SLOT_COLOR;
-    }
-    return getTypeColor(slot);
-  }
-
-  protected defenderHeaderColor(type: PokemonType): string | null {
-    if (!this.isDefender(type)) {
-      return null;
-    }
-    return getTypeColor(type);
   }
 
   protected getCombinedMultiplier(attacker: PokemonType): MultiplierMeta | null {

@@ -8,28 +8,25 @@
   [totalPages]="totalPages()"
   (pageChange)="onPageChange($event)"
 >
-  >
   <app-filter-sidebar sidebar [fields]="fields" (filterChange)="onFilterChange($event)" />
 
   <div grid class="item-grid">
     @for (item of items(); track item.id) {
-      <article
-        class="flex gap-3 rounded-2xl border border-brand-line bg-brand-surface p-4 transition-colors hover:border-brand-red/40"
-      >
+      <article class="card flex gap-3 p-4">
         @if (item.spriteUrl) {
           <img
             [src]="getItemSpriteUrl(item)"
-            [alt]="item.name"
+            alt=""
             loading="lazy"
-            class="h-12 w-12 shrink-0 object-contain"
+            class="size-12 shrink-0 object-contain [image-rendering:pixelated]"
           />
         }
         <div class="min-w-0">
-          <h3 class="text-brand-text font-bold capitalize">{{ item.name }}</h3>
+          <h3 class="font-bold capitalize text-content">{{ item.name }}</h3>
           @if (item.category) {
-            <span class="text-brand-dim text-xs uppercase">{{ item.category }}</span>
+            <p class="eyebrow mt-0.5">{{ item.category }}</p>
           }
-          <p class="text-brand-muted mt-1 line-clamp-2 text-sm">
+          <p class="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted">
             {{ item.shortEffect || item.effect || item.flavorText }}
           </p>
         </div>

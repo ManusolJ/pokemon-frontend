@@ -1,6 +1,6 @@
 <app-list-shell
-  noun="Pokemon"
-  title="Pokedex"
+  noun="Pokémon"
+  title="Pokédex"
   [total]="total()"
   [loading]="loading()"
   [page]="page()"
@@ -8,18 +8,15 @@
   [totalPages]="totalPages()"
   (pageChange)="onPageChange($event)"
 >
-  >
   <app-filter-sidebar sidebar [fields]="fields()" (filterChange)="onFilterChange($event)" />
 
-  <div toolbar class="flex gap-1 rounded-lg border border-brand-line bg-brand-surface p-1">
+  <div toolbar class="segmented" role="group" aria-label="Sort by">
     @for (sortOption of sorts; track sortOption.field) {
       <button
         type="button"
         (click)="setSort(sortOption.field)"
-        [class.bg-brand-line]="sort() === sortOption.field"
-        [class.text-brand-text]="sort() === sortOption.field"
-        [class.text-brand-muted]="sort() !== sortOption.field"
-        class="cursor-pointer rounded-md px-3 py-1.5 text-xs font-semibold transition-colors"
+        [attr.aria-pressed]="sort() === sortOption.field"
+        class="segmented-item"
       >
         {{ sortOption.label }}
       </button>

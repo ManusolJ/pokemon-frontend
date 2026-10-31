@@ -1,121 +1,81 @@
 @if (loading()) {
-  <div class="flex flex-col items-center justify-center gap-4 p-8 text-brand-muted">
-    <span
-      class="size-7 rounded-full border-2 border-brand-line border-t-brand-red animate-spin"
-      aria-hidden="true"
-    ></span>
+  <div class="flex flex-col items-center justify-center gap-4 p-8 text-muted" role="status">
+    <i class="pi pi-spin pi-spinner text-2xl" aria-hidden="true"></i>
     <span>Loading move…</span>
   </div>
 } @else if (error() || !move()) {
-  <div class="flex flex-col items-center justify-center gap-4 p-8 text-brand-muted">
-    <span class="font-mono text-4xl text-brand-dim" aria-hidden="true">?</span>
-    <span>That move could not be found.</span>
+  <div class="page max-w-xl py-16">
+    <p class="alert alert-danger" role="alert">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+      That move could not be found.
+    </p>
+    <a routerLink="/pokedex/moves" class="btn btn-secondary mt-4">Back to moves</a>
   </div>
 } @else {
   @if (move(); as move) {
-    <article class="block px-4 sm:px-6 pb-10 sm:pb-16 lg:px-8" [style.--accent]="accent()">
-      <nav class="flex items-center justify-between gap-3 py-5">
-        <a routerLink="/pokedex/moves" class="nav-pill">
-          <span aria-hidden="true">&#x2190;</span>
-          <span>Moves</span>
+    <article class="page pb-12" [style.--accent]="accent()">
+      <nav class="py-5">
+        <a routerLink="/pokedex/moves" class="btn btn-ghost btn-sm -ml-3">
+          <i class="pi pi-arrow-left text-xs" aria-hidden="true"></i>
+          Moves
         </a>
       </nav>
 
-      <div class="move-hero relative overflow-hidden rounded-3xl border border-brand-line">
-        <span class="move-hero__ghost" aria-hidden="true">
-          {{ move.category | nameNormalizer }}
-        </span>
+      <header class="move-hero card overflow-hidden px-5 py-6 sm:px-8 sm:py-8">
+        <h1 class="text-4xl font-bold tracking-tight text-content lg:text-5xl">
+          {{ move.name | nameNormalizer | titlecase }}
+        </h1>
 
-        <div class="relative px-5 sm:px-10 pt-4 sm:pt-5 pb-6 sm:pb-9">
-          <h2
-            class="move-hero__title m-0 text-3xl sm:text-4xl lg:text-5xl font-bold leading-none tracking-tighter text-brand-text"
+        <div class="mt-4 flex flex-wrap gap-2">
+          <app-type-badge [name]="move.type.name" size="md" />
+          <span class="badge cat-badge capitalize" [style.--cat]="categoryStyle().color">
+            <span aria-hidden="true">{{ categoryStyle().glyph }}</span>
+            {{ move.category | nameNormalizer }}
+          </span>
+        </div>
+
+        @if (move.shortEffect) {
+          <p class="mt-5 max-w-prose text-base text-pretty text-muted">{{ move.shortEffect }}</p>
+        }
+      </header>
+
+      <dl class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        @for (tile of statTiles(); track tile.label) {
+          <div
+            class="card flex min-w-0 flex-col gap-2 px-5 py-4"
+            [class.stat-tile--accent]="tile.accent && !tile.faded"
           >
-            {{ move.name | nameNormalizer | titlecase }}
-          </h2>
-
-          <div class="flex flex-wrap gap-2 mt-3 sm:mt-4.5">
-            <app-type-badge [name]="move.type.name" />
-            <span
-              class="cat-badge inline-flex items-center gap-1.75 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase"
-              [style.color]="categoryStyle().color"
-              [style.background]="
-                'color-mix(in srgb, ' + categoryStyle().color + ' 15%, transparent)'
-              "
-              [style.border]="
-                '1px solid color-mix(in srgb, ' + categoryStyle().color + ' 30%, transparent)'
-              "
+            <dt class="eyebrow">{{ tile.label }}</dt>
+            <dd
+              class="tabular text-3xl font-bold leading-none"
+              [class.text-subtle]="tile.faded"
+              [class.text-content]="!tile.faded"
             >
-              <span class="text-xs">{{ categoryStyle().glyph }}</span>
-              {{ move.category | nameNormalizer }}
-            </span>
+              {{ tile.value }}
+            </dd>
           </div>
+        }
+      </dl>
 
-          <p class="mt-5 max-w-140 text-base leading-6 text-brand-muted text-pretty">
-            {{ move.shortEffect }}
-          </p>
-        </div>
-      </div>
+      <div class="mt-5 grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.4fr_1fr] lg:gap-6">
+        <section class="card p-6" aria-labelledby="effect-heading">
+          <h2 id="effect-heading" class="eyebrow mb-3 text-content">Effect</h2>
+          <p class="text-sm leading-6 text-pretty text-muted">{{ move.effect }}</p>
 
-      <div class="flex flex-col gap-5.5 mt-5">
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-3.5">
-          @for (tile of statTiles(); track tile.label) {
-            <div
-              class="flex flex-col gap-2 min-w-0 px-5 py-4.5 bg-brand-surface border border-brand-line rounded-xl"
-            >
-              <span class="stat-tile text-xs font-bold tracking-wider uppercase text-brand-dim">
-                {{ tile.label }}
-              </span>
-              <span
-                class="stat-tile text-3xl font-bold leading-none"
-                [class.text-brand-dim]="tile.faded"
-                [class.text-brand-text]="!tile.faded"
-                [style.color]="tileAccentColor(tile)"
-              >
-                {{ tile.value }}
-              </span>
-            </div>
-          }
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-4 lg:gap-5.5 items-start">
-          <section class="bg-brand-surface border border-brand-line rounded-2xl p-6">
-            <h2
-              class="stat-tile m-0 mb-3.5 text-sm font-bold tracking-wide uppercase text-brand-text"
-            >
-              Effect
-            </h2>
-            <p class="m-0 text-sm leading-6 text-brand-muted text-pretty">{{ move.effect }}</p>
-
-            @if (move.effectChance > 0) {
-              <div
-                class="inline-flex items-center gap-2.5 mt-4 px-3 py-2 rounded-xl"
-                [style.background]="'color-mix(in srgb, ' + accent() + ' 10%, transparent)'"
-                [style.border]="'1px solid color-mix(in srgb, ' + accent() + ' 28%, transparent)'"
-              >
-                <span class="font-mono text-sm font-bold" [style.color]="accent()">
-                  {{ move.effectChance }}%
-                </span>
-                <span class="text-sm text-brand-muted">secondary effect chance</span>
-              </div>
-            }
-          </section>
-
-          <section class="bg-brand-surface border border-brand-line rounded-2xl p-6">
-            <h2
-              class="stat-tile m-0 mb-3.5 text-sm font-bold tracking-wide uppercase text-brand-text"
-            >
-              In-game text
-            </h2>
-            <p
-              class="m-0 pl-4 text-sm italic leading-6 text-brand-muted text-pretty"
-              [style.border-left]="
-                '2px solid color-mix(in srgb, ' + accent() + ' 50%, transparent)'
-              "
-            >
-              "{{ move.flavorText }}"
+          @if (move.effectChance > 0) {
+            <p class="effect-chance mt-4">
+              <span class="tabular font-bold text-content">{{ move.effectChance }}%</span>
+              <span class="text-muted">secondary effect chance</span>
             </p>
-          </section>
-        </div>
+          }
+        </section>
+
+        <section class="card p-6" aria-labelledby="flavor-heading">
+          <h2 id="flavor-heading" class="eyebrow mb-3 text-content">In-game text</h2>
+          <blockquote class="flavor text-sm leading-6 text-pretty text-muted italic">
+            “{{ move.flavorText }}”
+          </blockquote>
+        </section>
       </div>
     </article>
   }
