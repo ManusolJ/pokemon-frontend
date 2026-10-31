@@ -6,16 +6,17 @@ import { AdminUserUpdate } from '@shared/interfaces/pokemon/user/admin-user-upda
 import { FormSubmissionStatus } from '@shared/interfaces/ui/form/form-submission-status.interface';
 
 import { formatJoinDate } from '@shared/utils/format-date.util';
+import { describeHttpError } from '@shared/utils/http-error.util';
 
 import { UserService } from '@core/services/user.service';
 
 import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  computed,
   inject,
   signal,
+  computed,
+  Component,
+  DestroyRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -47,6 +48,7 @@ export class UserEdit {
   private readonly userService = inject(UserService);
   private readonly formBuilder = inject(FormBuilder);
 
+  protected readonly saveError = signal<string | null>(null);
   protected readonly saveStatus = signal<FormSubmissionStatus>('idle');
 
   protected readonly form = this.formBuilder.nonNullable.group({
@@ -129,6 +131,7 @@ export class UserEdit {
     }
 
     this.saveStatus.set('saving');
+    this.saveError.set(null);
 
     const formValue = this.form.getRawValue();
     const request: AdminUserUpdate = {
@@ -147,7 +150,10 @@ export class UserEdit {
           this.applyToForm(updated);
           this.saveStatus.set('saved');
         },
-        error: () => this.saveStatus.set('error'),
+        error: (error: unknown) => {
+          this.saveError.set(describeHttpError(error, 'Could not save changes. Please try again.'));
+          this.saveStatus.set('error');
+        },
       });
   }
 

@@ -1,126 +1,128 @@
-<section class="py-8">
-  <a
-    routerLink="/admin/users"
-    class="text-brand-muted hover:text-brand-text inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
-  >
-    <i class="pi pi-arrow-left"></i> Back to users
-  </a>
-  <h2 class="text-brand-text mt-4 text-3xl font-bold tracking-tight">Edit user</h2>
+<section class="flex flex-col gap-6 py-6">
+  <div>
+    <a routerLink="/admin/users" class="link inline-flex items-center gap-1.5 text-sm">
+      <i class="pi pi-arrow-left text-xs" aria-hidden="true"></i> Back to users
+    </a>
+    <h1 class="page-title mt-3">Edit user</h1>
+  </div>
 
   @if (isLoading()) {
-    <div class="py-16 text-center">
-      <i class="pi pi-spin pi-spinner text-brand-muted text-2xl"></i>
+    <div class="py-16 text-center" aria-busy="true">
+      <i class="pi pi-spin pi-spinner text-2xl text-muted" aria-hidden="true"></i>
+      <span class="sr-only">Loading user</span>
     </div>
   } @else if (loadError() || !user()) {
-    <div class="py-16 text-center">
-      <p class="text-brand-text font-semibold">We couldn't load that user.</p>
-      <p class="text-brand-muted mt-1 text-sm">It may have been deleted.</p>
+    <div
+      class="flex flex-col items-center rounded-xl border border-dashed border-line px-4 py-16 text-center"
+    >
+      <p class="font-semibold text-content">We couldn't load that user.</p>
+      <p class="mt-1 text-sm text-muted">It may have been deleted.</p>
     </div>
   } @else if (user(); as currentUser) {
-    <div class="mt-6 grid grid-cols-1 items-start gap-5 lg:grid-cols-[18rem_1fr]">
-      <aside
-        class="border-brand-line bg-brand-surface flex flex-col items-center rounded-2xl border p-6"
-      >
-        <div class="identity-card__avatar">{{ initials(currentUser.username) }}</div>
-        <div class="text-brand-text mb-2 text-base font-bold">{{ currentUser.username }}</div>
-        <span class="role-badge" [class.role-badge--admin]="isAdmin()">
-          @if (isAdmin()) {
-            Admin
-          } @else {
-            User
-          }
-        </span>
+    <div class="grid grid-cols-1 items-start gap-5 lg:grid-cols-[18rem_1fr]">
+      <aside class="card flex flex-col items-center p-6">
+        <span class="avatar" aria-hidden="true">{{ initials(currentUser.username) }}</span>
+        <p class="mt-3 text-base font-bold text-content">{{ currentUser.username }}</p>
+        <span class="badge mt-2" [class.badge-accent]="isAdmin()">{{
+          isAdmin() ? 'Admin' : 'User'
+        }}</span>
 
-        <dl class="identity-card__meta">
+        <dl class="divider mt-5 flex w-full flex-col gap-3 pt-5">
           <div class="meta-row">
-            <dt><i class="pi pi-envelope"></i> Email</dt>
-            <dd>{{ currentUser.email }}</dd>
+            <dt>Email</dt>
+            <dd class="wrap-break-word">{{ currentUser.email }}</dd>
           </div>
           <div class="meta-row">
-            <dt><i class="pi pi-calendar"></i> Member since</dt>
+            <dt>Member since</dt>
             <dd>{{ memberSince() }}</dd>
           </div>
           <div class="meta-row">
-            <dt><i class="pi pi-circle-fill"></i> Status</dt>
+            <dt>Status</dt>
             <dd>
-              <span class="status" [class.status--off]="!currentUser.enabled">
-                <span class="status__dot"></span>
-                @if (currentUser.enabled) {
-                  Active
-                } @else {
-                  Disabled
-                }
+              <span class="badge" [class.badge-success]="currentUser.enabled">
+                {{ currentUser.enabled ? 'Active' : 'Disabled' }}
               </span>
             </dd>
           </div>
           <div class="meta-row">
-            <dt><i class="pi pi-hashtag"></i> User ID</dt>
-            <dd class="font-mono">{{ currentUser.id }}</dd>
+            <dt>User ID</dt>
+            <dd class="tabular">{{ currentUser.id }}</dd>
           </div>
         </dl>
       </aside>
 
-      <div class="border-brand-line bg-brand-surface rounded-2xl border p-4 sm:p-7">
+      <div class="card p-5 sm:p-7">
         <header>
-          <h2 class="text-brand-text text-lg font-bold">Account details</h2>
-          <p class="text-brand-muted mt-1 text-sm">Changes take effect immediately.</p>
+          <h2 class="section-title">Account details</h2>
+          <p class="mt-1 text-sm text-muted">Changes take effect immediately.</p>
         </header>
 
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-6 flex flex-col gap-5">
+        <form
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          class="mt-6 flex flex-col gap-5"
+          novalidate
+        >
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <div class="flex flex-col gap-1">
+            <div class="field">
               <label for="edit-username" class="field-label">Username</label>
               <input
                 id="edit-username"
                 type="text"
+                autocomplete="off"
                 formControlName="username"
-                class="admin-input"
-                [class.admin-input--error]="username.invalid && username.touched"
+                class="input"
+                [attr.aria-invalid]="username.invalid && username.touched"
+                aria-describedby="edit-username-error"
               />
-              @if (username.touched && username.hasError('required')) {
-                <span class="field-error">This field is required.</span>
-              } @else if (
-                username.touched &&
-                (username.hasError('minlength') || username.hasError('maxlength'))
-              ) {
-                <span class="field-error">
+              <p id="edit-username-error" class="field-error">
+                @if (username.touched && username.hasError('required')) {
+                  This field is required.
+                } @else if (
+                  username.touched &&
+                  (username.hasError('minlength') || username.hasError('maxlength'))
+                ) {
                   Must be between {{ minUsernameLength }} and {{ maxUsernameLength }} characters.
-                </span>
-              }
+                }
+              </p>
             </div>
 
-            <div class="flex flex-col gap-1">
+            <div class="field">
               <label for="edit-email" class="field-label">Email</label>
               <input
                 id="edit-email"
                 type="email"
+                autocomplete="off"
                 formControlName="email"
-                class="admin-input"
-                [class.admin-input--error]="email.invalid && email.touched"
+                class="input"
+                [attr.aria-invalid]="email.invalid && email.touched"
+                aria-describedby="edit-email-error"
               />
-              @if (email.touched && email.hasError('required')) {
-                <span class="field-error">This field is required.</span>
-              } @else if (email.touched && email.hasError('email')) {
-                <span class="field-error">Enter a valid email address.</span>
-              }
+              <p id="edit-email-error" class="field-error">
+                @if (email.touched && email.hasError('required')) {
+                  This field is required.
+                } @else if (email.touched && email.hasError('email')) {
+                  Enter a valid email address.
+                }
+              </p>
             </div>
           </div>
 
-          <div class="flex flex-col gap-2">
-            <span class="field-label">Role</span>
-            <div class="role-picker" role="group" aria-label="Role">
+          <div class="field">
+            <span class="field-label" id="edit-role-label">Role</span>
+            <div class="segmented self-start" role="group" aria-labelledby="edit-role-label">
               <button
                 type="button"
-                class="role-pick"
-                [class.role-pick--active]="role.value === roleUser"
+                class="segmented-item min-w-20"
+                [attr.aria-pressed]="role.value === roleUser"
                 (click)="setRole(roleUser)"
               >
                 User
               </button>
               <button
                 type="button"
-                class="role-pick"
-                [class.role-pick--active]="role.value === roleAdmin"
+                class="segmented-item min-w-20"
+                [attr.aria-pressed]="role.value === roleAdmin"
                 (click)="setRole(roleAdmin)"
               >
                 Admin
@@ -128,30 +130,35 @@
             </div>
           </div>
 
-          <div class="flex flex-col gap-2">
+          <div class="field">
             <span class="field-label">Account status</span>
-            <label class="toggle">
-              <input type="checkbox" formControlName="enabled" />
-              <span>Account active (user can log in)</span>
+            <label class="inline-flex cursor-pointer items-center gap-2.5 text-sm text-content">
+              <input type="checkbox" class="checkbox" formControlName="enabled" />
+              Account active (the user can sign in)
             </label>
           </div>
 
-          @if (saveStatus() === 'saved') {
-            <p class="inline-flex items-center gap-1.5 text-sm text-green-400">
-              <i class="pi pi-check"></i> Changes saved.
-            </p>
-          } @else if (saveStatus() === 'error') {
-            <p class="field-error">Could not save changes. Please try again.</p>
-          }
+          <div aria-live="polite">
+            @if (saveStatus() === 'saved') {
+              <p class="alert alert-success" role="status">
+                <i class="pi pi-check" aria-hidden="true"></i> Changes saved.
+              </p>
+            } @else if (saveStatus() === 'error') {
+              <p class="alert alert-danger" role="alert">
+                <i class="pi pi-exclamation-circle" aria-hidden="true"></i>{{ saveError() }}
+              </p>
+            }
+          </div>
 
           <div class="flex justify-end">
             <button
               type="submit"
-              class="btn-primary"
-              [disabled]="form.invalid || saveStatus() === 'saving' || form.pristine"
+              class="btn btn-primary"
+              [disabled]="saveStatus() === 'saving' || form.pristine"
+              [attr.aria-busy]="saveStatus() === 'saving'"
             >
               @if (saveStatus() === 'saving') {
-                <i class="pi pi-spin pi-spinner"></i>
+                <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Saving…
               } @else {
                 Save changes
               }
