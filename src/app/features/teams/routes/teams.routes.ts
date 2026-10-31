@@ -17,7 +17,7 @@ export const TEAMS_ROUTES: Routes = [
         title: 'Community Teams',
         data: {
           description:
-            'Browse Pokemon teams shared by the community, see their full rosters and copy any of them into the builder.',
+            'Browse Pokémon teams shared by the community, see their full rosters and copy any of them into the builder.',
         },
         loadComponent: () =>
           import('@features/teams/components/lists/public-team-list/public-team-list').then(
@@ -26,9 +26,10 @@ export const TEAMS_ROUTES: Routes = [
       },
       {
         path: 'shared-teams/:id',
+        data: { mode: 'public' },
         loadComponent: () =>
-          import('@features/teams/components/detail/public-team-detail/public-team-detail').then(
-            (mod) => mod.PublicTeamDetail,
+          import('@features/teams/components/detail/team-detail/team-detail').then(
+            (mod) => mod.TeamDetail,
           ),
       },
       {
@@ -43,9 +44,20 @@ export const TEAMS_ROUTES: Routes = [
       {
         path: 'my-teams/:id',
         canActivate: [authGuard],
+        data: { mode: 'own' },
         loadComponent: () =>
-          import('@features/teams/components/detail/private-team-detail/private-team-detail').then(
-            (mod) => mod.PrivateTeamDetail,
+          import('@features/teams/components/detail/team-detail/team-detail').then(
+            (mod) => mod.TeamDetail,
+          ),
+      },
+      {
+        // Read-only share link; works for private teams, so no guard and no indexing.
+        path: 's/:slug',
+        title: 'Shared team',
+        data: { mode: 'shared', noindex: true },
+        loadComponent: () =>
+          import('@features/teams/components/detail/team-detail/team-detail').then(
+            (mod) => mod.TeamDetail,
           ),
       },
     ],

@@ -1,0 +1,235 @@
+@if (loading()) {
+  <div class="page py-16 text-center text-muted" role="status">
+    <i class="pi pi-spin pi-spinner text-2xl" aria-hidden="true"></i>
+    <p class="mt-3 text-sm">Loading team…</p>
+  </div>
+} @else if (error() || !team()) {
+  <div class="page max-w-xl py-16">
+    <p class="alert alert-danger" role="alert">
+      <i class="pi pi-exclamation-circle" aria-hidden="true"></i>
+      @if (mode === 'shared') {
+        This share link doesn't work any more. The owner may have reset it or deleted the team.
+      } @else {
+        We couldn't load that team. It may have been deleted or made private.
+      }
+    </p>
+    <a [routerLink]="backLink" class="btn btn-secondary mt-4">{{ backLabel }}</a>
+  </div>
+} @else if (team(); as currentTeam) {
+  <article class="page pb-12" [style.--accent]="accent()">
+    <nav class="flex flex-wrap items-center gap-2 py-5 text-sm text-muted" aria-label="Breadcrumb">
+      <a [routerLink]="backLink" class="btn btn-ghost btn-sm -ml-3">
+        <i class="pi pi-arrow-left text-xs" aria-hidden="true"></i>
+        {{ backLabel }}
+      </a>
+      @if (mode === 'shared') {
+        <span class="badge badge-info">
+          <i class="pi pi-link text-xs" aria-hidden="true"></i> Shared with you
+        </span>
+      }
+    </nav>
+
+    <header class="hero card overflow-hidden p-5 sm:p-7">
+      <div class="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <div class="min-w-0">
+          @if (mode === 'own') {
+            <app-visibility-badge [isPublic]="isPublic()" />
+          }
+          <h1 class="mt-2 text-3xl font-bold tracking-tight text-content sm:text-4xl">
+            {{ currentTeam.name }}
+          </h1>
+
+          @if (mode === 'own') {
+            <p class="mt-2 text-sm text-muted">
+              Created {{ createdLabel() }} · Edited {{ updatedLabel() }} · {{ filled() }}/{{
+                slotCount
+              }}
+              slots filled
+            </p>
+          } @else {
+            <div class="mt-3 flex items-center gap-3">
+              <span
+                class="inline-flex size-9 items-center justify-center rounded-full bg-fill-strong text-sm font-bold text-content"
+                aria-hidden="true"
+                >{{ ownerInitial() }}</span
+              >
+              <div class="flex flex-col">
+                <span class="text-sm font-semibold text-content">{{
+                  currentTeam.owner.username
+                }}</span>
+                <span class="text-xs text-muted">Shared {{ createdLabel() }}</span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="flex w-full flex-col gap-2 lg:w-72">
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="handingOff()"
+            (click)="openInBuilder()"
+          >
+            @if (handingOff()) {
+              <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Opening…
+            } @else if (mode === 'own') {
+              <i class="pi pi-pen-to-square text-xs" aria-hidden="true"></i> Edit in builder
+            } @else {
+              <i class="pi pi-copy text-xs" aria-hidden="true"></i> Copy into builder
+            }
+          </button>
+
+          <div class="flex flex-wrap gap-2">
+            @if (mode !== 'own' && currentTeam.isPublic) {
+              <app-like-button
+                [liked]="currentTeam.likedByCurrentUser"
+                [count]="currentTeam.likeCount"
+                [teamId]="currentTeam.id"
+                (toggled)="onLikeToggle($event)"
+              />
+            }
+            @if (mode === 'own') {
+              <button
+                type="button"
+                class="btn btn-secondary flex-1"
+                [disabled]="visibilityPending()"
+                [attr.aria-busy]="visibilityPending()"
+                (click)="toggleVisibility()"
+              >
+                <i
+                  class="pi text-xs"
+                  [class.pi-lock]="isPublic()"
+                  [class.pi-globe]="!isPublic()"
+                  aria-hidden="true"
+                ></i>
+                {{ isPublic() ? 'Make private' : 'Publish' }}
+              </button>
+            }
+            <button type="button" class="btn btn-secondary flex-1" (click)="share()">
+              @if (shareCopied()) {
+                <i class="pi pi-check text-xs text-success" aria-hidden="true"></i> Link copied
+              } @else {
+                <i class="pi pi-link text-xs" aria-hidden="true"></i> Copy link
+              }
+            </button>
+          </div>
+          <p class="sr-only" aria-live="polite">
+            {{ shareCopied() ? 'Share link copied to the clipboard' : '' }}
+          </p>
+        </div>
+      </div>
+
+      @if (mode === 'own') {
+        <p class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+          @if (isPublic()) {
+            <i class="pi pi-globe text-xs" aria-hidden="true"></i>
+            Listed in the community library. Anyone with the link can view it.
+          } @else {
+            <i class="pi pi-lock text-xs" aria-hidden="true"></i>
+            Only you, and people you send the link to, can see this team.
+          }
+          <button
+            type="button"
+            class="link text-sm"
+            [disabled]="rotatePending()"
+            (click)="rotateShareLink()"
+          >
+            {{ rotatePending() ? 'Resetting…' : 'Reset link' }}
+          </button>
+        </p>
+      }
+    </header>
+
+    @if (actionError(); as message) {
+      <p class="alert alert-danger mt-4" role="alert">
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>{{ message }}
+      </p>
+    }
+
+    <section
+      class="card mt-4 flex flex-col items-start gap-3 px-4 py-3 sm:flex-row sm:items-center"
+      aria-labelledby="coverage-heading"
+    >
+      <h2 id="coverage-heading" class="eyebrow shrink-0">Types</h2>
+      <div class="flex flex-1 flex-wrap gap-1.5">
+        @for (type of typeSpread(); track type.id) {
+          <app-type-badge [name]="type.name" size="sm" />
+        }
+      </div>
+      @if (mode !== 'own' && currentTeam.isPublic) {
+        <span class="tabular text-sm text-muted">{{ currentTeam.likeCount | number }} likes</span>
+      }
+    </section>
+
+    <section class="mt-6" aria-labelledby="roster-heading">
+      <header class="mb-3 flex items-center justify-between border-b border-line pb-2">
+        <h2 id="roster-heading" class="eyebrow">Roster</h2>
+        <span class="tabular text-xs text-subtle">{{ filled() }} / {{ slotCount }}</span>
+      </header>
+      <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        @for (member of currentTeam.pokemon; track member.id) {
+          <app-team-pokemon-card [member]="member" />
+        }
+        @if (mode === 'own' && slotsRemaining() > 0) {
+          <div
+            class="flex min-h-24 items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong text-sm text-muted"
+          >
+            <i class="pi pi-plus text-xs" aria-hidden="true"></i>
+            {{ slotsRemaining() }} empty {{ slotsRemaining() === 1 ? 'slot' : 'slots' }} — edit in
+            the builder to fill
+          </div>
+        }
+      </div>
+    </section>
+
+    @if (mode === 'own') {
+      <section
+        class="card mt-8 flex flex-wrap items-center justify-between gap-4 p-5"
+        aria-labelledby="danger-heading"
+      >
+        <div>
+          <h2 id="danger-heading" class="section-title">Delete team</h2>
+          <p class="mt-1 text-sm text-muted">Removes the team and its likes for good.</p>
+        </div>
+        <button type="button" class="btn btn-danger" (click)="confirmingDelete.set(true)">
+          Delete team
+        </button>
+      </section>
+
+      <app-modal
+        size="sm"
+        title="Delete this team?"
+        [open]="confirmingDelete()"
+        [dismissable]="!deletePending()"
+        (closed)="confirmingDelete.set(false)"
+      >
+        <p class="px-5 py-4 text-sm text-muted">
+          <strong class="text-content">{{ currentTeam.name }}</strong> will be deleted permanently,
+          along with its likes and share link. This can't be undone.
+        </p>
+        <div modal-footer class="flex justify-end gap-2">
+          <button
+            type="button"
+            class="btn btn-ghost"
+            [disabled]="deletePending()"
+            (click)="confirmingDelete.set(false)"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger-solid"
+            [disabled]="deletePending()"
+            (click)="confirmDelete()"
+          >
+            @if (deletePending()) {
+              <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Deleting…
+            } @else {
+              Delete team
+            }
+          </button>
+        </div>
+      </app-modal>
+    }
+  </article>
+}

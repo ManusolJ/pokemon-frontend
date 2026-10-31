@@ -3,22 +3,22 @@
 }
 
 .member-card {
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   background: linear-gradient(
     165deg,
-    color-mix(in srgb, var(--accent) 14%, transparent),
-    var(--color-brand-surface) 60%
+    color-mix(in oklab, var(--accent) 14%, transparent),
+    var(--color-surface) 60%
   );
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--color-brand-line));
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.18);
+  border: 1px solid color-mix(in oklab, var(--accent) 28%, var(--color-line));
+  box-shadow: var(--shadow-sm);
 }
 
 .member-card__sprite {
   width: 52px;
   height: 52px;
-  border-radius: 0.625rem;
-  background: color-mix(in srgb, var(--accent) 10%, var(--color-brand-raised));
-  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--accent) 10%, var(--color-raised));
+  border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
 }
 
 .member-card__sprite img {
@@ -26,32 +26,32 @@
   height: 44px;
   object-fit: contain;
   image-rendering: pixelated;
-  filter: drop-shadow(0 3px 6px color-mix(in srgb, var(--accent) 38%, transparent));
+  filter: drop-shadow(0 3px 6px color-mix(in oklab, var(--accent) 38%, transparent));
 }
 
 .member-card__level {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.66rem;
-  color: var(--color-brand-dim);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  color: var(--color-subtle);
 }
 
 .member-card__meta {
-  border-top: 1px solid rgb(255 255 255 / 0.045);
-  border-bottom: 1px solid rgb(255 255 255 / 0.045);
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
 }
 
 .member-card__meta-row dt {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--color-brand-dim);
+  color: var(--color-subtle);
 }
 
 .member-card__meta-row dd {
   font-weight: 600;
-  font-size: 0.8rem;
-  color: var(--color-brand-text);
+  font-size: 0.875rem;
+  color: var(--color-content);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -62,9 +62,9 @@
   border-radius: 0.5rem;
   font-weight: 600;
   font-size: 0.75rem;
-  color: var(--color-brand-dim);
-  background: rgb(255 255 255 / 0.025);
-  border: 1px dashed var(--color-brand-line);
+  color: var(--color-subtle);
+  background: var(--color-fill);
+  border: 1px dashed var(--color-line);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -72,7 +72,7 @@
 }
 
 .member-card__move.is-filled {
-  color: var(--color-brand-text);
-  background: color-mix(in srgb, var(--accent) 12%, var(--color-brand-raised));
-  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  color: var(--color-content);
+  background: color-mix(in oklab, var(--accent) 12%, var(--color-raised));
+  border: 1px solid color-mix(in oklab, var(--accent) 32%, transparent);
 }

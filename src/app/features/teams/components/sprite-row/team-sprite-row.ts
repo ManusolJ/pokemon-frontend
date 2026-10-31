@@ -6,7 +6,6 @@ import { TEAM_SLOT_COUNT } from '@shared/utils/team.util';
 
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-const SPRITE_PADDING_PX = 10;
 const DEFAULT_SLOT_GAP_PX = 6;
 const DEFAULT_SLOT_SIZE_PX = 56;
 
@@ -23,7 +22,9 @@ export class TeamSpriteRow {
   readonly sprites = input.required<readonly string[]>();
 
   protected readonly slots = computed<readonly TeamSpriteSlot[]>(() => this.buildSlots());
-  protected readonly spriteSize = computed(() => this.size() - SPRITE_PADDING_PX);
+  protected readonly columns = computed(
+    () => `repeat(${TEAM_SLOT_COUNT}, minmax(0, ${this.size()}px))`,
+  );
 
   private buildSlots(): readonly TeamSpriteSlot[] {
     const provided = this.sprites();

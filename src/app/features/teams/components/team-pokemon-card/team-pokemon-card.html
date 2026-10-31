@@ -10,7 +10,7 @@
       }
       @if (isShiny()) {
         <span
-          class="absolute -top-1 -right-1 text-sm leading-none text-amber-300 drop-shadow-[0_0_4px_rgba(247,208,44,0.85)]"
+          class="absolute -top-1 -right-1 text-sm leading-none text-warning drop-shadow-[0_0_4px_rgba(247,208,44,0.85)]"
           aria-hidden="true"
         >
           &#x2726;
@@ -19,16 +19,16 @@
     </span>
 
     <div class="flex flex-1 min-w-0 flex-col gap-0.5">
-      <h3 class="font-bold text-brand-text">{{ displayName() | titlecase }}</h3>
+      <h3 class="font-bold text-content">{{ displayName() | titlecase }}</h3>
       <div class="flex flex-wrap gap-1">
         @for (type of types(); track type.id) {
           <app-type-badge [name]="type.name" size="sm" />
         }
       </div>
-      <span class="text-xs text-brand-dim">
+      <span class="text-xs text-subtle">
         Lv. {{ member().level }}
         @if (isShiny()) {
-          <span class="text-amber-300">· Shiny</span>
+          <span class="text-warning">· Shiny</span>
         }
       </span>
     </div>

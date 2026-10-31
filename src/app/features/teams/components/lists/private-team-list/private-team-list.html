@@ -1,6 +1,6 @@
 <app-list-shell
   noun="saved"
-  title="My teams"
+  title="Your teams"
   [total]="total()"
   [hideSidebar]="true"
   [loading]="loading()"
@@ -9,63 +9,107 @@
   [totalPages]="totalPages()"
   (pageChange)="onPageChange($event)"
 >
-  <div toolbar class="flex flex-wrap items-center gap-2.5">
-    <label
-      class="flex flex-1 min-w-48 items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-2 text-brand-dim transition-colors focus-within:border-brand-red/40"
-    >
-      <i class="pi pi-search text-xs"></i>
+  <div toolbar class="flex min-w-0 flex-wrap items-center gap-2">
+    <label class="input-icon min-w-48 flex-1">
+      <span class="sr-only">Search your teams</span>
+      <i class="pi pi-search" aria-hidden="true"></i>
       <input
         #search
-        type="text"
+        type="search"
         autocomplete="off"
         placeholder="Search team name…"
-        class="flex-1 bg-transparent text-sm text-brand-text outline-none placeholder:text-brand-dim"
+        class="input"
         [value]="searchInput()"
         (input)="onSearchInput(search.value)"
       />
     </label>
 
-    <div class="tab-strip" role="tablist" aria-label="Visibility">
+    <div class="segmented" role="group" aria-label="Visibility">
       @for (tab of tabs; track tab.id) {
         <button
           type="button"
-          role="tab"
+          class="segmented-item"
+          [attr.aria-pressed]="activeTab() === tab.id"
           (click)="setTab(tab.id)"
-          [class.is-active]="activeTab() === tab.id"
-          [attr.aria-selected]="activeTab() === tab.id"
-          class="tab-btn"
         >
           {{ tab.label }}
         </button>
       }
     </div>
 
-    <div class="sort-strip">
+    <div class="segmented" role="group" aria-label="Sort by">
       @for (sort of sorts; track sort.id) {
         <button
           type="button"
+          class="segmented-item"
+          [attr.aria-pressed]="sortId() === sort.id"
           (click)="setSort(sort.id)"
-          [class.is-active]="sortId() === sort.id"
-          class="sort-btn"
         >
           {{ sort.label }}
         </button>
       }
     </div>
 
-    <button type="button" class="new-btn" (click)="newTeam()" aria-label="Start a new team">
-      <i class="pi pi-plus text-sm"></i>
+    <a routerLink="/team-builder" class="btn btn-primary">
+      <i class="pi pi-plus text-xs" aria-hidden="true"></i>
       New team
-    </button>
+    </a>
   </div>
 
-  <div grid class="team-grid">
-    @for (team of items(); track team.id) {
-      <app-private-team-card
-        [team]="team"
-        (selected)="onSelect($event)"
-        (action)="onAction($event)"
-      />
+  <div grid class="flex flex-col gap-4">
+    @if (actionError(); as message) {
+      <p class="alert alert-danger" role="alert">
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>{{ message }}
+      </p>
     }
+    <p class="sr-only" aria-live="polite">
+      {{ copiedId() !== null ? 'Share link copied to the clipboard' : '' }}
+    </p>
+
+    <div class="team-grid">
+      @for (team of items(); track team.id) {
+        <app-private-team-card
+          [team]="team"
+          [pending]="pendingIds().has(team.id)"
+          [copied]="copiedId() === team.id"
+          (action)="onAction($event)"
+        />
+      }
+    </div>
   </div>
 </app-list-shell>
+
+<app-modal
+  size="sm"
+  title="Delete this team?"
+  [open]="deleteTarget() !== null"
+  [dismissable]="!deletePending()"
+  (closed)="deleteTarget.set(null)"
+>
+  <p class="px-5 py-4 text-sm text-muted">
+    <strong class="text-content">{{ deleteTarget()?.name }}</strong> will be deleted permanently,
+    along with its likes and share link. This can't be undone.
+  </p>
+  <div modal-footer class="flex justify-end gap-2">
+    <button
+      type="button"
+      class="btn btn-ghost"
+      [disabled]="deletePending()"
+      (click)="deleteTarget.set(null)"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-danger-solid"
+      [disabled]="deletePending()"
+      (click)="confirmDelete()"
+    >
+      @if (deletePending()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Deleting…
+      } @else {
+        Delete team
+      }
+    </button>
+  </div>
+</app-modal>

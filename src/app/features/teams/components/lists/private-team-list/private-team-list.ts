@@ -1,4 +1,6 @@
-import { TEAMS_MY_PATH, TEAM_BUILDER_PATH } from '@shared/constants/teams.constants';
+import { COPIED_FEEDBACK_MS, TEAM_BUILDER_PATH } from '@shared/constants/teams.constants';
+
+import { TeamSummary } from '@shared/interfaces/pokemon/team/team-summary.interface';
 
 import {
   VisibilityTab,
@@ -13,7 +15,10 @@ import { TeamBuilderStateService } from '@core/services/team-builder-state.servi
 
 import { ListShell } from '@shared/components/list-shell/list-shell';
 
-import { copyToClipboard, publicTeamUrl } from '@shared/utils/share.util';
+import { copyToClipboard, shareLinkUrl } from '@shared/utils/share.util';
+import { describeHttpError } from '@shared/utils/http-error.util';
+
+import { Modal } from '@shared/components/modal/modal';
 
 import { debouncedText } from '@shared/utils/debounced-text.util';
 
@@ -29,9 +34,9 @@ import {
   signal,
 } from '@angular/core';
 
-import { map, tap } from 'rxjs';
+import { finalize, map, tap } from 'rxjs';
 
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 const PAGE_SIZE = 12;
 const DEFAULT_SORT_ID = 'recent';
@@ -42,7 +47,7 @@ type PrivateSortField = 'updatedAt' | 'name' | 'likeCount';
 const SORT_OPTIONS: ReadonlyArray<TeamSortOption<PrivateSortField>> = [
   { id: 'recent', label: 'Recently edited', field: 'updatedAt', direction: 'DESC' },
   { id: 'oldest', label: 'Oldest', field: 'updatedAt', direction: 'ASC' },
-  { id: 'name-asc', label: 'A → Z', field: 'name', direction: 'ASC' },
+  { id: 'name-asc', label: 'Name', field: 'name', direction: 'ASC' },
   { id: 'likes-desc', label: 'Most liked', field: 'likeCount', direction: 'DESC' },
 ];
 
@@ -53,7 +58,7 @@ const VISIBILITY_TABS: readonly VisibilityTab[] = [
 ];
 
 @Component({
-  imports: [ListShell, PrivateTeamCard],
+  imports: [ListShell, PrivateTeamCard, Modal, RouterLink],
   selector: 'app-private-team-list',
   styleUrl: './private-team-list.css',
   templateUrl: './private-team-list.html',
@@ -67,6 +72,11 @@ export class PrivateTeamList {
   private readonly hydrationService = inject(TeamHydrationService);
 
   protected readonly sorts = SORT_OPTIONS;
+
+  constructor() {
+    this.destroyRef.onDestroy(() => clearTimeout(this.copiedTimer));
+  }
+
   protected readonly pageSize = PAGE_SIZE;
   protected readonly tabs = VISIBILITY_TABS;
 
@@ -83,6 +93,15 @@ export class PrivateTeamList {
   );
 
   protected readonly totalPages = computed(() => Math.ceil(this.total() / PAGE_SIZE));
+
+  /** Teams with a visibility change in flight. */
+  protected readonly pendingIds = signal<ReadonlySet<number>>(new Set());
+  protected readonly copiedId = signal<number | null>(null);
+  protected readonly actionError = signal<string | null>(null);
+  protected readonly deleteTarget = signal<TeamSummary | null>(null);
+  protected readonly deletePending = signal(false);
+
+  private copiedTimer: ReturnType<typeof setTimeout> | undefined;
 
   private readonly teamResource = rxResource({
     params: () => ({
@@ -138,14 +157,6 @@ export class PrivateTeamList {
     this.page.set(0);
   }
 
-  protected newTeam(): void {
-    void this.router.navigate([TEAM_BUILDER_PATH]);
-  }
-
-  protected onSelect(id: number): void {
-    void this.router.navigate([TEAMS_MY_PATH, id]);
-  }
-
   protected onAction(event: PrivateTeamCardActionEvent): void {
     switch (event.kind) {
       case 'edit':
@@ -158,7 +169,7 @@ export class PrivateTeamList {
         this.share(event.id);
         return;
       case 'delete':
-        this.delete(event.id);
+        this.deleteTarget.set(this.items().find((entry) => entry.id === event.id) ?? null);
         return;
     }
   }
@@ -177,36 +188,90 @@ export class PrivateTeamList {
 
   private toggleVisibility(id: number): void {
     const team = this.items().find((entry) => entry.id === id);
-    if (!team) {
+    if (!team || this.pendingIds().has(id)) {
       return;
     }
     const nextIsPublic = !team.isPublic;
-
-    this.items.update((arr) =>
-      arr.map((entry) => (entry.id === id ? { ...entry, isPublic: nextIsPublic } : entry)),
-    );
+    this.setPending(id, true);
+    this.replaceItem({ ...team, isPublic: nextIsPublic });
 
     this.teamService
       .patchTeam(id, { isPublic: nextIsPublic })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({ error: () => this.teamResource.reload() });
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.setPending(id, false)),
+      )
+      .subscribe({
+        next: (saved) =>
+          this.replaceItem({
+            ...team,
+            isPublic: saved.isPublic,
+            slug: saved.slug,
+            updatedAt: saved.updatedAt,
+          }),
+        error: () => this.replaceItem(team),
+      });
   }
 
   private share(id: number): void {
     const team = this.items().find((entry) => entry.id === id);
-    if (!team || !team.isPublic) {
+    if (!team) {
       return;
     }
-    void copyToClipboard(publicTeamUrl(id));
+    const url = shareLinkUrl(team.slug);
+    void copyToClipboard(url).then((copied) => {
+      if (!copied) {
+        this.actionError.set(`Couldn't copy automatically. The link is ${url}`);
+        return;
+      }
+      this.actionError.set(null);
+      this.copiedId.set(id);
+      clearTimeout(this.copiedTimer);
+      this.copiedTimer = setTimeout(() => this.copiedId.set(null), COPIED_FEEDBACK_MS);
+    });
   }
 
-  private delete(id: number): void {
-    this.items.update((arr) => arr.filter((entry) => entry.id !== id));
-    this.total.update((count) => Math.max(0, count - 1));
+  protected confirmDelete(): void {
+    const team = this.deleteTarget();
+    if (!team || this.deletePending()) {
+      return;
+    }
+    this.deletePending.set(true);
+    this.actionError.set(null);
 
     this.teamService
-      .deleteTeam(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({ error: () => this.teamResource.reload() });
+      .deleteTeam(team.id)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.deletePending.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.deleteTarget.set(null);
+          this.teamResource.reload();
+        },
+        error: (error: unknown) => {
+          this.deleteTarget.set(null);
+          this.actionError.set(
+            describeHttpError(error, "Couldn't delete the team. Please try again."),
+          );
+        },
+      });
+  }
+
+  private setPending(id: number, pending: boolean): void {
+    this.pendingIds.update((ids) => {
+      const next = new Set(ids);
+      if (pending) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+      return next;
+    });
+  }
+
+  private replaceItem(team: TeamSummary): void {
+    this.items.update((arr) => arr.map((entry) => (entry.id === team.id ? team : entry)));
   }
 }

@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.hero {
+  border-top: 3px solid var(--accent);
+  background-image: radial-gradient(
+    120% 100% at 0% 0%,
+    color-mix(in oklab, var(--accent) 14%, transparent),
+    transparent 60%
+  );
+}

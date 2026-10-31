@@ -1,5 +1,3 @@
-import { TEAMS_SHARED_PATH } from '@shared/constants/teams.constants';
-
 import { TeamSortOption } from '@shared/interfaces/ui/team/team-sort-option.interface';
 import { TeamLikeToggleEvent } from '@shared/interfaces/ui/team/team-like-toggle-event.interface';
 
@@ -25,7 +23,6 @@ import {
   signal,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Router } from '@angular/router';
 
 const PAGE_SIZE = 6;
 const DEFAULT_SORT_ID = 'likes-desc';
@@ -37,7 +34,7 @@ const SORT_OPTIONS: ReadonlyArray<TeamSortOption<PublicSortField>> = [
   { id: 'likes-asc', label: 'Least liked', field: 'likeCount', direction: 'ASC' },
   { id: 'recent', label: 'Recent', field: 'createdAt', direction: 'DESC' },
   { id: 'oldest', label: 'Oldest', field: 'createdAt', direction: 'ASC' },
-  { id: 'name-asc', label: 'A → Z', field: 'name', direction: 'ASC' },
+  { id: 'name-asc', label: 'Name', field: 'name', direction: 'ASC' },
 ];
 
 @Component({
@@ -48,7 +45,6 @@ const SORT_OPTIONS: ReadonlyArray<TeamSortOption<PublicSortField>> = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PublicTeamList {
-  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
   private readonly teamService = inject(TeamService);
@@ -113,9 +109,6 @@ export class PublicTeamList {
     this.page.set(0);
   }
 
-  protected onSelect(id: number): void {
-    void this.router.navigate([TEAMS_SHARED_PATH, id]);
-  }
 
   protected isLikePending(id: number): boolean {
     return this.pendingLikeIds().has(id);

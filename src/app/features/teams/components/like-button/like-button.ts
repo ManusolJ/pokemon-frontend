@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
-import { TEAMS_SHARED_PATH } from '@shared/constants/teams.constants';
 
 const LOGIN_PATH = '/auth/login';
-const LIKED_LABEL = 'Unlike team';
-const UNLIKED_LABEL = 'Like team';
+const LIKED_LABEL = 'Liked';
+const UNLIKED_LABEL = 'Like';
 
 @Component({
   imports: [],
@@ -40,7 +39,7 @@ export class LikeButton {
     event.stopPropagation();
     if (!this.isAuthenticated()) {
       this.router.navigate([LOGIN_PATH], {
-        queryParams: { redirectTo: `${TEAMS_SHARED_PATH}/${this.teamId()}` },
+        queryParams: { redirectTo: this.router.url },
       });
       return;
     }

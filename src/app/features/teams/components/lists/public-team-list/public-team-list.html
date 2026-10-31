@@ -1,6 +1,7 @@
 <app-list-shell
   [total]="total()"
   title="Community teams"
+  noun="teams"
   [hideSidebar]="true"
   [page]="page()"
   [pageSize]="pageSize"
@@ -8,29 +9,28 @@
   [totalPages]="totalPages()"
   (pageChange)="onPageChange($event)"
 >
-  <div toolbar class="flex flex-wrap items-center gap-2.5">
-    <label
-      class="flex flex-1 min-w-48 items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-2 text-brand-dim transition-colors focus-within:border-brand-red/40"
-    >
-      <i class="pi pi-search text-xs"></i>
+  <div toolbar class="flex min-w-0 flex-wrap items-center gap-2">
+    <label class="input-icon min-w-48 flex-1">
+      <span class="sr-only">Search community teams</span>
+      <i class="pi pi-search" aria-hidden="true"></i>
       <input
         #search
-        type="text"
+        type="search"
         autocomplete="off"
         placeholder="Search team name…"
-        class="flex-1 bg-transparent text-sm text-brand-text outline-none placeholder:text-brand-dim"
+        class="input"
         [value]="query()"
         (input)="onSearch(search.value)"
       />
     </label>
 
-    <div class="sort-strip">
+    <div class="segmented" role="group" aria-label="Sort by">
       @for (sort of sorts; track sort.id) {
         <button
           type="button"
+          class="segmented-item"
+          [attr.aria-pressed]="sortId() === sort.id"
           (click)="setSort(sort.id)"
-          [class.is-active]="sortId() === sort.id"
-          class="sort-btn"
         >
           {{ sort.label }}
         </button>
@@ -40,11 +40,7 @@
 
   <div grid class="team-grid">
     @for (team of teams(); track team.id) {
-      <app-team-card
-        [team]="team"
-        (selected)="onSelect($event)"
-        (likeToggle)="onLikeToggle($event)"
-      />
+      <app-team-card [team]="team" (likeToggle)="onLikeToggle($event)" />
     }
   </div>
 </app-list-shell>

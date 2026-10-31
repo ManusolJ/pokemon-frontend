@@ -2,19 +2,22 @@ import { TeamSummary } from '@shared/interfaces/pokemon/team/team-summary.interf
 import { PrivateTeamCardAction } from '@shared/interfaces/ui/team/private-team-card-action.interface';
 import { PrivateTeamCardActionEvent } from '@shared/interfaces/ui/team/private-team-card-action-event.interface';
 
+import { TEAMS_MY_PATH } from '@shared/constants/teams.constants';
+
 import { TEAM_SLOT_COUNT, teamSlotsFilled } from '@shared/utils/team.util';
 import { formatRelativeDate } from '@shared/utils/format-date.util';
 
 import { TeamSpriteRow } from '../sprite-row/team-sprite-row';
 import { VisibilityBadge } from '../visibility-badge/visibility-badge';
 
+import { RouterLink } from '@angular/router';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 const PUBLISH_LABEL = 'Publish';
-const UNPUBLISH_LABEL = 'Unpublish';
+const UNPUBLISH_LABEL = 'Make private';
 
 @Component({
-  imports: [TeamSpriteRow, VisibilityBadge],
+  imports: [RouterLink, TeamSpriteRow, VisibilityBadge],
   selector: 'app-private-team-card',
   styleUrl: './private-team-card.css',
   templateUrl: './private-team-card.html',
@@ -23,10 +26,13 @@ const UNPUBLISH_LABEL = 'Unpublish';
 export class PrivateTeamCard {
   readonly team = input.required<TeamSummary>();
 
-  readonly selected = output<number>();
+  readonly copied = input<boolean>(false);
+  readonly pending = input<boolean>(false);
+
   readonly action = output<PrivateTeamCardActionEvent>();
 
   protected readonly slotCount = TEAM_SLOT_COUNT;
+  protected readonly teamsMyPath = TEAMS_MY_PATH;
 
   protected readonly publishLabel = computed(() =>
     this.isPublic() ? UNPUBLISH_LABEL : PUBLISH_LABEL,
@@ -35,10 +41,6 @@ export class PrivateTeamCard {
   protected readonly isPublic = computed(() => this.team().isPublic);
   protected readonly filled = computed(() => teamSlotsFilled(this.team()));
   protected readonly editedLabel = computed(() => formatRelativeDate(this.team().updatedAt));
-
-  protected onSelect(): void {
-    this.selected.emit(this.team().id);
-  }
 
   protected emit(event: MouseEvent, kind: PrivateTeamCardAction): void {
     event.stopPropagation();
