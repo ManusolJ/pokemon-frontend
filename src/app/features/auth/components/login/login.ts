@@ -7,6 +7,7 @@ import {
 import { LoginRequest } from '@shared/interfaces/auth/login-request.interface';
 
 import { safeRedirect } from '@shared/utils/redirect.util';
+import { describeHttpError } from '@shared/utils/http-error.util';
 
 import { AuthService } from '@core/services/auth.service';
 
@@ -16,17 +17,19 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { finalize } from 'rxjs';
 
+import { HttpErrorResponse } from '@angular/common/http';
+
 @Component({
   imports: [AuthCard, RouterLink, ReactiveFormsModule],
   selector: 'app-login',
-  styleUrl: '../../styles/auth-form.css',
   templateUrl: './login.html',
+  styleUrl: '../../styles/auth-form.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
@@ -37,12 +40,16 @@ export class Login {
   private readonly authService = inject(AuthService);
 
   protected readonly isLoading = signal<boolean>(false);
+  protected readonly submitError = signal<string | null>(null);
+
+  protected readonly credentialsChanged =
+    this.route.snapshot.queryParamMap.get('notice') === 'credentials-changed';
 
   protected readonly maxIdentifierLength = MAX_EMAIL_LENGTH;
   protected readonly minPasswordLength = MIN_PASSWORD_LENGTH;
   protected readonly minIdentifierLength = MIN_USERNAME_LENGTH;
 
-  protected readonly form = this.formBuilder.group({
+  protected readonly form = this.formBuilder.nonNullable.group({
     identifier: [
       '',
       [
@@ -62,7 +69,13 @@ export class Login {
     return this.form.controls.password;
   }
 
+  protected showError(control: AbstractControl): boolean {
+    return control.invalid && control.touched;
+  }
+
   protected onSubmit(): void {
+    this.submitError.set(null);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -71,8 +84,8 @@ export class Login {
     this.isLoading.set(true);
 
     const loginRequest: LoginRequest = {
-      identifier: this.identifier.value ?? '',
-      password: this.password.value ?? '',
+      identifier: this.identifier.value,
+      password: this.password.value,
     };
 
     this.authService
@@ -83,11 +96,17 @@ export class Login {
       )
       .subscribe({
         next: () => {
-          this.router.navigateByUrl(
+          void this.router.navigateByUrl(
             safeRedirect(this.route.snapshot.queryParamMap.get('redirectTo')),
           );
         },
-        error: () => {},
+        error: (error: unknown) => {
+          this.submitError.set(
+            error instanceof HttpErrorResponse && error.status === 401
+              ? 'Incorrect username, email or password.'
+              : describeHttpError(error),
+          );
+        },
       });
   }
 }

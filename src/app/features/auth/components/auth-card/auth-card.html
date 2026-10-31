@@ -1,23 +1,25 @@
-<div class="flex flex-col items-center w-full max-w-2xl">
-  <div class="pokeball-wrapper">
-    <svg viewBox="0 0 100 100" width="90" height="90" class="pokeball">
-      <circle cx="50" cy="50" r="46" fill="none" stroke="#111" stroke-width="4" />
-      <path d="M 4 50 A 46 46 0 0 1 96 50 Z" fill="#cc2222" />
-      <path d="M 4 50 A 46 46 0 0 0 96 50 Z" fill="#e8e8f0" />
-      <line x1="4" y1="50" x2="96" y2="50" stroke="#111" stroke-width="4" />
-      <circle cx="50" cy="50" r="13" fill="#111" />
-      <circle cx="50" cy="50" r="7" fill="#e8e8f0" />
-    </svg>
-  </div>
-
-  <div
-    class="card flex flex-col flex-1 w-full rounded-2xl shadow-xl -mt-10 pt-12 sm:pt-14 pb-8 sm:pb-10 px-5 sm:px-10"
+<div class="flex w-full max-w-md flex-col items-center">
+  <svg
+    viewBox="0 0 100 100"
+    width="64"
+    height="64"
+    class="pokeball relative z-10"
+    aria-hidden="true"
   >
-    <h1 class="text-2xl font-bold text-center mb-1">{{ title() }}</h1>
+    <circle cx="50" cy="50" r="46" class="pokeball__outline" stroke-width="4" />
+    <path d="M 4 50 A 46 46 0 0 1 96 50 Z" class="pokeball__top" />
+    <path d="M 4 50 A 46 46 0 0 0 96 50 Z" class="pokeball__bottom" />
+    <line x1="4" y1="50" x2="96" y2="50" class="pokeball__outline" stroke-width="4" />
+    <circle cx="50" cy="50" r="13" class="pokeball__button-ring" />
+    <circle cx="50" cy="50" r="7" class="pokeball__bottom" />
+  </svg>
+
+  <div class="card -mt-8 w-full px-6 pt-12 pb-8 shadow-md sm:px-10">
+    <h1 class="text-center text-2xl font-bold tracking-tight text-content">{{ title() }}</h1>
     @if (subtitle()) {
-      <p class="text-sm text-center mb-6">{{ subtitle() }}</p>
+      <p class="mt-1 text-center text-sm text-muted">{{ subtitle() }}</p>
     }
-    <div class="flex-1">
+    <div class="mt-6">
       <ng-content />
     </div>
   </div>

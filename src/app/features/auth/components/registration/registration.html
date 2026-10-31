@@ -1,112 +1,131 @@
-<app-auth-card title="Create account" subtitle="Join the Pokemon Team Builder community">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 py-4" novalidate>
-    <div class="flex flex-col gap-1">
-      <label for="username" class="text-brand-text text-sm font-medium">Username</label>
+<app-auth-card
+  title="Create your account"
+  subtitle="Save teams, share them and like other trainers' builds"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-5" novalidate>
+    @if (submitError(); as message) {
+      <p class="alert alert-danger" role="alert">
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>{{ message }}
+      </p>
+    }
+
+    <div class="field">
+      <label for="username" class="field-label">Username</label>
       <input
         id="username"
         type="text"
+        class="input"
         formControlName="username"
         autocomplete="username"
-        placeholder="trainer123"
-        class="auth-input"
-        [class.auth-input--error]="username.invalid && username.touched"
+        [attr.aria-invalid]="showError(username)"
+        [attr.aria-describedby]="showError(username) ? 'username-error' : 'username-hint'"
       />
-      @if (username.touched && username.hasError('required')) {
-        <span class="field-error">This field is required.</span>
-      } @else if (
-        username.touched && (username.hasError('minlength') || username.hasError('maxlength'))
-      ) {
-        <span class="field-error">
-          Must be between {{ minUsernameLength }} and {{ maxUsernameLength }} characters.
-        </span>
+      @if (showError(username)) {
+        <p id="username-error" class="field-error">
+          @if (username.hasError('required')) {
+            Choose a username.
+          } @else {
+            Must be between {{ minUsernameLength }} and {{ maxUsernameLength }} characters.
+          }
+        </p>
+      } @else {
+        <p id="username-hint" class="field-hint">
+          {{ minUsernameLength }}–{{ maxUsernameLength }} characters. Shown on teams you share.
+        </p>
       }
     </div>
 
-    <div class="flex flex-col gap-1">
-      <label for="email" class="text-brand-text text-sm font-medium">Email</label>
+    <div class="field">
+      <label for="email" class="field-label">Email</label>
       <input
         id="email"
         type="email"
+        class="input"
         formControlName="email"
         autocomplete="email"
-        placeholder="trainer@example.com"
-        class="auth-input"
-        [class.auth-input--error]="email.invalid && email.touched"
+        inputmode="email"
+        [attr.aria-invalid]="showError(email)"
+        [attr.aria-describedby]="showError(email) ? 'email-error' : null"
       />
-      @if (email.touched && email.hasError('required')) {
-        <span class="field-error">This field is required.</span>
-      } @else if (email.touched && email.hasError('email')) {
-        <span class="field-error">Enter a valid email address.</span>
-      } @else if (email.touched && email.hasError('maxlength')) {
-        <span class="field-error">Must be at most {{ maxEmailLength }} characters.</span>
+      @if (showError(email)) {
+        <p id="email-error" class="field-error">
+          @if (email.hasError('required')) {
+            Enter your email.
+          } @else if (email.hasError('email')) {
+            Enter a valid email address.
+          } @else {
+            Must be at most {{ maxEmailLength }} characters.
+          }
+        </p>
       }
     </div>
 
-    <div class="flex flex-col gap-1">
-      <label for="reg-password" class="text-brand-text text-sm font-medium">Password</label>
+    <div class="field">
+      <label for="reg-password" class="field-label">Password</label>
       <input
         id="reg-password"
         type="password"
+        class="input"
         formControlName="password"
         autocomplete="new-password"
-        placeholder="••••••••"
-        class="auth-input"
-        [class.auth-input--error]="password.invalid && password.touched"
+        [attr.aria-invalid]="showError(password)"
+        [attr.aria-describedby]="showError(password) ? 'password-error' : 'password-hint'"
       />
-      @if (password.touched && password.hasError('required')) {
-        <span class="field-error">This field is required.</span>
-      } @else if (password.touched && password.hasError('minlength')) {
-        <span class="field-error">Must be at least {{ minPasswordLength }} characters.</span>
-      } @else if (password.touched && password.hasError('maxlength')) {
-        <span class="field-error">Must be at most {{ maxPasswordLength }} characters.</span>
+      @if (showError(password)) {
+        <p id="password-error" class="field-error">
+          @if (password.hasError('required')) {
+            Choose a password.
+          } @else if (password.hasError('minlength')) {
+            Must be at least {{ minPasswordLength }} characters.
+          } @else {
+            Too long — keep it under {{ maxPasswordLength }} characters (accented letters and emoji
+            count double).
+          }
+        </p>
+      } @else {
+        <p id="password-hint" class="field-hint">At least {{ minPasswordLength }} characters.</p>
       }
     </div>
 
-    <div class="flex flex-col gap-1">
-      <label for="confirm-password" class="text-brand-text text-sm font-medium">
-        Confirm password
-      </label>
+    <div class="field">
+      <label for="confirm-password" class="field-label">Confirm password</label>
       <input
         id="confirm-password"
         type="password"
+        class="input"
         formControlName="confirmPassword"
         autocomplete="new-password"
-        placeholder="••••••••"
-        class="auth-input"
-        [class.auth-input--error]="
-          confirmPassword.touched &&
-          (confirmPassword.hasError('required') || form.hasError('passwordMismatch'))
-        "
+        [attr.aria-invalid]="confirmInvalid()"
+        [attr.aria-describedby]="confirmInvalid() ? 'confirm-error' : null"
       />
-      @if (confirmPassword.touched && confirmPassword.hasError('required')) {
-        <span class="field-error">This field is required.</span>
-      } @else if (confirmPassword.touched && form.hasError('passwordMismatch')) {
-        <span class="field-error">Passwords do not match.</span>
+      @if (confirmInvalid()) {
+        <p id="confirm-error" class="field-error">
+          @if (confirmPassword.hasError('required')) {
+            Repeat your password.
+          } @else {
+            Passwords don't match.
+          }
+        </p>
       }
     </div>
 
     <button
       type="submit"
-      [disabled]="isLoading() || form.invalid"
+      [disabled]="isLoading()"
       [attr.aria-busy]="isLoading()"
-      class="btn-primary mt-2 inline-flex items-center justify-center gap-2"
+      class="btn btn-primary btn-block mt-1"
     >
       @if (isLoading()) {
         <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
-        <span>Creating account…</span>
+        Creating account…
       } @else {
-        <span>Create account</span>
+        Create account
       }
     </button>
   </form>
 
-  <p class="text-brand-muted text-sm text-center mt-2">
+  <p class="mt-6 text-center text-sm text-muted">
     Already have an account?
-    <a
-      routerLink="/auth/login"
-      class="text-brand-text hover:text-white font-medium transition-colors underline"
-    >
-      Sign in
-    </a>
+    <a routerLink="/auth/login" class="link">Log in</a>
   </p>
 </app-auth-card>

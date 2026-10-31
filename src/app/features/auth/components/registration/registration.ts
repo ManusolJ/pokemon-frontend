@@ -8,9 +8,10 @@ import {
 
 import { RegisterRequest } from '@shared/interfaces/auth/register-request.interface';
 
-import { passwordMatchValidator } from '@shared/validators/password.validator';
+import { maxUtf8Bytes, passwordMatchValidator } from '@shared/validators/password.validator';
 
 import { safeRedirect } from '@shared/utils/redirect.util';
+import { describeHttpError } from '@shared/utils/http-error.util';
 
 import { AuthCard } from '@features/auth/components/auth-card/auth-card';
 
@@ -18,7 +19,7 @@ import { AuthService } from '@core/services/auth.service';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 
@@ -29,8 +30,8 @@ import { finalize } from 'rxjs';
 @Component({
   imports: [AuthCard, RouterLink, ReactiveFormsModule],
   selector: 'app-registration',
-  styleUrl: '../../styles/auth-form.css',
   templateUrl: './registration.html',
+  styleUrl: '../../styles/auth-form.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration {
@@ -41,6 +42,7 @@ export class Registration {
   private readonly authService = inject(AuthService);
 
   protected readonly isLoading = signal(false);
+  protected readonly submitError = signal<string | null>(null);
 
   protected readonly maxEmailLength = MAX_EMAIL_LENGTH;
   protected readonly minUsernameLength = MIN_USERNAME_LENGTH;
@@ -48,7 +50,7 @@ export class Registration {
   protected readonly minPasswordLength = MIN_PASSWORD_LENGTH;
   protected readonly maxPasswordLength = MAX_PASSWORD_LENGTH;
 
-  protected readonly form = this.formBuilder.group(
+  protected readonly form = this.formBuilder.nonNullable.group(
     {
       username: [
         '',
@@ -65,6 +67,7 @@ export class Registration {
           Validators.required,
           Validators.minLength(MIN_PASSWORD_LENGTH),
           Validators.maxLength(MAX_PASSWORD_LENGTH),
+          maxUtf8Bytes(MAX_PASSWORD_LENGTH),
         ],
       ],
       confirmPassword: ['', Validators.required],
@@ -85,7 +88,20 @@ export class Registration {
     return this.form.controls.confirmPassword;
   }
 
+  protected showError(control: AbstractControl): boolean {
+    return control.invalid && control.touched;
+  }
+
+  protected confirmInvalid(): boolean {
+    return (
+      this.confirmPassword.touched &&
+      (this.confirmPassword.hasError('required') || this.form.hasError('passwordMismatch'))
+    );
+  }
+
   protected onSubmit(): void {
+    this.submitError.set(null);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -94,10 +110,10 @@ export class Registration {
     this.isLoading.set(true);
 
     const registrationRequest: RegisterRequest = {
-      username: this.username.value ?? '',
-      email: this.email.value ?? '',
-      password: this.password.value ?? '',
-      confirmPassword: this.confirmPassword.value ?? '',
+      username: this.username.value,
+      email: this.email.value,
+      password: this.password.value,
+      confirmPassword: this.confirmPassword.value,
     };
 
     this.authService
@@ -108,11 +124,11 @@ export class Registration {
       )
       .subscribe({
         next: () => {
-          this.router.navigateByUrl(
+          void this.router.navigateByUrl(
             safeRedirect(this.route.snapshot.queryParamMap.get('redirectTo')),
           );
         },
-        error: () => {},
+        error: (error: unknown) => this.submitError.set(describeHttpError(error)),
       });
   }
 }

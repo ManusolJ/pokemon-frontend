@@ -3,6 +3,8 @@ import { MAX_EMAIL_LENGTH } from '@shared/constants/auth.constants';
 import { Step } from '@shared/interfaces/ui/generic/send-state.interface';
 import { PasswordResetRequest } from '@shared/interfaces/auth/password-reset-request.interface';
 
+import { describeHttpError } from '@shared/utils/http-error.util';
+
 import { AuthService } from '@core/services/auth.service';
 
 import { AuthCard } from '@features/auth/components/auth-card/auth-card';
@@ -28,10 +30,11 @@ export class ResetPasswordRequest {
   private readonly authService = inject(AuthService);
 
   protected readonly step = signal<Step>('idle');
+  protected readonly submitError = signal<string | null>(null);
 
   protected readonly maxEmailLength = MAX_EMAIL_LENGTH;
 
-  protected readonly form = this.formBuilder.group({
+  protected readonly form = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email, Validators.maxLength(MAX_EMAIL_LENGTH)]],
   });
 
@@ -39,7 +42,13 @@ export class ResetPasswordRequest {
     return this.form.controls.email;
   }
 
+  protected showError(): boolean {
+    return this.email.invalid && this.email.touched;
+  }
+
   protected onSubmit(): void {
+    this.submitError.set(null);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -48,7 +57,7 @@ export class ResetPasswordRequest {
     this.step.set('loading');
 
     const resetRequest: PasswordResetRequest = {
-      email: this.email.value ?? '',
+      email: this.email.value,
     };
 
     this.authService
@@ -56,7 +65,10 @@ export class ResetPasswordRequest {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => this.step.set('done'),
-        error: () => this.step.set('idle'),
+        error: (error: unknown) => {
+          this.step.set('idle');
+          this.submitError.set(describeHttpError(error));
+        },
       });
   }
 }

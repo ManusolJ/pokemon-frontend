@@ -1,74 +1,84 @@
-<app-auth-card title="Welcome back" subtitle="Sign in to your account">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 py-4">
-    <div class="flex flex-col gap-1">
-      <label for="identifier" class="text-brand-text text-sm font-medium">Username or email</label>
+<app-auth-card title="Welcome back" subtitle="Log in to save and share your teams">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-5" novalidate>
+    @if (credentialsChanged && !submitError()) {
+      <p class="alert alert-info" role="status">
+        <i class="pi pi-info-circle" aria-hidden="true"></i>
+        Your account details changed, so you were signed out on every device. Log in again to
+        continue.
+      </p>
+    }
+    @if (submitError(); as message) {
+      <p class="alert alert-danger" role="alert">
+        <i class="pi pi-exclamation-circle" aria-hidden="true"></i>{{ message }}
+      </p>
+    }
+
+    <div class="field">
+      <label for="identifier" class="field-label">Username or email</label>
       <input
-        type="text"
         id="identifier"
-        class="auth-input"
-        placeholder="Trainer"
+        type="text"
+        class="input"
         autocomplete="username"
         formControlName="identifier"
-        [class.auth-input--error]="identifier.invalid && identifier.touched"
+        [attr.aria-invalid]="showError(identifier)"
+        [attr.aria-describedby]="showError(identifier) ? 'identifier-error' : null"
       />
-      @if (identifier.touched && identifier.hasError('required')) {
-        <span class="field-error">This field is required.</span>
-      } @else if (identifier.touched && identifier.hasError('minlength')) {
-        <span class="field-error">Must be at least {{ minIdentifierLength }} characters.</span>
-      } @else if (identifier.touched && identifier.hasError('maxlength')) {
-        <span class="field-error">Must be at most {{ maxIdentifierLength }} characters.</span>
+      @if (showError(identifier)) {
+        <p id="identifier-error" class="field-error">
+          @if (identifier.hasError('required')) {
+            Enter your username or email.
+          } @else if (identifier.hasError('minlength')) {
+            Must be at least {{ minIdentifierLength }} characters.
+          } @else {
+            Must be at most {{ maxIdentifierLength }} characters.
+          }
+        </p>
       }
     </div>
 
-    <div class="flex flex-col gap-1">
-      <div class="flex justify-between items-center">
-        <label for="password" class="text-brand-text text-sm font-medium">Password</label>
-        <a
-          tabindex="-1"
-          routerLink="/auth/reset-password-request"
-          class="text-brand-muted hover:text-brand-text text-xs transition-colors"
-        >
-          Forgot password?
-        </a>
-      </div>
+    <div class="field">
+      <label for="password" class="field-label">Password</label>
       <input
         id="password"
         type="password"
-        class="auth-input"
-        placeholder="••••••••"
+        class="input"
         formControlName="password"
         autocomplete="current-password"
-        [class.auth-input--error]="password.invalid && password.touched"
+        [attr.aria-invalid]="showError(password)"
+        [attr.aria-describedby]="showError(password) ? 'password-error' : null"
       />
-      @if (password.touched && password.hasError('required')) {
-        <span class="field-error">This field is required.</span>
-      } @else if (password.touched && password.hasError('minlength')) {
-        <span class="field-error">Must be at least {{ minPasswordLength }} characters.</span>
+      @if (showError(password)) {
+        <p id="password-error" class="field-error">
+          @if (password.hasError('required')) {
+            Enter your password.
+          } @else {
+            Must be at least {{ minPasswordLength }} characters.
+          }
+        </p>
       }
+      <a routerLink="/auth/reset-password-request" class="link self-start text-sm"
+        >Forgot password?</a
+      >
     </div>
 
     <button
       type="submit"
-      [disabled]="isLoading() || form.invalid"
+      [disabled]="isLoading()"
       [attr.aria-busy]="isLoading()"
-      class="btn-primary mt-2 inline-flex items-center justify-center gap-2"
+      class="btn btn-primary btn-block mt-1"
     >
       @if (isLoading()) {
         <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
-        <span>Signing in…</span>
+        Logging in…
       } @else {
-        <span>Sign in</span>
+        Log in
       }
     </button>
   </form>
 
-  <p class="text-brand-muted text-sm text-center mt-2">
-    Don't have an account?
-    <a
-      routerLink="/auth/registration"
-      class="text-brand-text hover:text-white font-medium transition-colors underline"
-    >
-      Register
-    </a>
+  <p class="mt-6 text-center text-sm text-muted">
+    New here?
+    <a routerLink="/auth/registration" class="link">Create an account</a>
   </p>
 </app-auth-card>
