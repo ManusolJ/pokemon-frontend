@@ -4,12 +4,13 @@ import { ConfirmCopy } from '@shared/interfaces/admin/confirm-copy.interface';
 import { UserRead } from '@shared/interfaces/pokemon/user/user-read.interface';
 import { UserFilter } from '@shared/interfaces/pokemon/user/user-filter.interface';
 import { ConfirmKind, ConfirmRequest } from '@shared/interfaces/admin/confirm-request.interface';
+import { BatchUserActionResult } from '@shared/interfaces/admin/batch-user-action-result.interface';
 
 import { UserService } from '@core/services/user.service';
 
 import {
-  endOfLocalDayIso,
   formatJoinDate,
+  endOfLocalDayIso,
   startOfLocalDayIso,
 } from '@shared/utils/format-date.util';
 
@@ -89,6 +90,7 @@ export class UserList {
   protected readonly selectedCount = computed(() => this.selectedIds().size);
 
   protected readonly isConfirmPending = signal(false);
+  protected readonly batchNotice = signal<string | null>(null);
   protected readonly confirmRequest = signal<ConfirmRequest | null>(null);
 
   private readonly currentFilter = computed<UserFilter>(() => {
@@ -256,18 +258,17 @@ export class UserList {
     }
 
     this.isConfirmPending.set(true);
+    this.batchNotice.set(null);
 
-    const affectedIds = request.user ? [request.user.id] : [...(request.batchIds ?? [])];
-    const operation$ = this.buildConfirmOperation(request);
-
-    operation$
+    this.buildConfirmOperation(request)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isConfirmPending.set(false)),
       )
       .subscribe({
-        next: () => {
-          this.removeFromSelection(affectedIds);
+        next: (result) => {
+          this.removeFromSelection(result.succeeded);
+          this.batchNotice.set(request.user ? null : describeBatchResult(request.kind, result));
           this.confirmRequest.set(null);
           this.usersResource.reload();
         },
@@ -296,7 +297,6 @@ export class UserList {
     return formatJoinDate(iso, 'short');
   }
 
-  /** Tombstoned: deactivated from this screen, as opposed to merely disabled via the edit form. */
   protected isDeleted(user: UserRead): boolean {
     return user.deletedAt !== null;
   }
@@ -326,24 +326,66 @@ export class UserList {
     });
   }
 
-  private buildConfirmOperation(request: ConfirmRequest): Observable<void> {
+  private buildConfirmOperation(request: ConfirmRequest): Observable<BatchUserActionResult> {
     const singleId = request.user?.id;
-    const batchIds = [...(request.batchIds ?? [])];
+    if (singleId !== undefined) {
+      const done = (): BatchUserActionResult => ({
+        succeeded: [singleId],
+        skipped: [],
+        failed: [],
+      });
+      return this.singleOperation(request.kind, singleId).pipe(map(done));
+    }
 
+    const batchIds = [...(request.batchIds ?? [])];
     if (request.kind === 'disable') {
-      return singleId !== undefined
-        ? this.userService.adminUserDeactivation(singleId)
-        : this.userService.adminUserBatchDeactivation(batchIds);
+      return this.userService.adminUserBatchDeactivation(batchIds);
     }
     if (request.kind === 'reactivate') {
-      return singleId !== undefined
-        ? this.userService.adminUserReactivation(singleId)
-        : this.userService.adminUserBatchReactivation(batchIds);
+      return this.userService.adminUserBatchReactivation(batchIds);
     }
-    return singleId !== undefined
-      ? this.userService.adminUserDelete(singleId)
-      : this.userService.adminUserBatchDelete(batchIds);
+    return this.userService.adminUserBatchDelete(batchIds);
   }
+
+  private singleOperation(kind: ConfirmKind, id: number): Observable<void> {
+    if (kind === 'disable') {
+      return this.userService.adminUserDeactivation(id);
+    }
+    if (kind === 'reactivate') {
+      return this.userService.adminUserReactivation(id);
+    }
+    return this.userService.adminUserDelete(id);
+  }
+}
+
+const BATCH_VERB: Record<ConfirmKind, string> = {
+  disable: 'Disabled',
+  reactivate: 'Reactivated',
+  delete: 'Deleted',
+};
+
+function describeBatchResult(kind: ConfirmKind, result: BatchUserActionResult): string | null {
+  const { succeeded, skipped, failed } = result;
+  if (skipped.length === 0 && failed.length === 0) {
+    return null;
+  }
+  const parts = [`${BATCH_VERB[kind]} ${pluralUsers(succeeded.length)}.`];
+  if (skipped.length > 0) {
+    parts.push(
+      `${pluralUsers(skipped.length)} skipped (already gone, the last admin, or the username or email is now taken).`,
+    );
+  }
+  if (failed.length > 0) {
+    parts.push(`${pluralUsers(failed.length)} failed; see the server log.`);
+  }
+  parts.push(
+    skipped.length + failed.length === 1 ? 'It is still selected.' : 'They are still selected.',
+  );
+  return parts.join(' ');
+}
+
+function pluralUsers(count: number): string {
+  return `${count} user${count === 1 ? '' : 's'}`;
 }
 
 function buildConfirmCopy(request: ConfirmRequest): ConfirmCopy {
@@ -378,6 +420,5 @@ function formatConfirmTarget(request: ConfirmRequest): string {
   if (request.user) {
     return `“${request.user.username}”`;
   }
-  const count = request.batchIds?.length ?? 0;
-  return `${count} user${count === 1 ? '' : 's'}`;
+  return pluralUsers(request.batchIds?.length ?? 0);
 }

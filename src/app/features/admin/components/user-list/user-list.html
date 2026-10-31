@@ -1,183 +1,199 @@
-<section class="flex flex-1 flex-col py-6">
-  <div class="mb-4 flex flex-wrap items-center gap-3 max-sm:gap-2">
-    <div class="search">
-      <i class="pi pi-search"></i>
+<section class="flex flex-1 flex-col gap-4 py-6">
+  <header class="flex flex-wrap items-end justify-between gap-2">
+    <div>
+      <h1 class="page-title">Users</h1>
+      <p class="text-sm text-muted">
+        <span class="tabular font-semibold text-content">{{ total() }}</span> matching
+      </p>
+    </div>
+  </header>
+
+  <div class="flex flex-wrap items-center gap-2">
+    <label class="input-icon min-w-48 flex-1">
+      <span class="sr-only">Search users by username</span>
+      <i class="pi pi-search" aria-hidden="true"></i>
       <input
-        type="text"
+        type="search"
+        autocomplete="off"
+        class="input"
+        placeholder="Search by username…"
         [ngModel]="search()"
         (ngModelChange)="onSearchInput($event)"
-        class="search__input"
-        placeholder="Search by username…"
-        aria-label="Search users by username"
       />
-    </div>
+    </label>
 
-    <div class="pill-group" role="group" aria-label="Filter by role">
+    <div class="segmented" role="group" aria-label="Filter by role">
       <button
         type="button"
-        class="pill"
-        [class.pill--active]="selectedRole() === roleFilterAll"
+        class="segmented-item"
+        [attr.aria-pressed]="selectedRole() === roleFilterAll"
         (click)="setRole(roleFilterAll)"
       >
         All
       </button>
       <button
         type="button"
-        class="pill"
-        [class.pill--active]="selectedRole() === roleUser"
+        class="segmented-item"
+        [attr.aria-pressed]="selectedRole() === roleUser"
         (click)="setRole(roleUser)"
       >
         User
       </button>
       <button
         type="button"
-        class="pill"
-        [class.pill--active]="selectedRole() === roleAdmin"
+        class="segmented-item"
+        [attr.aria-pressed]="selectedRole() === roleAdmin"
         (click)="setRole(roleAdmin)"
       >
         Admin
       </button>
     </div>
 
-    <div class="pill-group" role="group" aria-label="Filter by status">
+    <div class="segmented" role="group" aria-label="Filter by status">
       <button
         type="button"
-        class="pill"
-        [class.pill--active]="selectedStatus() === statusFilterAll"
+        class="segmented-item"
+        [attr.aria-pressed]="selectedStatus() === statusFilterAll"
         (click)="setStatus(statusFilterAll)"
       >
         All
       </button>
       <button
         type="button"
-        class="pill"
-        [class.pill--active]="selectedStatus() === statusFilterActive"
+        class="segmented-item"
+        [attr.aria-pressed]="selectedStatus() === statusFilterActive"
         (click)="setStatus(statusFilterActive)"
       >
         Active
       </button>
       <button
         type="button"
-        class="pill"
-        [class.pill--active]="selectedStatus() === statusFilterDisabled"
+        class="segmented-item"
+        [attr.aria-pressed]="selectedStatus() === statusFilterDisabled"
         (click)="setStatus(statusFilterDisabled)"
       >
         Disabled
       </button>
     </div>
 
-    <div class="date-range">
-      <span class="date-range__label">From</span>
-      <input
-        type="date"
-        class="date-input"
-        [ngModel]="fromDate()"
-        (ngModelChange)="onFromDateChange($event)"
-        aria-label="From date"
-      />
-      <span class="date-range__label">To</span>
-      <input
-        type="date"
-        class="date-input"
-        [ngModel]="toDate()"
-        (ngModelChange)="onToDateChange($event)"
-        aria-label="To date"
-      />
+    <div class="flex flex-wrap items-center gap-2">
+      <label class="flex items-center gap-1.5 text-sm text-muted">
+        From
+        <input
+          type="date"
+          class="input input-sm w-auto"
+          [ngModel]="fromDate()"
+          (ngModelChange)="onFromDateChange($event)"
+        />
+      </label>
+      <label class="flex items-center gap-1.5 text-sm text-muted">
+        To
+        <input
+          type="date"
+          class="input input-sm w-auto"
+          [ngModel]="toDate()"
+          (ngModelChange)="onToDateChange($event)"
+        />
+      </label>
     </div>
 
     @if (hasActiveFilters()) {
-      <button
-        type="button"
-        class="clear-filters"
-        (click)="clearFilters()"
-        aria-label="Clear all filters"
-      >
-        <i class="pi pi-filter-slash"></i> Clear filters
+      <button type="button" class="btn btn-ghost btn-sm" (click)="clearFilters()">
+        <i class="pi pi-filter-slash text-xs" aria-hidden="true"></i> Clear filters
       </button>
     }
-
-    <div class="ml-auto inline-flex items-baseline gap-1.5 max-sm:ml-0">
-      <span class="text-brand-text font-semibold">{{ total() }}</span>
-      <span class="text-brand-muted text-sm">users</span>
-    </div>
   </div>
 
-  <div class="select-bar">
-    <label class="select-all">
+  @if (batchNotice(); as notice) {
+    <p class="alert alert-warning" role="status">
+      <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+      <span class="flex-1">{{ notice }}</span>
+      <button
+        type="button"
+        class="icon-btn icon-btn-sm -my-1"
+        aria-label="Dismiss"
+        (click)="batchNotice.set(null)"
+      >
+        <i class="pi pi-times text-xs" aria-hidden="true"></i>
+      </button>
+    </p>
+  }
+
+  <div class="flex min-h-10 flex-wrap items-center justify-between gap-3">
+    <label class="inline-flex cursor-pointer items-center gap-2 text-sm text-muted">
       <input
         #allCheckbox
         type="checkbox"
+        class="checkbox"
         [checked]="allOnPageSelected()"
         (change)="toggleAllOnPage(allCheckbox.checked)"
         [disabled]="users().length === 0"
       />
-      <span>Select all on this page</span>
+      Select all on this page
     </label>
 
     @if (selectedCount() > 0) {
-      <div class="batch-bar">
-        <span class="text-brand-text text-sm">
-          <span class="font-semibold">{{ selectedCount() }}</span> selected
-        </span>
-        <button type="button" class="batch-btn" (click)="batchReactivate()">
-          <i class="pi pi-check-circle"></i> Reactivate
+      <div
+        class="flex flex-wrap items-center gap-1.5"
+        role="group"
+        aria-label="Actions for selected users"
+      >
+        <span class="mr-1 text-sm text-muted"
+          ><span class="tabular font-semibold text-content">{{ selectedCount() }}</span>
+          selected</span
+        >
+        <button type="button" class="btn btn-secondary btn-sm" (click)="batchReactivate()">
+          <i class="pi pi-check-circle text-xs" aria-hidden="true"></i> Reactivate
         </button>
-        <button type="button" class="batch-btn" (click)="batchDisable()">
-          <i class="pi pi-ban"></i> Disable
+        <button type="button" class="btn btn-secondary btn-sm" (click)="batchDisable()">
+          <i class="pi pi-ban text-xs" aria-hidden="true"></i> Disable
         </button>
-        <button type="button" class="batch-btn batch-btn--danger" (click)="batchDelete()">
-          <i class="pi pi-trash"></i> Delete
+        <button type="button" class="btn btn-danger btn-sm" (click)="batchDelete()">
+          <i class="pi pi-trash text-xs" aria-hidden="true"></i> Delete
         </button>
-        <button type="button" class="batch-clear" (click)="clearSelection()">Clear</button>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="clearSelection()">Clear</button>
       </div>
     }
   </div>
 
   @if (isLoading()) {
-    <div class="rows">
+    <div class="rows" aria-busy="true">
       @for (skeleton of skeletons(); track $index) {
-        <div class="row row--skeleton">
-          <div class="skeleton-block"></div>
-        </div>
+        <div class="row row--skeleton"><div class="skeleton-block"></div></div>
       }
     </div>
   } @else if (users().length === 0) {
     <div
-      class="flex flex-col items-center rounded-2xl border border-dashed border-brand-line px-4 py-16 text-brand-muted"
+      class="flex flex-col items-center rounded-xl border border-dashed border-line px-4 py-16 text-center text-muted"
     >
-      <i class="pi pi-users text-3xl"></i>
-      <p class="text-brand-text mt-3 font-semibold">No users match</p>
-      <p class="text-brand-muted text-sm">Try loosening the filters above.</p>
+      <i class="pi pi-users text-3xl" aria-hidden="true"></i>
+      <p class="mt-3 font-semibold text-content">No users match</p>
+      <p class="text-sm">Try loosening the filters above.</p>
     </div>
   } @else {
-    <div class="rows">
+    <ul class="rows">
       @for (user of users(); track user.id) {
-        <div class="row" [class.row--selected]="isSelected(user.id)">
-          <label class="row__check">
-            <input
-              #selectUserBox
-              type="checkbox"
-              [checked]="isSelected(user.id)"
-              (change)="toggleOne(user.id, selectUserBox.checked)"
-              [attr.aria-label]="'Select ' + user.username"
-            />
-          </label>
+        <li class="row" [class.row--selected]="isSelected(user.id)">
+          <input
+            #selectUserBox
+            type="checkbox"
+            class="checkbox"
+            [checked]="isSelected(user.id)"
+            (change)="toggleOne(user.id, selectUserBox.checked)"
+            [attr.aria-label]="'Select ' + user.username"
+          />
 
-          <div class="row__avatar">{{ initials(user.username) }}</div>
+          <span class="row__avatar" aria-hidden="true">{{ initials(user.username) }}</span>
 
-          <div class="row__identity">
-            <span class="row__username">{{ user.username }}</span>
-            <span class="row__id">#{{ user.id }}</span>
+          <div class="flex min-w-0 flex-col">
+            <span class="truncate text-sm font-bold text-content">{{ user.username }}</span>
+            <span class="tabular text-xs text-subtle">#{{ user.id }}</span>
           </div>
 
-          <div class="row__email">{{ user.email }}</div>
+          <span class="truncate text-sm text-muted">{{ user.email }}</span>
 
-          <span class="role-badge" [class.role-badge--admin]="isAdminRole(user.role)">
-            @if (isAdminRole(user.role)) {
-              Admin
-            } @else {
-              User
-            }
+          <span class="badge justify-self-start" [class.badge-accent]="isAdminRole(user.role)">
+            {{ isAdminRole(user.role) ? 'Admin' : 'User' }}
           </span>
 
           <span
@@ -186,7 +202,7 @@
             [class.status--deleted]="isDeleted(user)"
             [attr.title]="isDeleted(user) ? deletedLabel(user) : null"
           >
-            <span class="status__dot"></span>
+            <span class="status__dot" aria-hidden="true"></span>
             @if (user.enabled) {
               Active
             } @else if (isDeleted(user)) {
@@ -196,58 +212,57 @@
             }
           </span>
 
-          <span class="row__date">{{ formatDate(user.createdAt) }}</span>
+          <span class="whitespace-nowrap text-sm text-muted">{{ formatDate(user.createdAt) }}</span>
 
-          <div class="inline-flex gap-1.5">
+          <div class="flex justify-end gap-1">
             <button
               type="button"
-              class="icon-btn"
+              class="icon-btn icon-btn-sm"
               (click)="onEdit(user)"
-              aria-label="Edit user"
-              title="Edit user"
+              [attr.aria-label]="'Edit ' + user.username"
+              title="Edit"
             >
-              <i class="pi pi-pencil"></i>
+              <i class="pi pi-pencil text-sm" aria-hidden="true"></i>
             </button>
             @if (user.enabled) {
               <button
                 type="button"
-                class="icon-btn"
+                class="icon-btn icon-btn-sm"
                 (click)="onToggleEnabled(user)"
-                aria-label="Disable user"
-                title="Disable user"
+                [attr.aria-label]="'Disable ' + user.username"
+                title="Disable"
               >
-                <i class="pi pi-ban"></i>
+                <i class="pi pi-ban text-sm" aria-hidden="true"></i>
               </button>
             } @else {
               <button
                 type="button"
-                class="icon-btn"
+                class="icon-btn icon-btn-sm"
                 (click)="onToggleEnabled(user)"
-                aria-label="Reactivate user"
-                title="Reactivate user"
+                [attr.aria-label]="'Reactivate ' + user.username"
+                title="Reactivate"
               >
-                <i class="pi pi-check-circle"></i>
+                <i class="pi pi-check-circle text-sm" aria-hidden="true"></i>
               </button>
             }
             <button
               type="button"
-              class="icon-btn icon-btn--danger"
+              class="icon-btn icon-btn-sm icon-btn-danger"
               (click)="onDelete(user)"
-              aria-label="Delete user"
-              title="Delete user"
+              [attr.aria-label]="'Delete ' + user.username"
+              title="Delete"
             >
-              <i class="pi pi-trash"></i>
+              <i class="pi pi-trash text-sm" aria-hidden="true"></i>
             </button>
           </div>
-        </div>
+        </li>
       }
-    </div>
+    </ul>
   }
 
   @if (total() > 0) {
-    <div class="mt-auto pt-6 pb-4">
+    <div class="mt-auto pt-2">
       <p-paginator
-        class="paginator-dark"
         [rows]="pageSize"
         [pageLinkSize]="5"
         [showCurrentPageReport]="true"
@@ -262,52 +277,42 @@
 
 @if (confirmRequest()) {
   <app-modal
+    size="sm"
     [open]="true"
     [title]="confirmCopy().title"
     [dismissable]="!isConfirmPending()"
     (closed)="closeConfirm()"
   >
-    <div class="px-5 py-5">
-      <p class="text-brand-muted text-sm" [class.confirm-body--danger]="confirmCopy().danger">
-        {{ confirmCopy().body }}
-      </p>
-    </div>
+    <p
+      class="px-5 py-4 text-sm"
+      [class.text-muted]="!confirmCopy().danger"
+      [class.text-danger]="confirmCopy().danger"
+    >
+      {{ confirmCopy().body }}
+    </p>
     <div modal-footer class="flex items-center justify-end gap-2">
       <button
         type="button"
-        class="btn-ghost"
+        class="btn btn-ghost"
         (click)="closeConfirm()"
         [disabled]="isConfirmPending()"
       >
         Cancel
       </button>
-      @if (confirmCopy().danger) {
-        <button
-          type="button"
-          class="btn-danger"
-          (click)="runConfirm()"
-          [disabled]="isConfirmPending()"
-        >
-          @if (isConfirmPending()) {
-            <i class="pi pi-spin pi-spinner"></i>
-          } @else {
-            {{ confirmCopy().button }}
-          }
-        </button>
-      } @else {
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="runConfirm()"
-          [disabled]="isConfirmPending()"
-        >
-          @if (isConfirmPending()) {
-            <i class="pi pi-spin pi-spinner"></i>
-          } @else {
-            {{ confirmCopy().button }}
-          }
-        </button>
-      }
+      <button
+        type="button"
+        class="btn"
+        [class.btn-danger-solid]="confirmCopy().danger"
+        [class.btn-primary]="!confirmCopy().danger"
+        (click)="runConfirm()"
+        [disabled]="isConfirmPending()"
+        [attr.aria-busy]="isConfirmPending()"
+      >
+        @if (isConfirmPending()) {
+          <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        }
+        {{ confirmCopy().button }}
+      </button>
     </div>
   </app-modal>
 }
