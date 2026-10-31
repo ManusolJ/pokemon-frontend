@@ -1,50 +1,48 @@
-<div class="mx-auto w-full lg:max-w-9/12 px-4 sm:px-6 lg:px-8">
-  <p class="text-xs font-bold tracking-wider uppercase text-brand-red mt-5">About</p>
-  <section class="border-brand-line border-b pb-16 flex flex-col items-center">
-    <h2
-      class="text-brand-text mt-4 text-3xl sm:text-4xl font-bold leading-tight tracking-tight lg:text-5xl text-center"
-    >
-      Build Pokemon teams
-    </h2>
-    <p class="text-brand-muted mt-5 max-w-prose text-lg text-pretty text-center">
-      Pokemon Team Builder is a tool for competitive and casual trainers alike.
+<div class="page max-w-5xl py-10">
+  <section class="flex flex-col items-center border-b border-line pb-14 text-center">
+    <p class="eyebrow text-accent">About</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight text-content sm:text-4xl">
+      Build Pokémon teams, properly
+    </h1>
+    <p class="text-muted mt-5 max-w-prose text-lg text-pretty text-center">
+      PokeTeam Builder is a tool for competitive and casual trainers alike.
     </p>
-    <p class="text-brand-muted max-w-prose text-lg text-pretty text-center">
-      Assemble Pokemon teams, study type match-ups, and dig into the data behind every species, all
+    <p class="text-muted max-w-prose text-lg text-pretty text-center">
+      Assemble Pokémon teams, study type match-ups, and dig into the data behind every species, all
       in one fast, focused interface.
     </p>
   </section>
 
-  <section class="border-brand-line border-b py-12">
+  <section class="border-b border-line py-12">
     <div class="mb-6 flex items-baseline gap-3">
-      <h2 class="text-brand-text text-lg font-bold tracking-tight">What you can do</h2>
+      <h2 class="section-title">What you can do</h2>
     </div>
     <div class="feature-grid grid grid-cols-1 sm:grid-cols-2">
       @for (feature of features; track feature.title) {
-        <div class="bg-brand-surface px-6 py-5.5">
-          <h3 class="text-brand-text flex items-center gap-2.5 text-base font-semibold">
-            <span class="inline-block size-1.75 rounded-full bg-brand-red"></span>
+        <div class="bg-surface p-6">
+          <h3 class="text-content flex items-center gap-2.5 text-base font-semibold">
+            <span class="inline-block size-2 rounded-full bg-accent" aria-hidden="true"></span>
             {{ feature.title }}
           </h3>
-          <p class="text-brand-muted mt-1.5 text-sm">{{ feature.description }}</p>
+          <p class="text-muted mt-1.5 text-sm">{{ feature.description }}</p>
         </div>
       }
     </div>
   </section>
 
-  <section class="border-brand-line border-b py-12">
+  <section class="border-b border-line py-12">
     <div class="mb-6 flex items-baseline gap-3">
-      <h2 class="text-brand-text text-lg font-bold tracking-tight">Tech stack</h2>
+      <h2 class="section-title">Tech stack</h2>
     </div>
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
       @for (group of techStack; track group.label) {
-        <div class="rounded-3xl border border-brand-line bg-brand-surface p-4 sm:p-6">
-          <h3 class="mb-4 text-sm tracking-widest uppercase text-brand-dim">
+        <div class="card p-5 sm:p-6">
+          <h3 class="eyebrow mb-4">
             {{ group.label }}
           </h3>
           <div class="flex flex-wrap gap-2">
             @for (item of group.items; track item.name) {
-              <span class="chip">{{ item.name }}</span>
+              <span class="stack-chip">{{ item.name }}</span>
             }
           </div>
         </div>
@@ -52,24 +50,29 @@
     </div>
   </section>
 
-  <section class="border-brand-line border-b py-12">
+  <section class="border-b border-line py-12">
     <div class="mb-6 flex items-baseline gap-3">
-      <h2 class="text-brand-text text-lg font-bold tracking-tight">About the developer</h2>
+      <h2 class="section-title">About the developer</h2>
     </div>
     <div
-      class="grid grid-cols-1 sm:grid-cols-[120px_1fr] items-start gap-5 sm:gap-7 rounded-2xl border border-brand-line bg-brand-surface p-4 sm:p-7"
+      class="card grid grid-cols-1 items-start gap-5 p-5 sm:grid-cols-[7.5rem_1fr] sm:gap-7 sm:p-7"
     >
-      <div class="avatar size-24 sm:size-30 justify-self-center sm:justify-self-start">
-        <img src="/favicon.ico" alt="Dev Photo" />
+      <div class="avatar size-24 justify-self-center sm:size-30 sm:justify-self-start">
+        <img src="/favicon.ico" alt="" />
       </div>
       <div>
-        <h3 class="text-brand-text text-2xl font-bold">{{ developer.name }}</h3>
-        <p class="text-brand-red mt-1 text-sm font-semibold">{{ developer.role }}</p>
-        <p class="text-brand-muted mt-3 max-w-prose text-sm">{{ developer.bio }}</p>
+        <h3 class="text-content text-2xl font-bold">{{ developer.name }}</h3>
+        <p class="text-accent mt-1 text-sm font-semibold">{{ developer.role }}</p>
+        <p class="text-muted mt-3 max-w-prose text-sm">{{ developer.bio }}</p>
         <div class="mt-5 flex flex-wrap gap-2.5">
           @for (link of developerLinks; track link.label) {
-            <a [href]="link.href" target="_blank" rel="noopener" class="link-btn">
-              <span class="text-sm text-brand-dim">{{ link.glyph }}</span>
+            <a
+              [href]="link.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-secondary"
+            >
+              <span class="text-sm text-subtle" aria-hidden="true">{{ link.glyph }}</span>
               {{ link.label }}
             </a>
           }
@@ -77,9 +80,9 @@
       </div>
     </div>
 
-    <div class="w-full max-2/3 mx-auto flex justify-center">
-      <p class="text-brand-dim mt-10 max-w-prose text-xs leading-relaxed text-center">
-        Pokemon and Pokemon character names are trademarks of Nintendo, Game Freak, and The Pokemon
+    <div class="mx-auto flex w-full justify-center">
+      <p class="text-subtle mt-10 max-w-prose text-xs leading-relaxed text-center">
+        Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak and The Pokémon
         Company. This is a non-commercial fan project and is not affiliated with or endorsed by
         them. Game data sourced from PokeAPI.
       </p>
@@ -88,12 +91,10 @@
 
   <section class="py-12">
     <div class="mb-6 flex items-baseline gap-3">
-      <h2 class="text-brand-text text-lg font-bold tracking-tight">Keeping it running</h2>
+      <h2 class="section-title">Keeping it running</h2>
     </div>
-    <div
-      class="flex flex-col items-center gap-5 rounded-2xl border border-brand-line bg-brand-surface p-6 text-center sm:p-8"
-    >
-      <p class="text-brand-muted max-w-prose text-sm">
+    <div class="card flex flex-col items-center gap-5 p-6 text-center sm:p-8">
+      <p class="text-muted max-w-prose text-sm">
         The server, the domain and the database are paid for out of pocket. If the builder is useful
         to you and you would like to help cover those costs, you can chip in - entirely optional,
         and nothing on the site is ever locked behind it.
@@ -102,15 +103,15 @@
         [href]="support.href"
         target="_blank"
         rel="noopener noreferrer"
-        class="link-btn"
+        class="btn btn-secondary"
         [attr.aria-label]="support.label + ' (opens in a new tab)'"
       >
-        <span class="text-sm text-brand-dim">☕</span>
+        <span class="text-sm" aria-hidden="true">☕</span>
         {{ support.label }}
       </a>
-      <p class="text-brand-dim max-w-prose text-xs leading-relaxed">
+      <p class="text-subtle max-w-prose text-xs leading-relaxed">
         Contributions go towards hosting this site and nothing else. They are not a purchase, they
-        buy no features, and they are unconnected to Nintendo, Game Freak and The Pokemon Company.
+        buy no features, and they are unconnected to Nintendo, Game Freak and The Pokémon Company.
       </p>
     </div>
   </section>
