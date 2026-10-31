@@ -24,6 +24,7 @@ module.exports = tseslint.config(
       '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/no-empty-function': ['error', { allow: ['arrowFunctions'] }],
       eqeqeq: ['error', 'always', { null: 'ignore' }],
+      'no-empty': ['error', { allowEmptyCatch: true }],
       'no-console': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/naming-convention': [
