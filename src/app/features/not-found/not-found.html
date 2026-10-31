@@ -1,17 +1,13 @@
-<div class="mx-auto flex w-full max-w-2xl flex-col items-center px-4 py-24 text-center sm:px-6">
-  <p class="text-brand-red text-xs font-bold tracking-wider uppercase">404</p>
-
-  <h1 class="text-brand-text mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-    This page got away
-  </h1>
-
-  <p class="text-brand-muted mt-5 max-w-prose text-lg text-pretty">
-    The link may be out of date, or the address may have a typo in it. Nothing here either way.
+<div class="page flex max-w-2xl flex-col items-center py-24 text-center">
+  <p class="eyebrow text-accent">404</p>
+  <h1 class="page-title mt-3 sm:text-4xl">This page got away</h1>
+  <p class="mt-4 max-w-prose text-lg text-pretty text-muted">
+    The link may be out of date, or the address may have a typo in it.
   </p>
 
   <div class="mt-8 flex flex-wrap justify-center gap-3">
-    <a routerLink="/team-builder" class="link-btn">Team Builder</a>
-    <a routerLink="/pokedex" class="link-btn">Pokedex</a>
-    <a routerLink="/teams" class="link-btn">Community Teams</a>
+    <a routerLink="/team-builder" class="btn btn-primary">Build a team</a>
+    <a routerLink="/pokedex" class="btn btn-secondary">Browse the Pokédex</a>
+    <a routerLink="/teams" class="btn btn-secondary">Community teams</a>
   </div>
 </div>
