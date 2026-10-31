@@ -6,20 +6,20 @@ import {
 } from '@shared/interfaces/ui/filter/filter-field.interface';
 
 import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  inject,
   input,
+  inject,
   output,
   signal,
+  Component,
+  DestroyRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 const EMIT_DEBOUNCE_MS = 300;
 
-const DEFAULT_CHIP_ACCENT = 'var(--color-brand-muted)';
-
 type FilterState = Record<string, FilterValue | undefined>;
+
+let nextId = 0;
 
 // TODO: Store active filter state in memory to preserve between page changes.
 @Component({
@@ -31,6 +31,8 @@ type FilterState = Record<string, FilterValue | undefined>;
 })
 export class FilterSidebar {
   protected readonly state = signal<FilterState>({});
+
+  protected readonly idPrefix = `filter-${nextId++}-`;
 
   readonly fields = input.required<readonly FilterField[]>();
   readonly filterChange = output<Record<string, FilterValue>>();
@@ -117,10 +119,6 @@ export class FilterSidebar {
   protected reset(): void {
     this.state.set({});
     this.emitNow();
-  }
-
-  protected accent(option: FilterOption): string {
-    return option.color ?? DEFAULT_CHIP_ACCENT;
   }
 
   private patch(changes: FilterState, { debounce = false } = {}): void {

@@ -3,19 +3,35 @@
   display: block;
 }
 
-.tab-nav__link:hover {
-  color: var(--color-brand-text);
+.tab-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding-inline: 0.75rem;
+  border-bottom: 2px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition:
+    color 150ms ease-out,
+    border-color 150ms ease-out;
 }
 
-.tab-nav__link--active {
-  color: var(--color-brand-text);
-  border-bottom-color: var(--color-brand-red);
+.tab-link:hover {
+  color: var(--color-content);
 }
 
-.no-scrollbar {
-  scrollbar-width: none;
+.tab-link.is-active {
+  color: var(--color-content);
+  border-bottom-color: var(--color-accent);
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+.tab-link .pi {
+  color: var(--color-subtle);
+}
+
+.tab-link.is-active .pi {
+  color: var(--color-accent);
 }

@@ -1,27 +1,60 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  input,
+  output,
+  effect,
+  viewChild,
+  Component,
+  ElementRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+
+let nextId = 0;
 
 @Component({
-  imports: [],
   selector: 'app-modal',
-  host: { '(document:keydown.escape)': 'onEscape()' },
-  styleUrl: './modal.css',
   templateUrl: './modal.html',
+  styleUrl: './modal.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Modal {
   readonly open = input.required<boolean>();
   readonly title = input.required<string>();
   readonly dismissable = input<boolean>(true);
+  readonly size = input<'sm' | 'lg'>('lg');
 
   readonly closed = output<void>();
 
-  protected onEscape(): void {
-    if (this.open() && this.dismissable()) {
+  protected readonly titleId = `modal-title-${nextId++}`;
+
+  private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
+
+  private opener: HTMLElement | null = null;
+
+  constructor() {
+    effect(() => {
+      const dialog = this.dialog().nativeElement;
+
+      if (this.open() && !dialog.open) {
+        this.opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        dialog.showModal();
+      } else if (!this.open() && dialog.open) {
+        dialog.close();
+        if (this.opener?.isConnected) {
+          this.opener.focus();
+        }
+        this.opener = null;
+      }
+    });
+  }
+
+  protected onCancel(event: Event): void {
+    event.preventDefault();
+    if (this.dismissable()) {
       this.closed.emit();
     }
   }
 
-  protected onBackdropClick(event: MouseEvent): void {
+  protected onDialogClick(event: MouseEvent): void {
     if (event.target === event.currentTarget && this.dismissable()) {
       this.closed.emit();
     }

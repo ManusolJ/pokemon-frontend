@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 @Component({
   imports: [RouterLink],
   selector: 'app-footer',
-  styleUrl: './footer.css',
   templateUrl: './footer.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

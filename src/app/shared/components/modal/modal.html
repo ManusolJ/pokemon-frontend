@@ -1,38 +1,38 @@
-@if (open()) {
-  <div
-    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 lg:p-7 bg-black/60 backdrop-blur-xs"
-    (click)="onBackdropClick($event)"
-    role="presentation"
-  >
-    <div
-      role="dialog"
-      aria-modal="true"
-      class="flex flex-col max-h-full h-full sm:h-auto w-full max-w-full sm:max-w-9/10 lg:max-w-8/10 overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-none sm:rounded-2xl shadow-2xl"
-      [attr.aria-label]="title()"
-    >
-      <div class="flex items-center justify-between gap-4 pt-4 px-5 pb-3">
-        <h2 class="font-bold tracking-tight text-brand-text">{{ title() }}</h2>
-        <button
-          type="button"
-          (click)="emitClose()"
-          class="size-7 text-brand-muted bg-black/5 border border-solid border-brand-line cursor-pointer transition-colors rounded-lg hover:text-brand-text hover:border-brand-red"
-          aria-label="Close"
-        >
-          <i class="pi pi-times"></i>
-        </button>
+<dialog
+  #dialog
+  class="modal"
+  [class.modal--sm]="size() === 'sm'"
+  [attr.aria-labelledby]="titleId"
+  (cancel)="onCancel($event)"
+  (click)="onDialogClick($event)"
+>
+  @if (open()) {
+    <div class="flex max-h-[inherit] flex-col">
+      <header class="flex items-center justify-between gap-4 px-5 pt-4 pb-3">
+        <h2 [id]="titleId" class="text-lg font-bold tracking-tight text-content">{{ title() }}</h2>
+        @if (dismissable()) {
+          <button
+            type="button"
+            (click)="emitClose()"
+            class="icon-btn icon-btn-sm -mr-1.5"
+            aria-label="Close"
+          >
+            <i class="pi pi-times" aria-hidden="true"></i>
+          </button>
+        }
+      </header>
+
+      <div class="border-b border-line px-5 pt-1 pb-4 empty:hidden">
+        <ng-content select="[modal-toolbar]" />
       </div>
 
-      <div class="pt-2 px-5 pb-4 border-b border-solid border-b-brand-line empty:hidden">
-        <ng-content select="[modal-toolbar]"></ng-content>
+      <div class="min-h-0 flex-1 overflow-y-auto">
+        <ng-content />
       </div>
 
-      <div class="flex-1 min-h-0 overflow-y-auto">
-        <ng-content></ng-content>
-      </div>
-
-      <div class="px-3.5 py-5 border-t border-solid border-t-brand-line empty:hidden">
-        <ng-content select="[modal-footer]"></ng-content>
-      </div>
+      <footer class="border-t border-line px-5 py-4 empty:hidden">
+        <ng-content select="[modal-footer]" />
+      </footer>
     </div>
-  </div>
-}
+  }
+</dialog>

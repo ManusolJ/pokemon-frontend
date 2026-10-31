@@ -4,21 +4,26 @@
 }
 
 .select__panel {
-  box-shadow: 0 18px 44px rgb(0 0 0 / 0.55);
-  animation: select-pop 130ms ease-out;
+  box-shadow: var(--shadow-lg);
+}
+
+.select__option.is-active {
+  background: var(--color-fill);
 }
 
 .select__option.is-selected {
-  background: color-mix(in srgb, var(--color-brand-red) 14%, transparent);
+  background: color-mix(in oklab, var(--color-accent) 12%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .select__panel {
+    animation: select-pop 130ms ease-out;
+  }
 }
 
 @keyframes select-pop {
   from {
     opacity: 0;
     transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }

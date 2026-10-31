@@ -7,7 +7,7 @@
 .skeleton-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 12.5rem), 1fr));
 }
 
 .sidebar__backdrop {
@@ -27,31 +27,27 @@
 
 .sidebar {
   position: fixed;
-  top: 0;
-  bottom: 0;
+  inset-block: 0;
   left: 0;
   z-index: 50;
-  width: min(85vw, 22rem);
-  background: var(--color-brand-surface);
-  border-right: 1px solid var(--color-brand-line);
-  box-shadow: 8px 0 24px rgb(0 0 0 / 0.4);
-  transform: translateX(-100%);
-  transition: transform 250ms ease-out;
   display: flex;
   flex-direction: column;
+  width: min(85vw, 22rem);
   min-height: 0;
+  border-right: 1px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform 200ms ease-out,
+    visibility 0s linear 200ms;
 }
 
 .sidebar--open {
   transform: translateX(0);
-}
-
-.sidebar__inner {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  flex: 1;
-  overflow: hidden;
+  visibility: visible;
+  transition: transform 200ms ease-out;
 }
 
 .sidebar__body {
@@ -61,41 +57,26 @@
   padding: 1rem;
 }
 
-.sidebar:not(.sidebar--open) .sidebar__body,
-.sidebar:not(.sidebar--open) .sidebar__header {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-@media (min-width: 1024px) {
+@media (width >= 64rem) {
   .sidebar__backdrop {
     display: none;
   }
 
   .sidebar {
     position: static;
-    transform: none;
-    width: 16rem;
+    width: 15rem;
     flex-shrink: 0;
-    min-height: 0;
     overflow-y: auto;
+    border-right: 0;
     background: transparent;
     box-shadow: none;
+    transform: none;
+    visibility: visible;
     transition: none;
   }
 
-  .sidebar__inner {
-    overflow: visible;
-  }
-
   .sidebar__body {
-    padding: 1.25rem;
+    padding: 1.5rem 0;
     overflow-y: visible;
-  }
-
-  .sidebar:not(.sidebar--open) .sidebar__body,
-  .sidebar:not(.sidebar--open) .sidebar__header {
-    visibility: visible;
-    pointer-events: auto;
   }
 }

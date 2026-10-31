@@ -1,49 +1,45 @@
-<div class="flex flex-col gap-6">
-  <div class="flex items-center justify-between">
-    <h2 class="text-brand-text font-bold tracking-tight">Filters</h2>
+<div class="flex flex-col gap-6 pb-4">
+  <div class="flex h-8 items-center justify-between">
+    <h2 class="text-base font-bold text-content">Filters</h2>
     @if (activeCount() > 0) {
-      <button
-        type="button"
-        (click)="reset()"
-        class="text-brand-muted hover:text-brand-text text-xs font-semibold transition-colors"
-      >
-        Reset
-      </button>
+      <button type="button" (click)="reset()" class="btn btn-ghost btn-sm -mr-3">Clear all</button>
     }
   </div>
 
-  @for (field of fields(); track $index) {
-    <div class="flex flex-col gap-2.5">
+  @for (field of fields(); track $index; let i = $index) {
+    <div class="flex flex-col gap-2">
       @if (field.label && field.kind !== 'search' && field.kind !== 'toggle') {
-        <span class="text-brand-dim font-bold uppercase">{{ field.label }}</span>
+        <span [id]="idPrefix + i" class="eyebrow">{{ field.label }}</span>
       }
 
       @switch (field.kind) {
         @case ('search') {
-          <div
-            class="flex items-center gap-2.5 rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 focus-within:border-brand-red transition-colors"
-          >
-            <i class="pi pi-search text-sm"></i>
+          <label class="input-icon">
+            <span class="sr-only">{{ field.placeholder ?? 'Search' }}</span>
+            <i class="pi pi-search" aria-hidden="true"></i>
             <input
               #searchInput
-              type="text"
+              type="search"
+              class="input"
               [placeholder]="field.placeholder ?? 'Search'"
               (input)="onSearch(field, searchInput.value)"
-              class="w-full bg-transparent text-brand-text placeholder:text-brand-muted text-sm outline-none"
             />
-          </div>
+          </label>
         }
 
         @case ('chips') {
-          <div class="flex flex-wrap gap-1.5">
+          <div class="flex flex-wrap gap-1.5" role="group" [attr.aria-labelledby]="idPrefix + i">
             @for (opt of field.options ?? []; track opt.value) {
               <button
                 type="button"
                 (click)="toggleChip(field, opt)"
-                [style.--accent]="accent(opt)"
-                [class.is-active]="isChipActive(field, opt)"
-                class="filter-chip"
+                [style.--chip-color]="opt.color ?? null"
+                [attr.aria-pressed]="isChipActive(field, opt)"
+                class="chip filter-chip"
               >
+                @if (opt.color) {
+                  <span class="filter-chip__dot" aria-hidden="true"></span>
+                }
                 {{ opt.label }}
               </button>
             }
@@ -53,8 +49,9 @@
         @case ('select') {
           <select
             #selectInput
+            class="input"
+            [attr.aria-labelledby]="idPrefix + i"
             (change)="onSelect(field, selectInput.value)"
-            class="w-full rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-brand-text text-sm outline-none focus:border-brand-red/60 transition-colors"
           >
             <option value="">{{ field.placeholder ?? 'Any' }}</option>
             @for (opt of field.options ?? []; track opt.value) {
@@ -66,27 +63,31 @@
         }
 
         @case ('range') {
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2" role="group" [attr.aria-labelledby]="idPrefix + i">
             <input
               #minInput
               type="number"
+              inputmode="numeric"
+              class="input tabular"
+              aria-label="Minimum"
+              placeholder="Min"
               [min]="field.min ?? null"
               [max]="field.max ?? null"
               [step]="field.step ?? 1"
-              placeholder="Min"
               (input)="onRange(field, 'min', minInput.value)"
-              class="w-full rounded-lg border border-brand-line bg-brand-surface px-2.5 py-2 text-brand-text text-sm outline-none focus:border-brand-red/60 transition-colors"
             />
-            <span class="text-brand-dim text-xs">–</span>
+            <span class="text-sm text-subtle" aria-hidden="true">–</span>
             <input
               #maxInput
               type="number"
+              inputmode="numeric"
+              class="input tabular"
+              aria-label="Maximum"
+              placeholder="Max"
               [min]="field.min ?? null"
               [max]="field.max ?? null"
               [step]="field.step ?? 1"
-              placeholder="Max"
               (input)="onRange(field, 'max', maxInput.value)"
-              class="w-full rounded-lg border border-brand-line bg-brand-surface px-2.5 py-2 text-brand-text text-sm outline-none focus:border-brand-red/60 transition-colors"
             />
           </div>
         }
@@ -94,12 +95,15 @@
         @case ('toggle') {
           <button
             type="button"
+            role="switch"
             (click)="onToggle(field)"
-            [class.is-on]="currentValue(field.key)"
+            [attr.aria-checked]="!!currentValue(field.key)"
             class="filter-toggle"
           >
             <span>{{ field.label }}</span>
-            <span class="filter-toggle__track"><span class="filter-toggle__thumb"></span></span>
+            <span class="filter-toggle__track" aria-hidden="true"
+              ><span class="filter-toggle__thumb"></span
+            ></span>
           </button>
         }
       }

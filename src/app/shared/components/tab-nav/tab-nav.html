@@ -1,21 +1,16 @@
-<nav
-  class="w-full border-b border-brand-line bg-brand-bg/80 backdrop-blur-md"
-  [attr.aria-label]="ariaLabel()"
->
-  <ul
-    class="mx-auto flex w-full lg:max-w-9/12 items-center gap-1 px-4 sm:px-6 lg:px-8 overflow-x-auto no-scrollbar"
-  >
+<nav class="w-full border-b border-line bg-bg" [attr.aria-label]="ariaLabel()">
+  <ul class="page flex items-center gap-1 overflow-x-auto">
     @for (item of items(); track item.path) {
       <li class="shrink-0">
         <a
           [routerLink]="item.path"
-          routerLinkActive="tab-nav__link--active"
-          class="inline-flex items-center gap-2 px-2 sm:px-3 py-4 text-xs sm:text-sm font-semibold text-brand-muted border-b-2 border-solid border-transparent hover:text-brand-text whitespace-nowrap"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+          class="tab-link"
         >
-          <i
-            class="pi inline-flex items-center gap-2 py-3 pr-2 pl-1 text-sm text-brand-red"
-            [class]="item.icon"
-          ></i>
+          @if (item.icon) {
+            <i class="pi text-sm" [class]="item.icon" aria-hidden="true"></i>
+          }
           {{ item.label }}
         </a>
       </li>

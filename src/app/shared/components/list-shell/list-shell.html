@@ -1,4 +1,4 @@
-<div class="flex flex-col lg:flex-row h-full w-full min-h-0 pb-4 overflow-hidden">
+<div class="page flex h-full min-h-0 w-full flex-col overflow-hidden lg:flex-row lg:gap-8">
   @if (!hideSidebar()) {
     <div
       class="sidebar__backdrop lg:hidden"
@@ -11,83 +11,76 @@
       id="list-shell-sidebar"
       class="sidebar"
       [class.sidebar--open]="sidebarOpen()"
-      role="dialog"
       aria-label="Filters"
     >
-      <div class="sidebar__inner">
-        <header
-          class="sidebar__header lg:hidden flex items-center justify-between gap-3 px-4 py-3 border-b border-brand-line bg-brand-bg/95 backdrop-blur-md sticky top-0 z-10"
-        >
-          <h2 class="text-sm font-bold tracking-tight text-brand-text">Filters</h2>
-          <button
-            type="button"
-            (click)="toggleSidebar()"
-            aria-label="Close filters"
-            class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-brand-muted hover:text-brand-text hover:bg-white/5 transition-colors cursor-pointer"
-          >
-            <i class="pi pi-times text-lg"></i>
-          </button>
-        </header>
-        <div class="sidebar__body">
-          <ng-content select="[sidebar]"></ng-content>
-        </div>
+      <header
+        class="flex items-center justify-between gap-3 border-b border-line px-4 py-3 lg:hidden"
+      >
+        <h2 class="text-base font-bold text-content">Filters</h2>
+        <button type="button" (click)="toggleSidebar()" aria-label="Close filters" class="icon-btn">
+          <i class="pi pi-times" aria-hidden="true"></i>
+        </button>
+      </header>
+      <div class="sidebar__body">
+        <ng-content select="[sidebar]" />
       </div>
     </aside>
   }
 
-  <section class="flex-1 min-w-0 flex flex-col min-h-0 px-4 sm:px-6 lg:px-8">
-    <div class="mb-4 sm:mb-6 flex items-end justify-between gap-3 flex-wrap">
+  <section class="flex min-h-0 min-w-0 flex-1 flex-col pt-6">
+    <div class="flex flex-wrap items-end justify-between gap-3">
       <div class="min-w-0">
-        <h1 class="text-brand-text text-xl sm:text-2xl font-bold tracking-tight">{{ title() }}</h1>
-        <p class="mt-1 text-xs sm:text-sm text-brand-muted">
+        <h1 class="page-title">{{ title() }}</h1>
+        <p class="mt-1 text-sm text-muted" aria-live="polite">
           @if (loading()) {
             Loading…
           } @else {
-            <span class="text-brand-text font-bold">{{ total() }}</span> {{ noun() }}
+            <span class="tabular font-semibold text-content">{{ total() }}</span> {{ noun() }}
           }
         </p>
       </div>
-      <div class="flex items-center gap-2 flex-wrap">
+      <div class="flex min-w-0 max-w-full flex-wrap items-center gap-2">
         @if (!hideSidebar()) {
           <button
             type="button"
             (click)="toggleSidebar()"
             [attr.aria-expanded]="sidebarOpen()"
             aria-controls="list-shell-sidebar"
-            class="lg:hidden inline-flex items-center gap-2 rounded-lg border border-brand-line bg-brand-surface px-3 py-2 text-xs font-semibold text-brand-text hover:border-brand-red/45 transition-colors cursor-pointer"
+            class="btn btn-secondary btn-sm lg:hidden"
           >
-            <i class="pi pi-filter text-xs"></i>
+            <i class="pi pi-filter text-xs" aria-hidden="true"></i>
             Filters
           </button>
         }
-        <ng-content select="[toolbar]"></ng-content>
+        <ng-content select="[toolbar]" />
       </div>
     </div>
 
-    <div class="flex-1 min-h-0 overflow-y-auto py-4">
+    <div class="min-h-0 flex-1 overflow-y-auto py-5">
       @if (loading()) {
-        <div class="skeleton-grid">
+        <div class="skeleton-grid" aria-hidden="true">
           @for (skeleton of skeletons(); track $index) {
-            <div
-              class="h-56 animate-pulse rounded-2xl border border-brand-line bg-brand-surface"
-            ></div>
+            <div class="h-56 animate-pulse rounded-xl border border-line bg-surface"></div>
           }
         </div>
       } @else if (isEmpty()) {
         <div
-          class="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-brand-line py-16 sm:py-24 px-4 text-center"
+          class="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 py-20 text-center"
         >
-          <span class="text-brand-text font-semibold">No matches</span>
-          <span class="text-brand-muted text-sm">Try loosening your filters.</span>
+          <i class="pi pi-search mb-1 text-2xl text-subtle" aria-hidden="true"></i>
+          <p class="font-semibold text-content">No matches</p>
+          <p class="text-sm text-muted">
+            Try removing a filter or searching for something shorter.
+          </p>
         </div>
       } @else {
-        <ng-content select="[grid]"></ng-content>
+        <ng-content select="[grid]" />
       }
     </div>
 
     @if (!isEmpty() && total() > pageSize()) {
       <p-paginator
-        class="list-paginator mt-2 bg-transparent border-0 justify-center"
+        class="list-paginator border-t border-line"
         [rows]="pageSize()"
         [pageLinkSize]="5"
         [showCurrentPageReport]="true"

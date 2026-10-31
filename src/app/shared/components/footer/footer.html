@@ -1,48 +1,51 @@
-<footer class="relative bg-brand-abyssal text-white shrink-0">
-  <button
-    type="button"
-    (click)="toggle()"
-    [attr.aria-expanded]="expanded()"
-    aria-controls="footer-content"
-    aria-label="Toggle footer details"
-    class="w-full h-10 flex items-center justify-center text-muted-color hover:text-white transition-colors cursor-pointer"
-  >
-    <i
-      class="pi pi-chevron-up text-lg transition-transform duration-300"
-      [class.rotate-180]="expanded()"
-    ></i>
-  </button>
+<footer class="shrink-0 border-t border-line bg-bg">
+  <div class="page flex h-10 items-center justify-between gap-4 text-xs text-muted">
+    <span class="truncate">PokeTeam Builder is a non-commercial fan project</span>
+    <button
+      type="button"
+      (click)="toggle()"
+      [attr.aria-expanded]="expanded()"
+      aria-controls="footer-content"
+      class="inline-flex h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-2 font-semibold hover:bg-fill hover:text-content"
+    >
+      {{ expanded() ? 'Less' : 'More' }}
+      <i
+        class="pi pi-chevron-up text-xs transition-transform"
+        [class.rotate-180]="expanded()"
+        aria-hidden="true"
+      ></i>
+    </button>
+  </div>
 
   <div
     id="footer-content"
     [attr.inert]="!expanded() ? '' : null"
-    class="panel bg-brand-abyssal"
-    [class.panel--expanded]="expanded()"
+    class="collapsible"
+    [class.is-open]="expanded()"
   >
-    <div class="panel-inner">
+    <div>
       <div
-        class="px-4 sm:px-6 pb-5 sm:pb-6 pt-2 flex flex-col items-center gap-1.5 text-xs sm:text-sm text-center"
+        class="page flex flex-col gap-3 pb-5 text-sm text-muted sm:flex-row sm:items-start sm:justify-between"
       >
-        <p class="font-semibold text-base sm:text-lg">
-          Pokemon Team Builder &copy; 2025 - All rights reserved
-        </p>
-        <p class="text-brand-muted">Created by Manuel Soler Juan - Web Development Project</p>
-        <p class="text-brand-muted break-all sm:break-normal">
-          <a href="mailto:manusolerj@gmail.com">manusolerj&commat;gmail.com</a>
-        </p>
-        <p class="text-brand-muted">
-          <a href="https://github.com/ManusolJ" target="_blank" rel="noopener noreferrer"
-            >GitHub: ManusolJ</a
-          >
-        </p>
-        <p class="text-brand-muted flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-          <a routerLink="/about" class="hover:text-white transition-colors">About us</a>
-          <span class="text-white/30">|</span>
-          <a routerLink="/contact" class="hover:text-white transition-colors">Contact</a>
-        </p>
-        <p class="text-brand-muted text-[0.7rem] sm:text-xs max-w-md mt-1 leading-relaxed">
-          This site is not affiliated with Nintendo, Game Freak, or The Pokemon Company. Pokemon and
-          related content are &copy; of their respective owners.
+        <div class="flex flex-col gap-1">
+          <p class="font-semibold text-content">PokeTeam Builder &copy; 2025</p>
+          <p>Built by Manuel Soler Juan</p>
+          <p class="flex flex-wrap gap-x-4 gap-y-1">
+            <a routerLink="/about" class="link">About</a>
+            <a routerLink="/contact" class="link">Contact</a>
+            <a
+              href="https://github.com/ManusolJ"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link"
+              >GitHub</a
+            >
+            <a href="mailto:manusolerj@gmail.com" class="link">manusolerj&commat;gmail.com</a>
+          </p>
+        </div>
+        <p class="max-w-md text-xs leading-relaxed text-subtle">
+          Not affiliated with Nintendo, Game Freak or The Pokémon Company. Pokémon and related
+          content are &copy; their respective owners. Game data from PokeAPI.
         </p>
       </div>
     </div>
