@@ -431,6 +431,51 @@
     background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
   }
 
+  .chip-sm {
+    height: 1.75rem;
+    padding-inline: 0.625rem;
+    font-size: 0.75rem;
+  }
+
+  .chip-type {
+    text-transform: capitalize;
+  }
+  .chip-type::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: var(--accent);
+  }
+  .chip-type[aria-pressed='true'] {
+    border-color: color-mix(in oklab, var(--accent) 60%, transparent);
+    background-color: color-mix(in oklab, var(--accent) 16%, transparent);
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+  @media (width < 40rem) {
+    .chip-row {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-inline: -1.25rem;
+      padding-inline: 1.25rem;
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 1.25rem,
+        black calc(100% - 1.25rem),
+        transparent
+      );
+    }
+    .chip-row > * {
+      flex-shrink: 0;
+    }
+  }
+
   /* ---------------------------------------------------------- Typography */
 
   .eyebrow {
@@ -497,5 +542,14 @@
 
   .tabular {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* PrimeNG's toast is a fixed 25rem; on phones it spans the screen with the page gutter instead. */
+  @media (width < 40rem) {
+    .p-toast {
+      width: auto;
+      left: 1rem;
+      right: 1rem;
+    }
   }
 }
