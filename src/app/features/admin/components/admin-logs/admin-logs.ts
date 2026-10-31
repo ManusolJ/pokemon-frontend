@@ -17,7 +17,12 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 
-import { endOfLocalDayIso, startOfLocalDayIso } from '@shared/utils/format-date.util';
+import {
+  UI_LOCALE,
+  formatDateTime,
+  endOfLocalDayIso,
+  startOfLocalDayIso,
+} from '@shared/utils/format-date.util';
 
 import { debouncedText } from '@shared/utils/debounced-text.util';
 
@@ -51,12 +56,10 @@ const SEED_STATUS_OPTIONS: readonly FilterOption[] = [
   { label: 'Unknown', value: SEED_STATUS_UNKNOWN },
 ];
 
-const DATETIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
+const SEED_STATUS_BADGE: Readonly<Record<string, string>> = {
+  completed: 'badge badge-success',
+  running: 'badge badge-warning',
+  failed: 'badge badge-danger',
 };
 
 const TIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
@@ -236,20 +239,14 @@ export class AdminLogs {
     this.page.set(event.page ?? 0);
   }
 
-  protected formatDateTime(iso: string): string {
-    const date = new Date(iso);
-    if (Number.isNaN(date.getTime())) {
-      return EMPTY_PLACEHOLDER;
-    }
-    return date.toLocaleString(undefined, DATETIME_FORMAT_OPTIONS);
-  }
+  protected readonly formatDateTime = formatDateTime;
 
   protected formatTime(iso: string): string {
     const date = new Date(iso);
     if (Number.isNaN(date.getTime())) {
       return EMPTY_PLACEHOLDER;
     }
-    return date.toLocaleTimeString(undefined, TIME_FORMAT_OPTIONS);
+    return date.toLocaleTimeString(UI_LOCALE, TIME_FORMAT_OPTIONS);
   }
 
   protected formatDuration(startedAt: string, completedAt: string | null): string {
@@ -275,6 +272,6 @@ export class AdminLogs {
   }
 
   protected statusClass(status: string): string {
-    return `status-tag status-tag--${status.toLowerCase()}`;
+    return SEED_STATUS_BADGE[status.toLowerCase()] ?? 'badge';
   }
 }
