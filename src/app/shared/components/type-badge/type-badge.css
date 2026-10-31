@@ -1,3 +1,31 @@
 :host {
   display: inline-flex;
 }
+
+.type-badge {
+  height: 1.375rem;
+  color: var(--color-content);
+  background: color-mix(in oklab, var(--type-color) 16%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--type-color) 40%, transparent);
+}
+
+.type-badge--md {
+  height: 1.625rem;
+  padding-inline: 0.625rem;
+  font-size: 0.875rem;
+}
+
+.type-badge__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--type-color);
+}
+
+.type-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: var(--type-color);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--type-color) 25%, transparent);
+}
