@@ -1,70 +1,65 @@
 <app-modal [open]="open()" title="Choose a move" (closed)="closed.emit()">
   <div modal-toolbar class="flex flex-col gap-3">
-    <div class="flex items-center gap-2.5 flex-wrap">
-      <label class="input-icon min-w-48 flex-1">
-        <span class="sr-only">Search</span>
+    <div class="flex items-center gap-2">
+      <label class="input-icon min-w-0 flex-1">
+        <span class="sr-only">Search moves</span>
         <i class="pi pi-search" aria-hidden="true"></i>
         <input
           #nameSearch
-          type="text"
+          type="search"
+          autocomplete="off"
           autofocus
-          placeholder="Filter by move name…"
+          placeholder="Search moves…"
           class="input"
           [value]="query()"
           (input)="onSearch(nameSearch.value)"
         />
       </label>
+      <button
+        type="button"
+        (click)="clearFilters()"
+        [disabled]="!hasFilters()"
+        class="btn btn-ghost btn-sm shrink-0"
+      >
+        <i class="pi pi-filter-slash text-xs" aria-hidden="true"></i>
+        <span class="max-sm:sr-only">Clear filters</span>
+      </button>
+    </div>
 
+    <div class="chip-row" role="group" aria-label="Type">
+      @for (type of types(); track type.id) {
+        <button
+          type="button"
+          class="chip chip-sm chip-type"
+          [style.--accent]="typeColor(type.name)"
+          [attr.aria-pressed]="typeId() === type.id"
+          (click)="toggleType(type.id)"
+        >
+          {{ type.name }}
+        </button>
+      }
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-2">
       <div class="segmented" role="group" aria-label="Damage class">
         @for (option of categoryOptions; track option.id) {
           <button
             type="button"
-            (click)="setCategory(option.id)"
-            [class.is-active]="category() === option.id"
-            [attr.aria-pressed]="category() === option.id"
             class="segmented-item"
+            [attr.aria-pressed]="category() === option.id"
+            (click)="setCategory(option.id)"
           >
             {{ option.label }}
           </button>
         }
       </div>
-
-      <button
-        type="button"
-        (click)="clearFilters()"
-        [disabled]="!hasFilters()"
-        class="btn btn-secondary btn-sm"
-      >
-        <i class="pi pi-filter-slash text-xs" aria-hidden="true"></i>
-        Clear filters
-      </button>
-    </div>
-
-    <div class="flex items-center gap-2.5 flex-wrap">
-      <div class="flex flex-wrap flex-1 gap-1.5 min-w-0">
-        @for (type of types(); track type.id) {
-          <button
-            type="button"
-            (click)="toggleType(type.id)"
-            [style.--accent]="typeColor(type.name)"
-            [class.is-active]="typeId() === type.id"
-            [attr.aria-pressed]="typeId() === type.id"
-            class="filter-chip capitalize px-2.5 py-1 rounded-md text-xs font-semibold text-muted bg-fill border border-solid border-line cursor-pointer transition-colors hover:text-content hover:border-(--accent)/40"
-          >
-            {{ type.name }}
-          </button>
-        }
-      </div>
-
-      <div class="inline-flex items-center gap-1">
-        <span class="eyebrow mr-1"> Sort </span>
+      <div class="segmented" role="group" aria-label="Sort by">
         @for (option of sortOptions; track option.id) {
           <button
             type="button"
-            (click)="setSort(option.id)"
-            [class.is-active]="sort() === option.id"
-            [attr.aria-pressed]="sort() === option.id"
             class="segmented-item"
+            [attr.aria-pressed]="sort() === option.id"
+            (click)="setSort(option.id)"
           >
             {{ option.label }}
           </button>
@@ -73,12 +68,12 @@
     </div>
   </div>
 
-  <div class="px-2.5 pt-2 pb-3">
+  <div class="px-3 pt-2 pb-3 sm:px-4">
     @if (currentMove()) {
       <button
         type="button"
         (click)="clear()"
-        class="btn btn-ghost btn-block justify-start border-dashed border-line-strong my-3"
+        class="btn btn-ghost btn-block my-2 justify-start border-dashed border-line-strong"
       >
         <i class="pi pi-times text-xs" aria-hidden="true"></i>
         Clear this move slot
@@ -88,62 +83,57 @@
     @if (loading()) {
       <div class="flex flex-col gap-1.5">
         @for (skeleton of skeletons(); track $index) {
-          <p-skeleton height="2.75rem"></p-skeleton>
+          <p-skeleton height="3.25rem"></p-skeleton>
         }
       </div>
     } @else if (moves().length === 0) {
-      <p class="text-center text-subtle py-10 text-sm">No moves match those filters.</p>
+      <p class="py-10 text-center text-sm text-subtle">No moves match those filters.</p>
     } @else {
-      <div
-        class="flex items-center gap-2.5 px-3 py-2 mb-0.5 border-b border-line text-xs font-bold tracking-wider uppercase text-subtle"
-      >
-        <span class="flex-1 min-w-0">Move</span>
-        <span class="w-22 shrink-0">Type</span>
-        <span class="w-10 shrink-0 text-center">Class</span>
-        <span class="w-10 shrink-0 text-right">Pwr</span>
-        <span class="w-10 shrink-0 text-right">Acc</span>
+      <div class="move-head" aria-hidden="true">
+        <span>Move</span>
+        <span>Type</span>
+        <span class="text-center">Class</span>
+        <span class="text-right">Pwr</span>
+        <span class="text-right">Acc</span>
       </div>
 
-      @for (move of moves(); track move.id) {
-        <button
-          type="button"
-          (click)="onPick(move)"
-          [class.is-current]="isCurrent(move)"
-          [class.is-disabled]="!isCurrent(move) && disabledSet().has(move.id)"
-          [style.--accent]="typeColor(move.type.name)"
-          [disabled]="!isCurrent(move) && disabledSet().has(move.id)"
-          class="move-row flex items-center gap-2.5 w-full px-3 py-2.5 rounded-lg bg-transparent border border-transparent text-left text-content cursor-pointer transition-colors"
-        >
-          <span class="flex flex-1 min-w-0 items-center gap-2">
-            <span class="size-1.5 shrink-0 rounded-full bg-(--accent)" aria-hidden="true"></span>
-            <span class="font-semibold text-sm capitalize truncate">
-              {{ move.name }}
-              @if (!isCurrent(move) && disabledSet().has(move.id)) {
-                <span class="ml-1.5 text-xs font-normal text-subtle normal-case">in set</span>
-              }
-            </span>
-          </span>
-          <span class="w-22 shrink-0">
-            @if (move.type) {
-              <app-type-badge [name]="move.type.name" size="sm" />
-            }
-          </span>
-          <span class="w-10 shrink-0 text-center">
-            <span
-              class="move__cat inline-block tabular text-xs font-bold tracking-wider px-1.5 py-0.5 rounded-md"
-              [class]="categoryClass(move.category)"
+      <ul class="flex flex-col gap-0.5">
+        @for (move of moves(); track move.id) {
+          <li>
+            <button
+              type="button"
+              class="move-row"
+              [class.is-current]="isCurrent(move)"
+              [style.--accent]="typeColor(move.type.name)"
+              [disabled]="!isCurrent(move) && disabledSet().has(move.id)"
+              (click)="onPick(move)"
             >
-              {{ categoryAbbr(move.category) }}
-            </span>
-          </span>
-          <span class="w-10 shrink-0 text-right tabular text-xs text-muted">
-            {{ move.power || '—' }}
-          </span>
-          <span class="w-10 shrink-0 text-right tabular text-xs text-subtle">
-            {{ move.accuracy || '—' }}
-          </span>
-        </button>
-      }
+              <span class="move-row__name">
+                <span class="truncate font-semibold text-content">{{ move.name | nameNormalizer }}</span>
+                @if (!isCurrent(move) && disabledSet().has(move.id)) {
+                  <span class="shrink-0 text-xs text-subtle">In set</span>
+                }
+              </span>
+              <span class="move-row__type">
+                @if (move.type) {
+                  <app-type-badge [name]="move.type.name" size="sm" />
+                }
+              </span>
+              <span class="move-row__cat">
+                <span class="move-cat" [class]="categoryClass(move.category)">
+                  {{ categoryAbbr(move.category) }}
+                </span>
+              </span>
+              <span class="move-row__stat move-row__pwr">
+                <span class="sm:hidden">Pwr</span> {{ move.power || '—' }}
+              </span>
+              <span class="move-row__stat move-row__acc text-subtle">
+                <span class="sm:hidden">Acc</span> {{ move.accuracy || '—' }}
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
     }
   </div>
 
@@ -151,7 +141,8 @@
     <p-paginator
       class="list-paginator"
       [rows]="pageSize"
-      [pageLinkSize]="5"
+      [pageLinkSize]="3"
+      [showFirstLastIcon]="false"
       [alwaysShow]="true"
       [totalRecords]="totalRecords()"
       [first]="currentPage() * pageSize"

@@ -21,7 +21,7 @@
           />
         }
         <div class="min-w-0">
-          <h3 class="font-bold capitalize text-content">{{ item.name }}</h3>
+          <h3 class="font-bold capitalize text-content">{{ item.name | nameNormalizer }}</h3>
           @if (item.category) {
             <p class="eyebrow mt-0.5">{{ item.category }}</p>
           }

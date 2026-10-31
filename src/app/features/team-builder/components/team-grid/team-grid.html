@@ -32,7 +32,7 @@
                 displayNameFor(m)
               }}</span>
               <span class="max-w-full truncate text-xs capitalize text-muted">{{
-                m.item ? m.item.name : 'No item'
+                m.item ? (m.item.name | nameNormalizer) : 'No item'
               }}</span>
               <span class="slot__types">
                 @for (t of typesOf(m); track t.id) {

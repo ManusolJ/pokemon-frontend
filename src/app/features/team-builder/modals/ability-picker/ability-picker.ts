@@ -1,3 +1,4 @@
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { AbilityRead } from '@shared/interfaces/pokemon/ability/ability-read.interface';
 import { AbilityEmbed } from '@shared/interfaces/pokemon/ability/ability-embed.interface';
 
@@ -5,7 +6,6 @@ import { AbilityService } from '@core/services/ability.service';
 
 import { Modal } from '@shared/components/modal/modal';
 
-import { TitleCasePipe } from '@angular/common';
 
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -20,7 +20,7 @@ interface AbilityEntry {
 }
 
 @Component({
-  imports: [Modal, TitleCasePipe, SkeletonModule],
+  imports: [Modal, NameNormalizerPipe, SkeletonModule],
   selector: 'app-ability-picker',
   styleUrl: './ability-picker.css',
   templateUrl: './ability-picker.html',

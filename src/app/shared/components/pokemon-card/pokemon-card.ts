@@ -1,3 +1,4 @@
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
@@ -11,7 +12,7 @@ import { RouterLink } from '@angular/router';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 @Component({
-  imports: [TypeBadge, RouterLink],
+  imports: [TypeBadge, RouterLink, NameNormalizerPipe],
   selector: 'app-pokemon-card',
   styleUrl: './pokemon-card.css',
   templateUrl: './pokemon-card.html',

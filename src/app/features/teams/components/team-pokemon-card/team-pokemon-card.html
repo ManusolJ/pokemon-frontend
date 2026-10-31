@@ -19,7 +19,7 @@
     </span>
 
     <div class="flex flex-1 min-w-0 flex-col gap-0.5">
-      <h3 class="font-bold text-content">{{ displayName() | titlecase }}</h3>
+      <h3 class="font-bold text-content">{{ displayName() | nameNormalizer }}</h3>
       <div class="flex flex-wrap gap-1">
         @for (type of types(); track type.id) {
           <app-type-badge [name]="type.name" size="sm" />
@@ -37,20 +37,20 @@
   <dl class="member-card__meta grid grid-cols-2 gap-x-3 gap-y-1.5 py-2 m-0">
     <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
       <dt>Ability</dt>
-      <dd>{{ member().ability?.name ?? '—' | titlecase }}</dd>
+      <dd>{{ member().ability?.name ?? '—' | nameNormalizer }}</dd>
     </div>
     <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
       <dt>Item</dt>
-      <dd>{{ member().heldItem?.name ?? '—' | titlecase }}</dd>
+      <dd>{{ member().heldItem?.name ?? '—' | nameNormalizer }}</dd>
     </div>
     <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
       <dt>Nature</dt>
-      <dd>{{ member().nature?.name ?? '—' | titlecase }}</dd>
+      <dd>{{ member().nature?.name ?? '—' | nameNormalizer }}</dd>
     </div>
     @if (member().teraType) {
       <div class="member-card__meta-row flex flex-col gap-0.5 min-w-0">
         <dt>Tera</dt>
-        <dd>{{ member().teraType?.name ?? '—' | titlecase }}</dd>
+        <dd>{{ member().teraType?.name ?? '—' | nameNormalizer }}</dd>
       </div>
     }
   </dl>
@@ -59,7 +59,7 @@
     @for (slot of moveSlots(); track slot.key) {
       @if (slot.move) {
         <span class="member-card__move is-filled" role="listitem">
-          {{ slot.move.name | titlecase }}
+          {{ slot.move.name | nameNormalizer }}
         </span>
       } @else {
         <span class="member-card__move" role="listitem" aria-label="Empty move slot">—</span>

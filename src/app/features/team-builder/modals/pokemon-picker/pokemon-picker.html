@@ -1,40 +1,39 @@
 <app-modal [open]="open()" title="Add Pokémon" (closed)="closed.emit()">
   <div modal-toolbar class="flex flex-col gap-3">
-    <div class="flex items-center gap-2.5 flex-wrap">
-      <label class="input-icon min-w-48 flex-1">
-        <span class="sr-only">Search</span>
+    <div class="flex items-center gap-2">
+      <label class="input-icon min-w-0 flex-1">
+        <span class="sr-only">Search Pokémon</span>
         <i class="pi pi-search" aria-hidden="true"></i>
         <input
           #nameSearch
-          type="text"
+          type="search"
+          autocomplete="off"
           autofocus
-          placeholder="Search by name…"
+          placeholder="Search Pokémon…"
           class="input"
           [value]="query()"
           (input)="onSearch(nameSearch.value)"
         />
       </label>
-
       <button
         type="button"
         (click)="clearFilters()"
         [disabled]="!hasFilters()"
-        class="btn btn-secondary btn-sm"
+        class="btn btn-ghost btn-sm shrink-0"
       >
         <i class="pi pi-filter-slash text-xs" aria-hidden="true"></i>
-        Clear filters
+        <span class="max-sm:sr-only">Clear filters</span>
       </button>
     </div>
 
-    <div class="flex gap-1.5 flex-wrap">
+    <div class="chip-row" role="group" aria-label="Type">
       @for (type of types(); track type.id) {
         <button
           type="button"
-          (click)="toggleType(type.id)"
+          class="chip chip-sm chip-type"
           [style.--accent]="getTypeColor(type.name)"
-          [class.is-active]="typeId() === type.id"
           [attr.aria-pressed]="typeId() === type.id"
-          class="capitalize px-3 py-2 rounded-md border border-solid border-line font-semibold text-muted text-xs cursor-pointer bg-fill transition-colors hover:text-content hover:border-(--accent)/40"
+          (click)="toggleType(type.id)"
         >
           {{ type.name }}
         </button>
@@ -93,7 +92,8 @@
     <p-paginator
       class="list-paginator"
       [rows]="pageSize"
-      [pageLinkSize]="5"
+      [pageLinkSize]="3"
+      [showFirstLastIcon]="false"
       [alwaysShow]="true"
       [totalRecords]="totalRecords()"
       [first]="currentPage() * pageSize"

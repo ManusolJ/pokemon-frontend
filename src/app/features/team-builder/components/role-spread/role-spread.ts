@@ -1,3 +1,4 @@
+import { displayName } from '@shared/utils/display-name.util';
 import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { RoleKey } from '@shared/interfaces/team-builder/role/role-key.interface';
@@ -21,7 +22,7 @@ export class RoleSpread {
   protected readonly groups = computed<readonly RoleGroup[]>(() => this.bucketByRole());
 
   protected displayName(member: TeamMember): string {
-    return member.nickname || member.name;
+    return member.nickname || displayName(member.name);
   }
 
   protected spriteFor(member: TeamMember): string {

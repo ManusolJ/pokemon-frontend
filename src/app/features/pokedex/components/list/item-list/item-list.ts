@@ -1,3 +1,4 @@
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { urlPage } from '@shared/utils/url-page.util';
 
 import { spriteUrl } from '@shared/utils/sprite-url.util';
@@ -25,7 +26,7 @@ import { catchError, EMPTY, Subject, switchMap, tap } from 'rxjs';
 const PAGE_SIZE = 25;
 
 @Component({
-  imports: [ListShell, FilterSidebar],
+  imports: [ListShell, FilterSidebar, NameNormalizerPipe],
   selector: 'app-item-list',
   styleUrl: './item-list.css',
   templateUrl: './item-list.html',

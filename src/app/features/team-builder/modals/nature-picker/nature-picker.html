@@ -1,61 +1,61 @@
 <app-modal [open]="open()" title="Choose a nature" (closed)="closed.emit()">
   <div modal-toolbar class="flex flex-col gap-3">
-    <div class="flex items-center gap-2.5 flex-wrap">
-      <label class="input-icon min-w-48 flex-1">
-        <span class="sr-only">Search</span>
+    <div class="flex items-center gap-2">
+      <label class="input-icon min-w-0 flex-1">
+        <span class="sr-only">Search natures</span>
         <i class="pi pi-search" aria-hidden="true"></i>
         <input
           #nameSearch
-          type="text"
+          type="search"
+          autocomplete="off"
           autofocus
-          placeholder="Search by nature name…"
+          placeholder="Search natures…"
           class="input"
           [value]="query()"
           (input)="onSearch(nameSearch.value)"
         />
       </label>
-
       <button
         type="button"
         (click)="clearFilters()"
         [disabled]="!hasFilters()"
-        class="btn btn-secondary btn-sm"
+        class="btn btn-ghost btn-sm shrink-0"
       >
         <i class="pi pi-filter-slash text-xs" aria-hidden="true"></i>
-        Clear filters
+        <span class="max-sm:sr-only">Clear filters</span>
       </button>
     </div>
 
-    <div class="flex items-center gap-2.5 flex-wrap">
-      <div class="inline-flex items-center gap-1.5">
-        <span class="eyebrow mr-1"> <i class="pi pi-chevron-up mr-1 text-success"></i>Up </span>
-        @for (option of statOptions; track option.value) {
-          <button
-            type="button"
-            (click)="toggleIncreased(option.value)"
-            [class.is-active]="increasedStat() === option.value"
-            [attr.aria-pressed]="increasedStat() === option.value"
-            class="chip h-7 px-2.5 text-xs"
-          >
-            {{ option.label }}
-          </button>
-        }
-      </div>
+    <div class="chip-row items-center" role="group" aria-label="Raises">
+      <span class="eyebrow mr-1 inline-flex items-center gap-1">
+        <i class="pi pi-chevron-up text-xs text-success" aria-hidden="true"></i>Up
+      </span>
+      @for (option of statOptions; track option.value) {
+        <button
+          type="button"
+          class="chip chip-sm"
+          [attr.aria-pressed]="increasedStat() === option.value"
+          (click)="toggleIncreased(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
 
-      <div class="inline-flex items-center gap-1.5">
-        <span class="eyebrow mr-1"> <i class="pi pi-chevron-down mr-1 text-danger"></i>Down </span>
-        @for (option of statOptions; track option.value) {
-          <button
-            type="button"
-            (click)="toggleDecreased(option.value)"
-            [class.is-active]="decreasedStat() === option.value"
-            [attr.aria-pressed]="decreasedStat() === option.value"
-            class="chip h-7 px-2.5 text-xs"
-          >
-            {{ option.label }}
-          </button>
-        }
-      </div>
+    <div class="chip-row items-center" role="group" aria-label="Lowers">
+      <span class="eyebrow mr-1 inline-flex items-center gap-1">
+        <i class="pi pi-chevron-down text-xs text-danger" aria-hidden="true"></i>Down
+      </span>
+      @for (option of statOptions; track option.value) {
+        <button
+          type="button"
+          class="chip chip-sm"
+          [attr.aria-pressed]="decreasedStat() === option.value"
+          (click)="toggleDecreased(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      }
     </div>
   </div>
 
@@ -89,7 +89,7 @@
             class="nature-row flex flex-col gap-1.5 px-3 py-2.5 rounded-lg bg-raised border border-line text-left text-content cursor-pointer transition-colors"
           >
             <span class="font-semibold text-sm">
-              {{ nature.name | titlecase }}
+              {{ nature.name | nameNormalizer }}
             </span>
             @if (isNeutral(nature)) {
               <span class="text-xs text-muted">Neutral</span>
@@ -114,7 +114,8 @@
     <p-paginator
       class="list-paginator"
       [rows]="pageSize"
-      [pageLinkSize]="5"
+      [pageLinkSize]="3"
+      [showFirstLastIcon]="false"
       [alwaysShow]="totalRecords() > pageSize"
       [totalRecords]="totalRecords()"
       [first]="currentPage() * pageSize"

@@ -50,7 +50,7 @@
             #nickInput
             type="text"
             [value]="member.nickname"
-            [placeholder]="member.species.name | titlecase"
+            [placeholder]="member.species.name | nameNormalizer"
             (input)="onNickname(nickInput.value)"
             [attr.maxlength]="maxNicknameLength"
             class="w-full px-3 py-2 bg-raised border border-solid border-line rounded-lg text-content text-sm font-semibold outline-0 transition-colors focus:border-accent/60"
@@ -108,7 +108,7 @@
           >
             @if (member.ability) {
               <span class="flex-1 text-sm font-semibold truncate">
-                {{ member.ability.name | titlecase }}
+                {{ member.ability.name | nameNormalizer }}
               </span>
             } @else {
               <span class="flex-1 text-sm text-subtle">Pick an ability</span>
@@ -129,7 +129,7 @@
             @if (member.nature) {
               <span class="flex-1 min-w-0 flex items-center gap-2">
                 <span class="text-sm font-semibold truncate">
-                  {{ member.nature.name | titlecase }}
+                  {{ member.nature.name | nameNormalizer }}
                 </span>
                 @if (natureCaption(); as caption) {
                   <span class="text-xs text-muted truncate">{{ caption }}</span>
@@ -161,7 +161,7 @@
                 />
               </span>
               <span class="flex-1 text-sm font-semibold truncate">
-                {{ member.item.name | titlecase }}
+                {{ member.item.name | nameNormalizer }}
               </span>
             } @else {
               <span class="flex-1 text-sm text-subtle">{{ heldItemPlaceholder() }}</span>

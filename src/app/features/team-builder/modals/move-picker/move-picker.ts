@@ -1,3 +1,4 @@
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { MoveRead } from '@shared/interfaces/pokemon/move/move-read.interface';
 
 import { debouncedText } from '@shared/utils/debounced-text.util';
@@ -56,7 +57,7 @@ const CATEGORY_OPTIONS: ReadonlyArray<{ readonly id: MoveCategoryFilter; readonl
   ];
 
 @Component({
-  imports: [Modal, TypeBadge, PaginatorModule, SkeletonModule],
+  imports: [Modal, TypeBadge, NameNormalizerPipe, PaginatorModule, SkeletonModule],
   selector: 'app-move-picker',
   styleUrl: './move-picker.css',
   templateUrl: './move-picker.html',

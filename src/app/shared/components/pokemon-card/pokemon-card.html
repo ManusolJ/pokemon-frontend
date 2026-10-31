@@ -8,7 +8,7 @@
   </span>
 
   <span class="tabular text-xs font-semibold text-subtle">#{{ dex() }}</span>
-  <span class="text-base font-bold capitalize text-content">{{ pokemon().name }}</span>
+  <span class="text-base font-bold capitalize text-content">{{ pokemon().name | nameNormalizer }}</span>
 
   <span class="mt-2 flex flex-wrap gap-1.5">
     @for (t of types(); track t.id) {

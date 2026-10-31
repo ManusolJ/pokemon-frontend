@@ -12,7 +12,7 @@
   <div grid class="nature-grid">
     @for (nature of items(); track nature.id) {
       <article class="card p-5">
-        <h3 class="font-bold capitalize text-content">{{ nature.name }}</h3>
+        <h3 class="font-bold capitalize text-content">{{ nature.name | nameNormalizer }}</h3>
         @if (isNeutral(nature)) {
           <p class="mt-3 text-sm text-muted">Neutral — no stat changes</p>
         } @else {

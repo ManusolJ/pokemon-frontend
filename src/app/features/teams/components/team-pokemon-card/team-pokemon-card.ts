@@ -1,3 +1,4 @@
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { TeamMoveSlot } from '@shared/interfaces/ui/team/team-move-slot.interface';
@@ -9,14 +10,13 @@ import { TypeBadge } from '@shared/components/type-badge/type-badge';
 
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
-import { TitleCasePipe } from '@angular/common';
 
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 const MOVE_SLOT_COUNT = 4;
 
 @Component({
-  imports: [TypeBadge, TitleCasePipe],
+  imports: [TypeBadge, NameNormalizerPipe],
   selector: 'app-team-pokemon-card',
   styleUrl: './team-pokemon-card.css',
   templateUrl: './team-pokemon-card.html',

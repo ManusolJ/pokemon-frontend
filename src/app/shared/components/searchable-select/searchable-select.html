@@ -94,7 +94,7 @@
             [class.is-active]="i === activeIndex()"
             [class.is-selected]="opt.value === value()"
             (mousemove)="activeIndex.set(i)"
-            (click)="pick(opt)"
+            (mousedown)="$event.preventDefault(); pick(opt)"
           >
             @if (opt.color) {
               <span

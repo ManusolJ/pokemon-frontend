@@ -1,3 +1,5 @@
+import { displayName } from '@shared/utils/display-name.util';
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
@@ -10,7 +12,7 @@ import { getTypeColor } from '@shared/utils/get-type-color.util';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 @Component({
-  imports: [TypeBadge],
+  imports: [TypeBadge, NameNormalizerPipe],
   selector: 'app-team-grid',
   styleUrl: './team-grid.css',
   templateUrl: './team-grid.html',
@@ -35,7 +37,7 @@ export class TeamGrid {
   }
 
   protected displayNameFor(member: TeamMember): string {
-    return member.nickname || member.name;
+    return member.nickname || displayName(member.name);
   }
 
   protected spriteFor(member: TeamMember): string {

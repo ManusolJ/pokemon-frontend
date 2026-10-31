@@ -27,7 +27,7 @@
         >
           <span class="flex items-center gap-2">
             <span class="font-semibold text-sm">
-              {{ entry.read.name | titlecase }}
+              {{ entry.read.name | nameNormalizer }}
             </span>
             @if (entry.isHidden) {
               <span

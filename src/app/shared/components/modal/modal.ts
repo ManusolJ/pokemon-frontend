@@ -2,6 +2,7 @@ import {
   input,
   output,
   effect,
+  afterNextRender,
   viewChild,
   Component,
   ElementRef,
@@ -45,6 +46,10 @@ export class Modal {
         this.opener = null;
       }
     });
+
+    afterNextRender(() => {
+      this.dialog().nativeElement.addEventListener('click', (event) => this.onBackdropClick(event));
+    });
   }
 
   protected onCancel(event: Event): void {
@@ -54,7 +59,7 @@ export class Modal {
     }
   }
 
-  protected onDialogClick(event: MouseEvent): void {
+  private onBackdropClick(event: MouseEvent): void {
     if (event.target === event.currentTarget && this.dismissable()) {
       this.closed.emit();
     }

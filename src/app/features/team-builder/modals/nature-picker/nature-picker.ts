@@ -1,3 +1,4 @@
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { NatureRead } from '@shared/interfaces/pokemon/nature/nature-read.interface';
 
 import { debouncedText } from '@shared/utils/debounced-text.util';
@@ -7,7 +8,6 @@ import { NatureService } from '@core/services/nature.service';
 
 import { Modal } from '@shared/components/modal/modal';
 
-import { TitleCasePipe } from '@angular/common';
 
 import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -45,7 +45,7 @@ const STAT_LABEL_BY_KEY: Readonly<Record<string, string>> = {
 };
 
 @Component({
-  imports: [Modal, TitleCasePipe, PaginatorModule, SkeletonModule],
+  imports: [Modal, NameNormalizerPipe, PaginatorModule, SkeletonModule],
   selector: 'app-nature-picker',
   styleUrl: './nature-picker.css',
   templateUrl: './nature-picker.html',

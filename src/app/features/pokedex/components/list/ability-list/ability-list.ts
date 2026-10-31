@@ -1,3 +1,4 @@
+import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { urlPage } from '@shared/utils/url-page.util';
 
 import { FilterField, FilterValue } from '@shared/interfaces/ui/filter/filter-field.interface';
@@ -23,7 +24,7 @@ import { catchError, EMPTY, Subject, switchMap, tap } from 'rxjs';
 const PAGE_SIZE = 30;
 
 @Component({
-  imports: [ListShell, FilterSidebar],
+  imports: [ListShell, FilterSidebar, NameNormalizerPipe],
   selector: 'app-ability-list',
   styleUrl: './ability-list.css',
   templateUrl: './ability-list.html',

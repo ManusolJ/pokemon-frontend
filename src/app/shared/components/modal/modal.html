@@ -4,7 +4,6 @@
   [class.modal--sm]="size() === 'sm'"
   [attr.aria-labelledby]="titleId"
   (cancel)="onCancel($event)"
-  (click)="onDialogClick($event)"
 >
   @if (open()) {
     <div class="flex max-h-[inherit] flex-col">
