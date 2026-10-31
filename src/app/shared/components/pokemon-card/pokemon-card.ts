@@ -21,10 +21,8 @@ export class PokemonCard {
   readonly selected = output<number>();
 
   protected readonly types = computed<TypeRead[]>(() => {
-    if (this.pokemon()) {
-      Array.of(this.pokemon().primaryType, this.pokemon().secondaryType ?? null);
-    }
-    return [];
+    const { primaryType, secondaryType } = this.pokemon();
+    return secondaryType ? [primaryType, secondaryType] : [primaryType];
   });
 
   readonly spriteUrl = computed(() => {
@@ -32,13 +30,9 @@ export class PokemonCard {
     return spriteUrl(sprite) || null;
   });
 
-  protected readonly accent = computed(() => {
-    let type;
-    if (this.pokemon()) {
-      type = this.pokemon().primaryType.name.toLocaleLowerCase();
-    }
-    return getTypeColor(type);
-  });
+  protected readonly accent = computed(() =>
+    getTypeColor(this.pokemon().primaryType.name.toLocaleLowerCase()),
+  );
 
   protected readonly dex = computed(() =>
     String(this.pokemon().nationalDexNumber).padStart(4, '0'),

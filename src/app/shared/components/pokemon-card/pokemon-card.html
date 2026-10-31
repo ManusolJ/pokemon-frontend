@@ -1,25 +1,21 @@
 <button
   type="button"
   (click)="selected.emit(pokemon().id)"
-  [style.--accent]="accent()"
-  class="poke-card group"
+  [style.--type-color]="accent()"
+  class="card card-interactive poke-card"
 >
-  <span class="poke-card__accent"></span>
-
-  <span class="poke-card__num">{{ pokemon().nationalDexNumber }}</span>
-
   <span class="poke-card__art">
-    @if (pokemon().spriteDefault) {
-      <img [src]="spriteUrl()" [alt]="pokemon().name" loading="lazy" />
+    @if (spriteUrl(); as src) {
+      <img [src]="src" alt="" loading="lazy" />
     } @else {
-      <span class="poke-card__placeholder">?</span>
+      <span class="text-2xl font-bold text-subtle" aria-hidden="true">?</span>
     }
   </span>
 
-  <span class="poke-card__dex">º{{ dex() }}</span>
-  <span class="poke-card__name">{{ pokemon().name }}</span>
+  <span class="tabular text-xs font-semibold text-subtle">#{{ dex() }}</span>
+  <span class="text-base font-bold capitalize text-content">{{ pokemon().name }}</span>
 
-  <span class="mt-2.5 flex flex-wrap gap-1.5">
+  <span class="mt-2 flex flex-wrap gap-1.5">
     @for (t of types(); track t.id) {
       <app-type-badge [name]="t.name" size="sm" />
     }
