@@ -1,9 +1,9 @@
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { Pager } from '@shared/components/pager/pager';
 
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 
 @Component({
-  imports: [PaginatorModule],
+  imports: [Pager],
   selector: 'app-list-shell',
   styleUrl: './list-shell.css',
   templateUrl: './list-shell.html',
@@ -20,8 +20,6 @@ export class ListShell {
 
   readonly page = input.required<number>();
 
-  readonly pageChange = output<number>();
-
   protected readonly sidebarOpen = signal(false);
 
   protected readonly skeletons = computed<readonly void[]>(() =>
@@ -30,13 +28,7 @@ export class ListShell {
 
   protected readonly isEmpty = computed(() => !this.loading() && this.total() === 0);
 
-  protected readonly firstRecordIndex = computed(() => this.page() * this.pageSize());
-
   protected toggleSidebar(): void {
     this.sidebarOpen.update((v) => !v);
-  }
-
-  protected onPageChange(event: PaginatorState): void {
-    this.pageChange.emit(event.page ?? 0);
   }
 }

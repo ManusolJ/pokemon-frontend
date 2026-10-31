@@ -1,3 +1,5 @@
+import { urlPage } from '@shared/utils/url-page.util';
+
 import { TeamSortOption } from '@shared/interfaces/ui/team/team-sort-option.interface';
 import { TeamLikeToggleEvent } from '@shared/interfaces/ui/team/team-like-toggle-event.interface';
 
@@ -54,8 +56,9 @@ export class PublicTeamList {
   protected readonly sorts = SORT_OPTIONS;
 
   protected readonly total = signal(0);
-  protected readonly page = signal(0);
-  private readonly searchText = debouncedText(() => this.page.set(0));
+  private readonly pager = urlPage();
+  protected readonly page = this.pager.page;
+  private readonly searchText = debouncedText(() => this.pager.set(0));
   protected readonly query = this.searchText.live;
   private readonly debouncedQuery = this.searchText.settled;
   private readonly pendingLikeIds = signal<ReadonlySet<number>>(new Set());
@@ -97,16 +100,12 @@ export class PublicTeamList {
     this.searchText.set(value);
   }
 
-  protected onPageChange(pageIndex: number): void {
-    this.page.set(pageIndex);
-  }
-
   protected setSort(id: string): void {
     if (this.sortId() === id) {
       return;
     }
     this.sortId.set(id);
-    this.page.set(0);
+    this.pager.set(0);
   }
 
   protected isLikePending(id: number): boolean {

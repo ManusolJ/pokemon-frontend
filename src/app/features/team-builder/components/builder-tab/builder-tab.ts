@@ -1,5 +1,6 @@
 import { TEAMS_MY_PATH } from '@shared/constants/teams.constants';
 import { describeHttpError } from '@shared/utils/http-error.util';
+import { displayName as toDisplayName } from '@shared/utils/display-name.util';
 
 import { LEVEL_MAX } from '@shared/constants/stat.constants';
 import { MAX_TEAM_NAME_LENGTH } from '@shared/constants/teams.constants';
@@ -381,8 +382,5 @@ export class BuilderTab {
 }
 
 function displayName(member: TeamMember): string {
-  return (
-    member.nickname ||
-    member.name.replace(/-/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())
-  );
+  return member.nickname || toDisplayName(member.name);
 }

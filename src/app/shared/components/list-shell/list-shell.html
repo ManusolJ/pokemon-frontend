@@ -79,15 +79,12 @@
     </div>
 
     @if (!isEmpty() && total() > pageSize()) {
-      <p-paginator
-        class="list-paginator border-t border-line"
-        [rows]="pageSize()"
-        [pageLinkSize]="5"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="{first}–{last} of {totalRecords}"
-        [totalRecords]="total()"
-        [first]="firstRecordIndex()"
-        (onPageChange)="onPageChange($event)"
+      <app-pager
+        class="border-t border-line"
+        [page]="page()"
+        [pageSize]="pageSize()"
+        [total]="total()"
+        [totalPages]="totalPages()"
       />
     }
   </section>

@@ -6,22 +6,20 @@
   [page]="page()"
   [pageSize]="pageSize"
   [totalPages]="totalPages()"
-  (pageChange)="onPageChange($event)"
 >
   <app-filter-sidebar sidebar [fields]="fields()" (filterChange)="onFilterChange($event)" />
 
   <div grid class="move-grid">
     @for (move of items(); track move.id) {
-      <button
-        type="button"
-        (click)="onSelect(move.id)"
-        class="card card-interactive flex h-16 w-full cursor-pointer items-center justify-between gap-3 px-4 text-left"
+      <a
+        [routerLink]="['/pokedex/moves', move.id]"
+        class="card card-interactive flex h-16 w-full items-center justify-between gap-3 px-4"
       >
         <span class="min-w-0 truncate font-semibold text-content">
           {{ move.name | nameNormalizer | titlecase }}
         </span>
         <app-type-badge [name]="move.type.name" size="sm" />
-      </button>
+      </a>
     }
   </div>
 </app-list-shell>

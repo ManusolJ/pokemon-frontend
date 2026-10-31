@@ -1,9 +1,4 @@
-<button
-  type="button"
-  (click)="selected.emit(pokemon().id)"
-  [style.--type-color]="accent()"
-  class="card card-interactive poke-card"
->
+<a [routerLink]="link()" [style.--type-color]="accent()" class="card card-interactive poke-card">
   <span class="poke-card__art">
     @if (spriteUrl(); as src) {
       <img [src]="src" alt="" loading="lazy" />
@@ -20,4 +15,4 @@
       <app-type-badge [name]="t.name" size="sm" />
     }
   </span>
-</button>
+</a>

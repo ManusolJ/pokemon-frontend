@@ -1,3 +1,5 @@
+import { urlPage } from '@shared/utils/url-page.util';
+
 import {
   FilterField,
   FilterValue,
@@ -24,7 +26,6 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, catchError, switchMap, tap } from 'rxjs';
 
@@ -52,12 +53,12 @@ const GENERATIONS: FilterOption[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokemonList implements OnInit {
-  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly typeService = inject(TypeService);
   private readonly speciesService = inject(SpeciesService);
 
-  protected readonly page = signal(0);
+  private readonly pager = urlPage(() => this.load());
+  protected readonly page = this.pager.page;
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
   protected readonly loading = signal(false);
@@ -201,7 +202,7 @@ export class PokemonList implements OnInit {
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
     this.filter = this.toBackendUnits(applied as PokemonFilter);
-    this.page.set(0);
+    this.pager.set(0);
     this.load();
   }
 
@@ -222,22 +223,13 @@ export class PokemonList implements OnInit {
     return out;
   }
 
-  protected onPageChange(pageIndex: number): void {
-    this.page.set(pageIndex);
-    this.load();
-  }
-
   protected setSort(field: SpeciesSortField): void {
     if (this.sort() === field) {
       return;
     }
     this.sort.set(field);
-    this.page.set(0);
+    this.pager.set(0);
     this.load();
-  }
-
-  protected onSelect(id: number): void {
-    this.router.navigate([`pokedex/pokemon/${id}`]);
   }
 
   private load(): void {

@@ -6,7 +6,6 @@
   [pageSize]="pageSize"
   [loading]="loading()"
   [totalPages]="totalPages()"
-  (pageChange)="onPageChange($event)"
 >
   <app-filter-sidebar sidebar [fields]="fields" (filterChange)="onFilterChange($event)" />
 

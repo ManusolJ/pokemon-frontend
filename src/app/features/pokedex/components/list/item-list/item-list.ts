@@ -1,3 +1,5 @@
+import { urlPage } from '@shared/utils/url-page.util';
+
 import { spriteUrl } from '@shared/utils/sprite-url.util';
 
 import { ItemRead } from '@shared/interfaces/pokemon/item/item-read.interface';
@@ -33,7 +35,8 @@ export class ItemList implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly itemService = inject(ItemService);
 
-  protected readonly page = signal(0);
+  private readonly pager = urlPage(() => this.load());
+  protected readonly page = this.pager.page;
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
   protected readonly loading = signal(false);
@@ -60,14 +63,10 @@ export class ItemList implements OnInit {
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
     this.filter = applied as ItemFilter;
-    this.page.set(0);
+    this.pager.set(0);
     this.load();
   }
 
-  protected onPageChange(pageIndex: number): void {
-    this.page.set(pageIndex);
-    this.load();
-  }
 
   private load(): void {
     this.reload.next();

@@ -1,3 +1,5 @@
+import { urlPage } from '@shared/utils/url-page.util';
+
 import { FilterField, FilterValue } from '@shared/interfaces/ui/filter/filter-field.interface';
 import { AbilityRead } from '@shared/interfaces/pokemon/ability/ability-read.interface';
 import { AbilityFilter } from '@shared/interfaces/pokemon/ability/ability-filter.interface';
@@ -31,7 +33,8 @@ export class AbilityList implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly abilityService = inject(AbilityService);
 
-  protected readonly page = signal(0);
+  private readonly pager = urlPage(() => this.load());
+  protected readonly page = this.pager.page;
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
   protected readonly loading = signal(false);
@@ -54,12 +57,7 @@ export class AbilityList implements OnInit {
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
     this.filter = applied as AbilityFilter;
-    this.page.set(0);
-    this.load();
-  }
-
-  protected onPageChange(pageIndex: number): void {
-    this.page.set(pageIndex);
+    this.pager.set(0);
     this.load();
   }
 

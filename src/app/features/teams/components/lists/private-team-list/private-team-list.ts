@@ -1,3 +1,5 @@
+import { urlPage } from '@shared/utils/url-page.util';
+
 import { COPIED_FEEDBACK_MS, TEAM_BUILDER_PATH } from '@shared/constants/teams.constants';
 
 import { TeamSummary } from '@shared/interfaces/pokemon/team/team-summary.interface';
@@ -81,8 +83,9 @@ export class PrivateTeamList {
   protected readonly tabs = VISIBILITY_TABS;
 
   protected readonly total = signal(0);
-  protected readonly page = signal(0);
-  private readonly searchText = debouncedText(() => this.page.set(0));
+  private readonly pager = urlPage();
+  protected readonly page = this.pager.page;
+  private readonly searchText = debouncedText(() => this.pager.set(0));
   protected readonly searchInput = this.searchText.live;
   private readonly debouncedQuery = this.searchText.settled;
 
@@ -137,16 +140,13 @@ export class PrivateTeamList {
     this.searchText.set(value);
   }
 
-  protected onPageChange(pageIndex: number): void {
-    this.page.set(pageIndex);
-  }
 
   protected setTab(id: VisibilityTabId): void {
     if (this.activeTab() === id) {
       return;
     }
     this.activeTab.set(id);
-    this.page.set(0);
+    this.pager.set(0);
   }
 
   protected setSort(id: string): void {
@@ -154,7 +154,7 @@ export class PrivateTeamList {
       return;
     }
     this.sortId.set(id);
-    this.page.set(0);
+    this.pager.set(0);
   }
 
   protected onAction(event: PrivateTeamCardActionEvent): void {

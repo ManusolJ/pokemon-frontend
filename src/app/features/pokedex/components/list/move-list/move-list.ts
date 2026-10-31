@@ -1,3 +1,5 @@
+import { urlPage } from '@shared/utils/url-page.util';
+
 import {
   FilterField,
   FilterValue,
@@ -18,6 +20,7 @@ import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
 import { TitleCasePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {
   OnInit,
   inject,
@@ -27,7 +30,6 @@ import {
   DestroyRef,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, Subject, switchMap, tap } from 'rxjs';
 
@@ -41,18 +43,18 @@ const CATEGORIES: FilterOption[] = [
 
 @Component({
   selector: 'app-move-list',
-  imports: [ListShell, FilterSidebar, TypeBadge, NameNormalizerPipe, TitleCasePipe],
+  imports: [ListShell, FilterSidebar, TypeBadge, NameNormalizerPipe, TitleCasePipe, RouterLink],
   templateUrl: './move-list.html',
   styleUrl: './move-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MoveList implements OnInit {
-  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly moveService = inject(MoveService);
   private readonly typeService = inject(TypeService);
 
-  protected readonly page = signal(0);
+  private readonly pager = urlPage(() => this.load());
+  protected readonly page = this.pager.page;
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
   protected readonly loading = signal(false);
@@ -94,17 +96,8 @@ export class MoveList implements OnInit {
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
     this.filter = applied as MoveFilter;
-    this.page.set(0);
+    this.pager.set(0);
     this.load();
-  }
-
-  protected onPageChange(pageIndex: number): void {
-    this.page.set(pageIndex);
-    this.load();
-  }
-
-  protected onSelect(id: number): void {
-    this.router.navigate([`pokedex/moves/${id}`]);
   }
 
   private load(): void {

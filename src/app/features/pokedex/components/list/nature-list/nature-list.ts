@@ -1,3 +1,5 @@
+import { urlPage } from '@shared/utils/url-page.util';
+
 import {
   FilterField,
   FilterValue,
@@ -47,7 +49,8 @@ export class NatureList implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly natureService = inject(NatureService);
 
-  protected readonly page = signal(0);
+  private readonly pager = urlPage(() => this.load());
+  protected readonly page = this.pager.page;
   protected readonly total = signal(0);
   protected readonly totalPages = signal(0);
   protected readonly loading = signal(false);
@@ -84,12 +87,7 @@ export class NatureList implements OnInit {
 
   protected onFilterChange(applied: Record<string, FilterValue>): void {
     this.filter = applied as NatureFilter;
-    this.page.set(0);
-    this.load();
-  }
-
-  protected onPageChange(pageIndex: number): void {
-    this.page.set(pageIndex);
+    this.pager.set(0);
     this.load();
   }
 

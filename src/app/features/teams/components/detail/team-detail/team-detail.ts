@@ -19,6 +19,9 @@ import { TypeBadge } from '@shared/components/type-badge/type-badge';
 import { copyToClipboard, shareLinkUrl } from '@shared/utils/share.util';
 import { describeHttpError } from '@shared/utils/http-error.util';
 import { formatRelativeDate } from '@shared/utils/format-date.util';
+import { displayName } from '@shared/utils/display-name.util';
+
+import { SeoService } from '@core/seo/seo.service';
 import {
   NEUTRAL_ACCENT,
   TEAM_SLOT_COUNT,
@@ -38,6 +41,7 @@ import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import {
+  effect,
   inject,
   signal,
   computed,
@@ -74,6 +78,7 @@ export class TeamDetail {
   private readonly likeService = inject(TeamLikeService);
   private readonly builderState = inject(TeamBuilderStateService);
   private readonly hydrationService = inject(TeamHydrationService);
+  private readonly seo = inject(SeoService);
 
   protected readonly mode: TeamDetailMode = this.route.snapshot.data['mode'] ?? 'public';
   protected readonly slotCount = TEAM_SLOT_COUNT;
@@ -135,6 +140,17 @@ export class TeamDetail {
 
   constructor() {
     this.destroyRef.onDestroy(() => clearTimeout(this.shareFeedbackTimer));
+
+    effect(() => {
+      if (this.error()) {
+        this.seo.setNoindex(true);
+        return;
+      }
+      const team = this.team();
+      if (team) {
+        this.seo.setPage(team.name, describeTeam(team));
+      }
+    });
   }
 
   protected openInBuilder(): void {
@@ -262,4 +278,16 @@ export class TeamDetail {
     clearTimeout(this.shareFeedbackTimer);
     this.shareFeedbackTimer = setTimeout(() => this.shareCopied.set(false), COPIED_FEEDBACK_MS);
   }
+}
+
+function describeTeam(team: TeamRead): string {
+  const names = [...team.pokemon]
+    .sort((a, b) => a.slot - b.slot)
+    .map((member) => member.nickname || displayName(member.pokemon.name));
+  const roster =
+    names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names[0];
+
+  return roster
+    ? `A Pokémon team by ${team.owner.username}: ${roster}. Open it in the team builder to see sets and type coverage.`
+    : `An empty Pokémon team by ${team.owner.username}.`;
 }

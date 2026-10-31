@@ -19,6 +19,9 @@ import { TypeBadge } from '@shared/components/type-badge/type-badge';
 import { NameNormalizerPipe } from '@shared/pipes/name-normalizer.pipe';
 
 import { getTypeColor } from '@shared/utils/get-type-color.util';
+import { displayName } from '@shared/utils/display-name.util';
+
+import { SeoService } from '@core/seo/seo.service';
 
 import {
   effect,
@@ -81,6 +84,7 @@ export class PokemonDetail {
   private readonly pokemonService = inject(PokemonService);
   private readonly speciesService = inject(SpeciesService);
   private readonly abilityService = inject(AbilityService);
+  private readonly seo = inject(SeoService);
 
   private readonly pokemonId = toSignal(
     this.route.paramMap.pipe(map((params) => Number(params.get('id')))),
@@ -284,6 +288,20 @@ export class PokemonDetail {
       this.shiny.set(false);
       this.activeMethods.set(new Set(ALL_MOVE_METHODS));
     });
+
+    effect(() => {
+      if (this.error()) {
+        this.seo.setNoindex(true);
+        return;
+      }
+      const pokemon = this.pokemon();
+      if (pokemon) {
+        this.seo.setPage(
+          `${displayName(pokemon.name)}: base stats, abilities and moves`,
+          describePokemon(pokemon),
+        );
+      }
+    });
   }
 
   protected toggleMoveMethod(key: MoveGroupKey): void {
@@ -335,4 +353,26 @@ export class PokemonDetail {
   protected getImgUrl(url: string): string {
     return spriteUrl(url);
   }
+}
+
+function describePokemon(pokemon: PokemonRead): string {
+  const types = [pokemon.primaryType, pokemon.secondaryType]
+    .filter((type): type is TypeRead => type !== null)
+    .map((type) => displayName(type.name))
+    .join('/');
+  const stats = [
+    pokemon.baseHp,
+    pokemon.baseAtk,
+    pokemon.baseDef,
+    pokemon.baseSpAtk,
+    pokemon.baseSpDef,
+    pokemon.baseSpeed,
+  ];
+  const total = stats.reduce((sum, stat) => sum + stat, 0);
+  const abilities = [...pokemon.abilities]
+    .sort((a, b) => a.slot - b.slot)
+    .map(({ ability, isHidden }) => displayName(ability.name) + (isHidden ? ' (hidden)' : ''))
+    .join(', ');
+
+  return `${displayName(pokemon.name)}: ${types} type. Base stats ${stats.join('/')} (${total} total). Abilities: ${abilities}. Every move it learns, by level, TM and tutor.`;
 }

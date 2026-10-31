@@ -7,10 +7,11 @@ import { TypeBadge } from '@shared/components/type-badge/type-badge';
 
 import { getTypeColor } from '@shared/utils/get-type-color.util';
 
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 @Component({
-  imports: [TypeBadge],
+  imports: [TypeBadge, RouterLink],
   selector: 'app-pokemon-card',
   styleUrl: './pokemon-card.css',
   templateUrl: './pokemon-card.html',
@@ -18,7 +19,8 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 })
 export class PokemonCard {
   readonly pokemon = input.required<SpeciesSummary>();
-  readonly selected = output<number>();
+
+  protected readonly link = computed(() => ['/pokedex/pokemon', this.pokemon().id]);
 
   protected readonly types = computed<TypeRead[]>(() => {
     const { primaryType, secondaryType } = this.pokemon();
