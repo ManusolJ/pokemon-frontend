@@ -1,136 +1,133 @@
-<div
-  class="flex flex-col gap-3 px-3 sm:px-4 py-3 sm:py-4 lg:h-full lg:overflow-hidden overflow-y-auto"
->
-  <div
-    class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-3 sm:px-3.5 py-3 sm:py-4 bg-brand-surface border border-solid border-brand-line rounded-2xl"
-  >
-    <label
-      class="flex flex-1 items-center gap-2.5 px-2.5 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg transition-colors duration-100"
-    >
-      <i class="pi pi-pencil inline-flex text-brand-dim"></i>
+<div class="page flex flex-col gap-3 overflow-y-auto py-4 lg:h-full lg:overflow-hidden lg:py-3">
+  <div class="card flex flex-col gap-3 p-3 sm:flex-row sm:items-center">
+    <label class="input-icon flex-1">
+      <span class="sr-only">Team name</span>
+      <i class="pi pi-pencil" aria-hidden="true"></i>
       <input
         #teamNameInput
         type="text"
-        [value]="state.teamName()"
+        class="input font-semibold"
         placeholder="Untitled team"
+        [value]="state.teamName()"
         (input)="state.setTeamName(teamNameInput.value)"
-        class="flex-1 bg-transparent border-none outline-none text-brand-text text-sm font-semibold tracking-tight"
         [attr.maxlength]="maxTeamNameLength"
-        aria-label="Team name"
       />
     </label>
 
-    <div class="flex flex-wrap shrink-0 gap-2 sm:gap-3">
-      <button
-        type="button"
-        (click)="state.togglePrivate()"
-        [class.text-brand-text]="state.isPrivate()"
-        class="meta__btn inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
-        [attr.aria-pressed]="state.isPrivate()"
-      >
-        @if (state.isPrivate()) {
-          <span class="flex items-center gap-2 text-sm"><i class="pi pi-lock"></i>Private</span>
-        } @else {
-          <span class="flex items-center gap-2 text-sm"><i class="pi pi-lock-open"></i>Public</span>
-        }
-      </button>
+    <div class="flex shrink-0 flex-wrap items-center gap-2">
+      @if (isAuthenticated() && saveBlocker(); as blocker) {
+        <p
+          id="save-blocker"
+          class="flex items-center gap-1.5 text-xs text-muted"
+          aria-live="polite"
+        >
+          <i class="pi pi-info-circle text-xs" aria-hidden="true"></i>{{ blocker }}
+        </p>
+      }
+
+      <div class="segmented" role="group" aria-label="Visibility">
+        <button
+          type="button"
+          class="segmented-item"
+          [attr.aria-pressed]="state.isPrivate()"
+          (click)="setPrivate(true)"
+        >
+          <i class="pi pi-lock text-xs" aria-hidden="true"></i> Private
+        </button>
+        <button
+          type="button"
+          class="segmented-item"
+          [attr.aria-pressed]="!state.isPrivate()"
+          (click)="setPrivate(false)"
+        >
+          <i class="pi pi-globe text-xs" aria-hidden="true"></i> Public
+        </button>
+      </div>
 
       <button
         type="button"
+        class="btn btn-ghost"
         (click)="resetAll()"
         [disabled]="!state.isDirty()"
-        [class.text-brand-text]="state.isDirty()"
-        class="meta__btn inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
       >
-        <span class="flex items-center gap-2 text-sm"><i class="pi pi-history"></i>Reset</span>
+        <i class="pi pi-refresh text-xs" aria-hidden="true"></i>
+        {{ state.sourceTeamId() === null ? 'Reset' : 'New team' }}
       </button>
 
       @if (isAuthenticated()) {
         <button
           type="button"
+          class="btn btn-primary"
           (click)="save()"
           [disabled]="!canSave()"
-          class="meta__btn meta__btn--primary inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
+          [attr.aria-busy]="saving()"
+          [attr.aria-describedby]="saveBlocker() ? 'save-blocker' : null"
         >
-          <span class="flex items-center gap-2 text-sm">
-            <i class="pi pi-save"></i>
-            @if (saving()) {
-              Saving…
-            } @else {
-              Save Team
-            }
-          </span>
+          @if (saving()) {
+            <i class="pi pi-spin pi-spinner" aria-hidden="true"></i> Saving…
+          } @else {
+            <i class="pi pi-save text-xs" aria-hidden="true"></i>
+            {{ state.sourceTeamId() === null ? 'Save team' : 'Save changes' }}
+          }
         </button>
       } @else {
         <a
           routerLink="/auth/login"
-          class="meta__btn meta__btn--primary inline-flex items-center gap-3 px-3 py-3 rounded-lg text-xs font-bold text-brand-muted bg-brand-raised border border-solid border-brand-line cursor-pointer"
+          [queryParams]="{ redirectTo: '/team-builder' }"
+          class="btn btn-primary"
         >
-          <span class="flex items-center gap-2 text-sm">
-            <i class="pi pi-sign-in"></i>Log in to save
-          </span>
+          <i class="pi pi-sign-in text-xs" aria-hidden="true"></i> Log in to save
         </a>
       }
     </div>
   </div>
 
-  @if (optionsError()) {
-    <div
-      class="flex items-center gap-2 px-3.5 py-2.5 bg-brand-wine/20 border border-brand-crimson/40 rounded-lg text-sm text-brand-text"
-      role="status"
-    >
-      <i class="pi pi-exclamation-triangle text-brand-red"></i>
-      Couldn't load the tera-type list. You can still build, but tera-type options may be
-      incomplete.
-    </div>
-  }
-
-  @if (isAuthenticated() && saveBlocker(); as blocker) {
-    <div
-      class="flex items-center gap-2 px-3.5 py-2.5 bg-brand-raised border border-solid border-brand-line rounded-lg text-sm text-brand-muted"
-      role="status"
-    >
-      <i class="pi pi-info-circle"></i>
-      {{ blocker }}
-    </div>
-  }
-
-  @if (saveError(); as message) {
-    <div
-      class="flex items-center gap-2 px-3.5 py-2.5 bg-brand-wine/20 border border-brand-crimson/40 rounded-lg text-sm text-brand-text"
-      role="alert"
-    >
-      <i class="pi pi-times-circle text-brand-red"></i>
-      {{ message }}
-    </div>
-  }
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:flex-1 lg:min-h-0">
-    <div class="flex flex-col gap-3 lg:min-h-0">
-      <section
-        class="flex flex-col gap-3 lg:flex-1 lg:min-h-0 lg:overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
-      >
-        <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
-          Selected Pokemon
+  <div aria-live="polite" class="flex flex-col gap-2 empty:hidden">
+    @if (savedTeamId(); as teamId) {
+      <p class="alert alert-success">
+        <i class="pi pi-check-circle" aria-hidden="true"></i>
+        <span>
+          Team saved.
+          <a [routerLink]="[teamsMyPath, teamId]" class="link">View team</a>
         </span>
-        <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
-          <app-selected-pokemon
-            [types]="types()"
-            [member]="state.activeMember()"
-            (memberChange)="state.updateActiveMember($event)"
-            (openMovePicker)="onOpenMovePicker($event)"
-            (openItemPicker)="onOpenItemPicker()"
-            (openNaturePicker)="onOpenNaturePicker()"
-            (openAbilityPicker)="onOpenAbilityPicker()"
-          />
-        </div>
-      </section>
-    </div>
+      </p>
+    }
 
-    <div class="flex flex-col gap-3 lg:min-h-0">
-      <section
-        class="flex flex-col gap-3 shrink-0 bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
-      >
+    @if (saveError(); as message) {
+      <p class="alert alert-danger" role="alert">
+        <i class="pi pi-times-circle" aria-hidden="true"></i>{{ message }}
+      </p>
+    }
+
+    @if (optionsError()) {
+      <p class="alert alert-warning">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        Couldn't load the Tera type list. You can keep building, but Tera options may be incomplete.
+      </p>
+    }
+  </div>
+
+  <div class="grid grid-cols-1 gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-2">
+    <section
+      class="card flex flex-col gap-3 px-4 py-3 lg:min-h-0 lg:overflow-hidden"
+      aria-labelledby="selected-heading"
+    >
+      <h2 id="selected-heading" class="eyebrow shrink-0">Selected Pokémon</h2>
+      <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
+        <app-selected-pokemon
+          [types]="types()"
+          [member]="state.activeMember()"
+          (memberChange)="state.updateActiveMember($event)"
+          (openMovePicker)="onOpenMovePicker($event)"
+          (openItemPicker)="onOpenItemPicker()"
+          (openNaturePicker)="onOpenNaturePicker()"
+          (openAbilityPicker)="onOpenAbilityPicker()"
+        />
+      </div>
+    </section>
+
+    <div class="flex flex-col gap-3 lg:min-h-0 lg:overflow-y-auto">
+      <section class="card flex flex-col px-4 py-3 lg:flex-1">
         <app-team-grid
           [members]="state.members()"
           [activeIndex]="state.activeIndex()"
@@ -139,18 +136,12 @@
           (slotRemove)="state.removeMember($event)"
         />
       </section>
-      <section
-        class="flex flex-col gap-3 lg:flex-1 lg:min-h-0 lg:overflow-hidden bg-brand-surface border border-solid border-brand-line rounded-2xl py-3 px-4"
-      >
-        <span class="text-xs font-bold tracking-tight uppercase text-brand-dim shrink-0">
-          Stat spread
-        </span>
-        <div class="flex-1 lg:min-h-0 lg:overflow-y-auto">
-          <app-stat-spread
-            [member]="state.activeMember()"
-            (memberChange)="state.updateActiveMember($event)"
-          />
-        </div>
+      <section class="card flex shrink-0 flex-col gap-3 px-4 py-3" aria-labelledby="spread-heading">
+        <h2 id="spread-heading" class="eyebrow">Stat spread</h2>
+        <app-stat-spread
+          [member]="state.activeMember()"
+          (memberChange)="state.updateActiveMember($event)"
+        />
       </section>
     </div>
   </div>

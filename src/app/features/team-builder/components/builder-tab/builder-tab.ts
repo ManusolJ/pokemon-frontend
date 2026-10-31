@@ -1,3 +1,6 @@
+import { TEAMS_MY_PATH } from '@shared/constants/teams.constants';
+import { describeHttpError } from '@shared/utils/http-error.util';
+
 import { LEVEL_MAX } from '@shared/constants/stat.constants';
 import { MAX_TEAM_NAME_LENGTH } from '@shared/constants/teams.constants';
 
@@ -82,6 +85,9 @@ export class BuilderTab {
 
   protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);
+  protected readonly savedTeamId = signal<number | null>(null);
+
+  protected readonly teamsMyPath = TEAMS_MY_PATH;
 
   private readonly typesResource = rxResource({
     stream: () => this.typeService.getAllTypes(),
@@ -126,11 +132,6 @@ export class BuilderTab {
     () => this.state.activeMember()?.ability?.id ?? null,
   );
 
-  /**
-   * The one description of what the API will accept, so the button state and the hint beside it
-   * can never disagree. Mirrors TeamCreateDto and TeamPokemonCreateDto: a non-blank name of at
-   * most MAX_TEAM_NAME_LENGTH, one to six members, each with an ability and at least one move.
-   */
   protected readonly saveBlocker = computed<string | null>(() => {
     if (!this.isAuthenticated()) {
       return 'Log in to save this team.';
@@ -149,7 +150,7 @@ export class BuilderTab {
     const filled = this.state.members().filter((m): m is TeamMember => m !== null);
 
     if (filled.length === 0) {
-      return 'Add at least one Pokemon before saving.';
+      return 'Add at least one Pokémon before saving.';
     }
 
     const withoutAbility = filled.find((m) => m.ability === null);
@@ -302,6 +303,11 @@ export class BuilderTab {
   protected resetAll(): void {
     this.state.reset();
     this.saveError.set(null);
+    this.savedTeamId.set(null);
+  }
+
+  protected setPrivate(isPrivate: boolean): void {
+    this.state.setPrivate(isPrivate);
   }
 
   protected save(): void {
@@ -320,6 +326,7 @@ export class BuilderTab {
 
     this.saving.set(true);
     this.saveError.set(null);
+    this.savedTeamId.set(null);
 
     const sourceId = this.state.sourceTeamId();
     const request: Observable<TeamRead> =
@@ -328,13 +335,14 @@ export class BuilderTab {
         : this.teamService.updateTeam(sourceId, payload satisfies TeamUpdate);
 
     request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
+      next: (saved) => {
         this.saving.set(false);
-        this.resetAll();
+        this.state.markSaved(saved.id);
+        this.savedTeamId.set(saved.id);
       },
-      error: () => {
+      error: (error: unknown) => {
         this.saving.set(false);
-        this.saveError.set('Could not save the team. Please try again.');
+        this.saveError.set(describeHttpError(error, "Couldn't save the team. Please try again."));
       },
     });
   }
@@ -373,5 +381,8 @@ export class BuilderTab {
 }
 
 function displayName(member: TeamMember): string {
-  return member.nickname || member.name.replace(/-/g, ' ');
+  return (
+    member.nickname ||
+    member.name.replace(/-/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())
+  );
 }

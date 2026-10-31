@@ -1,3 +1,4 @@
+import { RouterLink } from '@angular/router';
 import { TypeRead } from '@shared/interfaces/pokemon/type/type-read.interface';
 import { EffectivenessChart } from '@shared/interfaces/team-builder/analysis/effectiveness-chart.interface';
 
@@ -21,7 +22,7 @@ import {
 } from '@angular/core';
 
 @Component({
-  imports: [OffensiveCoverage, DefensiveCoverage, RoleSpread, TeamStats],
+  imports: [OffensiveCoverage, DefensiveCoverage, RoleSpread, TeamStats, RouterLink],
   selector: 'app-analysis-tab',
   styleUrl: './analysis-tab.css',
   templateUrl: './analysis-tab.html',
